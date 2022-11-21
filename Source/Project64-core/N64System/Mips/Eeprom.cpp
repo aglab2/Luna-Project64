@@ -7,7 +7,7 @@
 CEeprom::CEeprom(bool ReadOnly) :
 m_ReadOnly(ReadOnly)
 {
-    memset(m_EEPROM, 0xFF, sizeof(m_EEPROM));
+    memset(m_EEPROM, 0x00, sizeof(m_EEPROM));
 }
 
 CEeprom::~CEeprom()
@@ -131,7 +131,7 @@ void CEeprom::EepromCommand(uint8_t * Command)
 
 void CEeprom::LoadEeprom()
 {
-    memset(m_EEPROM, 0xFF, sizeof(m_EEPROM));
+    memset(m_EEPROM, 0x00, sizeof(m_EEPROM));
 
     CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.eep", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))
