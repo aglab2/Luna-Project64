@@ -586,13 +586,102 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_CURRENT_SAVE_8:
     case ID_CURRENT_SAVE_9:
     case ID_CURRENT_SAVE_10:
+    case ID_CURRENT_SAVE_11:
+    case ID_CURRENT_SAVE_12:
+    case ID_CURRENT_SAVE_13:
+    case ID_CURRENT_SAVE_14:
+    case ID_CURRENT_SAVE_15:
+    case ID_CURRENT_SAVE_16:
+    case ID_CURRENT_SAVE_17:
+    case ID_CURRENT_SAVE_18:
+    case ID_CURRENT_SAVE_19:
+    case ID_CURRENT_SAVE_20:
+    case ID_CURRENT_SAVE_21:
+    case ID_CURRENT_SAVE_22:
+    case ID_CURRENT_SAVE_23:
+    case ID_CURRENT_SAVE_24:
+    case ID_CURRENT_SAVE_25:
+    case ID_CURRENT_SAVE_26:
+    case ID_CURRENT_SAVE_27:
+    case ID_CURRENT_SAVE_28:
+    case ID_CURRENT_SAVE_29:
+    case ID_CURRENT_SAVE_30:
+    case ID_CURRENT_SAVE_31:
+    case ID_CURRENT_SAVE_32:
+    case ID_CURRENT_SAVE_33:
+    case ID_CURRENT_SAVE_34:
+    case ID_CURRENT_SAVE_35:
+    case ID_CURRENT_SAVE_36:
+    case ID_CURRENT_SAVE_37:
+    case ID_CURRENT_SAVE_38:
+    case ID_CURRENT_SAVE_39:
+    case ID_CURRENT_SAVE_40:
+    case ID_CURRENT_SAVE_41:
+    case ID_CURRENT_SAVE_42:
+    case ID_CURRENT_SAVE_43:
+    case ID_CURRENT_SAVE_44:
+    case ID_CURRENT_SAVE_45:
+    case ID_CURRENT_SAVE_46:
+    case ID_CURRENT_SAVE_47:
+    case ID_CURRENT_SAVE_48:
+    case ID_CURRENT_SAVE_49:
+    case ID_CURRENT_SAVE_50:
+    case ID_CURRENT_SAVE_51:
+    case ID_CURRENT_SAVE_52:
+    case ID_CURRENT_SAVE_53:
+    case ID_CURRENT_SAVE_54:
+    case ID_CURRENT_SAVE_55:
+    case ID_CURRENT_SAVE_56:
+    case ID_CURRENT_SAVE_57:
+    case ID_CURRENT_SAVE_58:
+    case ID_CURRENT_SAVE_59:
+    case ID_CURRENT_SAVE_60:
+    case ID_CURRENT_SAVE_61:
+    case ID_CURRENT_SAVE_62:
+    case ID_CURRENT_SAVE_63:
+    case ID_CURRENT_SAVE_64:
+    case ID_CURRENT_SAVE_65:
+    case ID_CURRENT_SAVE_66:
+    case ID_CURRENT_SAVE_67:
+    case ID_CURRENT_SAVE_68:
+    case ID_CURRENT_SAVE_69:
+    case ID_CURRENT_SAVE_70:
+    case ID_CURRENT_SAVE_71:
+    case ID_CURRENT_SAVE_72:
+    case ID_CURRENT_SAVE_73:
+    case ID_CURRENT_SAVE_74:
+    case ID_CURRENT_SAVE_75:
+    case ID_CURRENT_SAVE_76:
+    case ID_CURRENT_SAVE_77:
+    case ID_CURRENT_SAVE_78:
+    case ID_CURRENT_SAVE_79:
+    case ID_CURRENT_SAVE_80:
+    case ID_CURRENT_SAVE_81:
+    case ID_CURRENT_SAVE_82:
+    case ID_CURRENT_SAVE_83:
+    case ID_CURRENT_SAVE_84:
+    case ID_CURRENT_SAVE_85:
+    case ID_CURRENT_SAVE_86:
+    case ID_CURRENT_SAVE_87:
+    case ID_CURRENT_SAVE_88:
+    case ID_CURRENT_SAVE_89:
+    case ID_CURRENT_SAVE_90:
+    case ID_CURRENT_SAVE_91:
+    case ID_CURRENT_SAVE_92:
+    case ID_CURRENT_SAVE_93:
+    case ID_CURRENT_SAVE_94:
+    case ID_CURRENT_SAVE_95:
+    case ID_CURRENT_SAVE_96:
+    case ID_CURRENT_SAVE_97:
+    case ID_CURRENT_SAVE_98:
+    case ID_CURRENT_SAVE_99:
         g_Notify->DisplayMessage(3, stdstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str()).c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1));
         break;
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
-    case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://discord.gg/Cg3zquF", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"http://www.pj64-emu.com", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_ABOUT: CAboutDlg(m_Gui->Support()).DoModal(); break;
+    case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/discord", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_ABOUT: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/project64-301n", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
@@ -683,6 +772,95 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     case 8: SlotName = GS(MENU_SLOT_8); break;
     case 9: SlotName = GS(MENU_SLOT_9); break;
     case 10: SlotName = GS(MENU_SLOT_10); break;
+    case 11: SlotName = GS(MENU_SLOT_11); break;
+    case 12: SlotName = GS(MENU_SLOT_12); break;
+    case 13: SlotName = GS(MENU_SLOT_13); break;
+    case 14: SlotName = GS(MENU_SLOT_14); break;
+    case 15: SlotName = GS(MENU_SLOT_15); break;
+    case 16: SlotName = GS(MENU_SLOT_16); break;
+    case 17: SlotName = GS(MENU_SLOT_17); break;
+    case 18: SlotName = GS(MENU_SLOT_18); break;
+    case 19: SlotName = GS(MENU_SLOT_19); break;
+    case 20: SlotName = GS(MENU_SLOT_20); break;
+    case 21: SlotName = GS(MENU_SLOT_21); break;
+    case 22: SlotName = GS(MENU_SLOT_22); break;
+    case 23: SlotName = GS(MENU_SLOT_23); break;
+    case 24: SlotName = GS(MENU_SLOT_24); break;
+    case 25: SlotName = GS(MENU_SLOT_25); break;
+    case 26: SlotName = GS(MENU_SLOT_26); break;
+    case 27: SlotName = GS(MENU_SLOT_27); break;
+    case 28: SlotName = GS(MENU_SLOT_28); break;
+    case 29: SlotName = GS(MENU_SLOT_29); break;
+    case 30: SlotName = GS(MENU_SLOT_30); break;
+    case 31: SlotName = GS(MENU_SLOT_31); break;
+    case 32: SlotName = GS(MENU_SLOT_32); break;
+    case 33: SlotName = GS(MENU_SLOT_33); break;
+    case 34: SlotName = GS(MENU_SLOT_34); break;
+    case 35: SlotName = GS(MENU_SLOT_35); break;
+    case 36: SlotName = GS(MENU_SLOT_36); break;
+    case 37: SlotName = GS(MENU_SLOT_37); break;
+    case 38: SlotName = GS(MENU_SLOT_38); break;
+    case 39: SlotName = GS(MENU_SLOT_39); break;
+    case 40: SlotName = GS(MENU_SLOT_40); break;
+    case 41: SlotName = GS(MENU_SLOT_41); break;
+    case 42: SlotName = GS(MENU_SLOT_42); break;
+    case 43: SlotName = GS(MENU_SLOT_43); break;
+    case 44: SlotName = GS(MENU_SLOT_44); break;
+    case 45: SlotName = GS(MENU_SLOT_45); break;
+    case 46: SlotName = GS(MENU_SLOT_46); break;
+    case 47: SlotName = GS(MENU_SLOT_47); break;
+    case 48: SlotName = GS(MENU_SLOT_48); break;
+    case 49: SlotName = GS(MENU_SLOT_49); break;
+    case 50: SlotName = GS(MENU_SLOT_50); break;
+    case 51: SlotName = GS(MENU_SLOT_51); break;
+    case 52: SlotName = GS(MENU_SLOT_52); break;
+    case 53: SlotName = GS(MENU_SLOT_53); break;
+    case 54: SlotName = GS(MENU_SLOT_54); break;
+    case 55: SlotName = GS(MENU_SLOT_55); break;
+    case 56: SlotName = GS(MENU_SLOT_56); break;
+    case 57: SlotName = GS(MENU_SLOT_57); break;
+    case 58: SlotName = GS(MENU_SLOT_58); break;
+    case 59: SlotName = GS(MENU_SLOT_59); break;
+    case 60: SlotName = GS(MENU_SLOT_60); break;
+    case 61: SlotName = GS(MENU_SLOT_61); break;
+    case 62: SlotName = GS(MENU_SLOT_62); break;
+    case 63: SlotName = GS(MENU_SLOT_63); break;
+    case 64: SlotName = GS(MENU_SLOT_64); break;
+    case 65: SlotName = GS(MENU_SLOT_65); break;
+    case 66: SlotName = GS(MENU_SLOT_66); break;
+    case 67: SlotName = GS(MENU_SLOT_67); break;
+    case 68: SlotName = GS(MENU_SLOT_68); break;
+    case 69: SlotName = GS(MENU_SLOT_69); break;
+    case 70: SlotName = GS(MENU_SLOT_70); break;
+    case 71: SlotName = GS(MENU_SLOT_71); break;
+    case 72: SlotName = GS(MENU_SLOT_72); break;
+    case 73: SlotName = GS(MENU_SLOT_73); break;
+    case 74: SlotName = GS(MENU_SLOT_74); break;
+    case 75: SlotName = GS(MENU_SLOT_75); break;
+    case 76: SlotName = GS(MENU_SLOT_76); break;
+    case 77: SlotName = GS(MENU_SLOT_77); break;
+    case 78: SlotName = GS(MENU_SLOT_78); break;
+    case 79: SlotName = GS(MENU_SLOT_79); break;
+    case 80: SlotName = GS(MENU_SLOT_80); break;
+    case 81: SlotName = GS(MENU_SLOT_81); break;
+    case 82: SlotName = GS(MENU_SLOT_82); break;
+    case 83: SlotName = GS(MENU_SLOT_83); break;
+    case 84: SlotName = GS(MENU_SLOT_84); break;
+    case 85: SlotName = GS(MENU_SLOT_85); break;
+    case 86: SlotName = GS(MENU_SLOT_86); break;
+    case 87: SlotName = GS(MENU_SLOT_87); break;
+    case 88: SlotName = GS(MENU_SLOT_88); break;
+    case 89: SlotName = GS(MENU_SLOT_89); break;
+    case 90: SlotName = GS(MENU_SLOT_90); break;
+    case 91: SlotName = GS(MENU_SLOT_91); break;
+    case 92: SlotName = GS(MENU_SLOT_92); break;
+    case 93: SlotName = GS(MENU_SLOT_93); break;
+    case 94: SlotName = GS(MENU_SLOT_94); break;
+    case 95: SlotName = GS(MENU_SLOT_95); break;
+    case 96: SlotName = GS(MENU_SLOT_96); break;
+    case 97: SlotName = GS(MENU_SLOT_97); break;
+    case 98: SlotName = GS(MENU_SLOT_98); break;
+    case 99: SlotName = GS(MENU_SLOT_99); break;
     }
 
     if (!g_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName.ToUTF16(); }
@@ -908,6 +1086,273 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_10, RunningState), nullptr, GetSaveSlotString(10));
     if (_CurrentSaveState == 10) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_11, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_11, RunningState), nullptr, GetSaveSlotString(11));
+    if (_CurrentSaveState == 11) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_12, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_12, RunningState), nullptr, GetSaveSlotString(12));
+    if (_CurrentSaveState == 12) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_13, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_13, RunningState), nullptr, GetSaveSlotString(13));
+    if (_CurrentSaveState == 13) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_14, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_14, RunningState), nullptr, GetSaveSlotString(14));
+    if (_CurrentSaveState == 14) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_15, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_15, RunningState), nullptr, GetSaveSlotString(15));
+    if (_CurrentSaveState == 15) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_16, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_16, RunningState), nullptr, GetSaveSlotString(16));
+    if (_CurrentSaveState == 16) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_17, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_17, RunningState), nullptr, GetSaveSlotString(17));
+    if (_CurrentSaveState == 17) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_18, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_18, RunningState), nullptr, GetSaveSlotString(18));
+    if (_CurrentSaveState == 18) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_19, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_19, RunningState), nullptr, GetSaveSlotString(19));
+    if (_CurrentSaveState == 19) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_20, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_20, RunningState), nullptr, GetSaveSlotString(20));
+    if (_CurrentSaveState == 20) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_21, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_21, RunningState), nullptr, GetSaveSlotString(21));
+    if (_CurrentSaveState == 21) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_22, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_22, RunningState), nullptr, GetSaveSlotString(22));
+    if (_CurrentSaveState == 22) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_23, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_23, RunningState), nullptr, GetSaveSlotString(23));
+    if (_CurrentSaveState == 23) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_24, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_24, RunningState), nullptr, GetSaveSlotString(24));
+    if (_CurrentSaveState == 24) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_25, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_25, RunningState), nullptr, GetSaveSlotString(25));
+    if (_CurrentSaveState == 25) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_26, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_26, RunningState), nullptr, GetSaveSlotString(26));
+    if (_CurrentSaveState == 26) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_27, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_27, RunningState), nullptr, GetSaveSlotString(27));
+    if (_CurrentSaveState == 27) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_28, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_28, RunningState), nullptr, GetSaveSlotString(28));
+    if (_CurrentSaveState == 28) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_29, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_29, RunningState), nullptr, GetSaveSlotString(29));
+    if (_CurrentSaveState == 29) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_30, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_30, RunningState), nullptr, GetSaveSlotString(30));
+    if (_CurrentSaveState == 30) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_31, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_31, RunningState), nullptr, GetSaveSlotString(31));
+    if (_CurrentSaveState == 31) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_32, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_32, RunningState), nullptr, GetSaveSlotString(32));
+    if (_CurrentSaveState == 32) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_33, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_33, RunningState), nullptr, GetSaveSlotString(33));
+    if (_CurrentSaveState == 33) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_34, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_34, RunningState), nullptr, GetSaveSlotString(34));
+    if (_CurrentSaveState == 34) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_35, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_35, RunningState), nullptr, GetSaveSlotString(35));
+    if (_CurrentSaveState == 35) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_36, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_36, RunningState), nullptr, GetSaveSlotString(36));
+    if (_CurrentSaveState == 36) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_37, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_37, RunningState), nullptr, GetSaveSlotString(37));
+    if (_CurrentSaveState == 37) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_38, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_38, RunningState), nullptr, GetSaveSlotString(38));
+    if (_CurrentSaveState == 38) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_39, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_39, RunningState), nullptr, GetSaveSlotString(39));
+    if (_CurrentSaveState == 39) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_40, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_40, RunningState), nullptr, GetSaveSlotString(40));
+    if (_CurrentSaveState == 40) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_41, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_41, RunningState), nullptr, GetSaveSlotString(41));
+    if (_CurrentSaveState == 41) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_42, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_42, RunningState), nullptr, GetSaveSlotString(42));
+    if (_CurrentSaveState == 42) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_43, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_43, RunningState), nullptr, GetSaveSlotString(43));
+    if (_CurrentSaveState == 43) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_44, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_44, RunningState), nullptr, GetSaveSlotString(44));
+    if (_CurrentSaveState == 44) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_45, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_45, RunningState), nullptr, GetSaveSlotString(45));
+    if (_CurrentSaveState == 45) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_46, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_46, RunningState), nullptr, GetSaveSlotString(46));
+    if (_CurrentSaveState == 46) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_47, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_47, RunningState), nullptr, GetSaveSlotString(47));
+    if (_CurrentSaveState == 47) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_48, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_48, RunningState), nullptr, GetSaveSlotString(48));
+    if (_CurrentSaveState == 48) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_49, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_49, RunningState), nullptr, GetSaveSlotString(49));
+    if (_CurrentSaveState == 49) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_50, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_50, RunningState), nullptr, GetSaveSlotString(50));
+    if (_CurrentSaveState == 50) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_51, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_51, RunningState), nullptr, GetSaveSlotString(51));
+    if (_CurrentSaveState == 51) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_52, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_52, RunningState), nullptr, GetSaveSlotString(52));
+    if (_CurrentSaveState == 52) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_53, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_53, RunningState), nullptr, GetSaveSlotString(53));
+    if (_CurrentSaveState == 53) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_54, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_54, RunningState), nullptr, GetSaveSlotString(54));
+    if (_CurrentSaveState == 54) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_55, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_55, RunningState), nullptr, GetSaveSlotString(55));
+    if (_CurrentSaveState == 55) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_56, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_56, RunningState), nullptr, GetSaveSlotString(56));
+    if (_CurrentSaveState == 56) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_57, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_57, RunningState), nullptr, GetSaveSlotString(57));
+    if (_CurrentSaveState == 57) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_58, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_58, RunningState), nullptr, GetSaveSlotString(58));
+    if (_CurrentSaveState == 58) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_59, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_59, RunningState), nullptr, GetSaveSlotString(59));
+    if (_CurrentSaveState == 59) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_60, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_60, RunningState), nullptr, GetSaveSlotString(60));
+    if (_CurrentSaveState == 60) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_61, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_61, RunningState), nullptr, GetSaveSlotString(61));
+    if (_CurrentSaveState == 61) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_62, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_62, RunningState), nullptr, GetSaveSlotString(62));
+    if (_CurrentSaveState == 62) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_63, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_63, RunningState), nullptr, GetSaveSlotString(63));
+    if (_CurrentSaveState == 63) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_64, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_64, RunningState), nullptr, GetSaveSlotString(64));
+    if (_CurrentSaveState == 64) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_65, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_65, RunningState), nullptr, GetSaveSlotString(65));
+    if (_CurrentSaveState == 65) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_66, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_66, RunningState), nullptr, GetSaveSlotString(66));
+    if (_CurrentSaveState == 66) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_67, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_67, RunningState), nullptr, GetSaveSlotString(67));
+    if (_CurrentSaveState == 67) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_68, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_68, RunningState), nullptr, GetSaveSlotString(68));
+    if (_CurrentSaveState == 68) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_69, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_69, RunningState), nullptr, GetSaveSlotString(69));
+    if (_CurrentSaveState == 69) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_70, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_70, RunningState), nullptr, GetSaveSlotString(70));
+    if (_CurrentSaveState == 70) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_71, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_71, RunningState), nullptr, GetSaveSlotString(71));
+    if (_CurrentSaveState == 71) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_72, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_72, RunningState), nullptr, GetSaveSlotString(72));
+    if (_CurrentSaveState == 72) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_73, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_73, RunningState), nullptr, GetSaveSlotString(73));
+    if (_CurrentSaveState == 73) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_74, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_74, RunningState), nullptr, GetSaveSlotString(74));
+    if (_CurrentSaveState == 74) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_75, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_75, RunningState), nullptr, GetSaveSlotString(75));
+    if (_CurrentSaveState == 75) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_76, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_76, RunningState), nullptr, GetSaveSlotString(76));
+    if (_CurrentSaveState == 76) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_77, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_77, RunningState), nullptr, GetSaveSlotString(77));
+    if (_CurrentSaveState == 77) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_78, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_78, RunningState), nullptr, GetSaveSlotString(78));
+    if (_CurrentSaveState == 78) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_79, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_79, RunningState), nullptr, GetSaveSlotString(79));
+    if (_CurrentSaveState == 79) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_80, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_80, RunningState), nullptr, GetSaveSlotString(80));
+    if (_CurrentSaveState == 80) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_81, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_81, RunningState), nullptr, GetSaveSlotString(81));
+    if (_CurrentSaveState == 81) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_82, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_82, RunningState), nullptr, GetSaveSlotString(82));
+    if (_CurrentSaveState == 82) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_83, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_83, RunningState), nullptr, GetSaveSlotString(83));
+    if (_CurrentSaveState == 83) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_84, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_84, RunningState), nullptr, GetSaveSlotString(84));
+    if (_CurrentSaveState == 84) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_85, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_85, RunningState), nullptr, GetSaveSlotString(85));
+    if (_CurrentSaveState == 85) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_86, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_86, RunningState), nullptr, GetSaveSlotString(86));
+    if (_CurrentSaveState == 86) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_87, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_87, RunningState), nullptr, GetSaveSlotString(87));
+    if (_CurrentSaveState == 87) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_88, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_88, RunningState), nullptr, GetSaveSlotString(88));
+    if (_CurrentSaveState == 88) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_89, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_89, RunningState), nullptr, GetSaveSlotString(89));
+    if (_CurrentSaveState == 89) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_90, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_90, RunningState), nullptr, GetSaveSlotString(90));
+    if (_CurrentSaveState == 90) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_91, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_91, RunningState), nullptr, GetSaveSlotString(91));
+    if (_CurrentSaveState == 91) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_92, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_92, RunningState), nullptr, GetSaveSlotString(92));
+    if (_CurrentSaveState == 92) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_93, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_93, RunningState), nullptr, GetSaveSlotString(93));
+    if (_CurrentSaveState == 93) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_94, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_94, RunningState), nullptr, GetSaveSlotString(94));
+    if (_CurrentSaveState == 94) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_95, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_95, RunningState), nullptr, GetSaveSlotString(95));
+    if (_CurrentSaveState == 95) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_96, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_96, RunningState), nullptr, GetSaveSlotString(96));
+    if (_CurrentSaveState == 96) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_97, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_97, RunningState), nullptr, GetSaveSlotString(97));
+    if (_CurrentSaveState == 97) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_98, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_98, RunningState), nullptr, GetSaveSlotString(98));
+    if (_CurrentSaveState == 98) { Item.SetItemTicked(true); }
+    CurrentSaveMenu.push_back(Item);
+    Item.Reset(ID_CURRENT_SAVE_99, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_99, RunningState), nullptr, GetSaveSlotString(99));
+    if (_CurrentSaveState == 99) { Item.SetItemTicked(true); }
     CurrentSaveMenu.push_back(Item);
 
     // System menu
