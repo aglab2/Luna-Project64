@@ -90,7 +90,7 @@ CMainGui::~CMainGui(void)
 
 bool CMainGui::RegisterWinClass(void)
 {
-    std::wstring VersionDisplay = stdstr_f("Project64 3.0.1-N-v2c").ToUTF16();
+    std::wstring VersionDisplay = stdstr_f("Project64 3.0.1-N-v3").ToUTF16();
 
     WNDCLASS wcl;
 
@@ -385,7 +385,7 @@ void CMainGui::Caption(LPCWSTR Caption)
 
 void CMainGui::Create(const char * WindowTitle)
 {
-    stdstr_f VersionDisplay("Project64 3.0.1-N-v2c");
+    stdstr_f VersionDisplay("Project64 3.0.1-N-v3");
     m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, 5, 5, 640, 480,
         nullptr, nullptr, GetModuleHandle(nullptr), this);

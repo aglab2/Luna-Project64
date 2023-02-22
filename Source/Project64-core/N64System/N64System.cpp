@@ -881,11 +881,11 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     {
         m_Recomp->Reset();
     }
-    if (m_Plugins && g_Settings->LoadBool(GameRunning_CPU_Running))
+    /*if (m_Plugins && g_Settings->LoadBool(GameRunning_CPU_Running))
     {
         m_Plugins->RomClosed();
         m_Plugins->RomOpened();
-    }
+    }*/
     if (m_SyncCPU && m_SyncCPU->m_MMU_VM.Rdram() != nullptr)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
