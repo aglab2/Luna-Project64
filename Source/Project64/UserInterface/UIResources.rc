@@ -1,7 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-#include "../../Project64-core/Version.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -349,7 +348,8 @@ BEGIN
     CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,128,86,10
     COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,129,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Show Status Bar",IDC_SHOW_STATUS_BAR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,142,189,10
-    CONTROL         "Exit Fullscreen on Lose Focus",IDC_EXIT_FULLSCREEN_ON_LOSE_FOCUS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,156,189,10
+    CONTROL         "Exit Fullscreen on Lose Focus",IDC_EXIT_FULLSCREEN_ON_LOSE_FOCUS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,156,189,10
 END
 
 IDD_Settings_ShellInt DIALOGEX 0, 0, 231, 206
@@ -472,22 +472,23 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,154,110,50,14
 END
 
-IDD_Welcome DIALOGEX 0, 0, 235, 171
+IDD_Welcome DIALOGEX 0, 0, 298, 350
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
-CAPTION "Project64 - Welcome"
+CAPTION "Luna's Project64 - Welcome"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,90,150,55,15
+    DEFPUSHBUTTON   "OK",IDOK,242,329,55,15
     RTEXT           "Language:",IDC_SELECT_LANG,6,82,60,12
     COMBOBOX        IDC_LANG_SEL,76,80,130,120,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_BMP_LOGO,"Static",SS_BLACKFRAME,2,0,232,74
+    CONTROL         "",IDC_BMP_LOGO,"Static",SS_BLACKFRAME,65,0,232,74
     RTEXT           "Game Directory:",IDC_GAME_DIR_STATIC,6,99,60,12
     EDITTEXT        IDC_GAME_DIR,76,97,130,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SELECT_GAME_DIR,209,97,17,12
-    CONTROL         "– GLideN64 –\nFor modern PC",IDC_RADIO_GLIDEN64,"Button",BS_AUTORADIOBUTTON | BS_CENTER | BS_PUSHLIKE | BS_MULTILINE,75,115,70,24
-    CONTROL         "– Project64 Video –\nFor older PC",IDC_RADIO_PJ64_VIDEO,
-                    "Button",BS_AUTORADIOBUTTON | BS_CENTER | BS_PUSHLIKE | BS_MULTILINE,153,115,73,24
-    RTEXT           "Video Plugin:",IDC_VIDEO_PLUGIN_STATIC,6,117,60,14
+    RTEXT           "GFX Plugin:",IDC_VIDEO_PLUGIN_STATIC,6,117,60,14
+    RTEXT           "Input Plugin:",IDC_VIDEO_PLUGIN_STATIC2,9,206,60,14
+    CONTROL         "",IDC_GFX_PLUGIN,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,26,132,237,63
+    CONTROL         "",IDC_INPUT_PLUGIN,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,26,221,237,84
+    PUSHBUTTON      "Plugin Help",IDPLUGINHELPA,26,329,55,15
 END
 
 IDD_Debugger_Memory DIALOGEX 0, 0, 321, 199
@@ -1593,8 +1594,15 @@ BEGIN
 
     IDD_Welcome, DIALOG
     BEGIN
-        RIGHTMARGIN, 234
-        BOTTOMMARGIN, 165
+        RIGHTMARGIN, 297
+        VERTGUIDE, 26
+        VERTGUIDE, 179
+        VERTGUIDE, 210
+        VERTGUIDE, 263
+        BOTTOMMARGIN, 344
+        HORZGUIDE, 121
+        HORZGUIDE, 132
+        HORZGUIDE, 215
     END
 
     IDD_Debugger_Memory, DIALOG
@@ -2079,30 +2087,35 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION        VER_FILE_VERSION
- PRODUCTVERSION     VER_PRODUCT_VERSION
- FILEFLAGSMASK      0x3fL
- FILEFLAGS          VER_FILEFLAGS
- FILEOS             VER_FILEOS
- FILETYPE           VER_FILETYPE
- FILESUBTYPE        0x0L
+ FILEVERSION 3,4,0,0
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x0L
+ FILESUBTYPE 0x0L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904b0"
+        BLOCK "080904b0"
         BEGIN
-            VALUE "FileDescription",  VER_FILE_DESCRIPTION_STR "\0"
-            VALUE "FileVersion",      VER_FILE_VERSION_STR "\0"
-            VALUE "InternalName",     VER_INTERNAL_NAME_STR "\0"
-            VALUE "LegalCopyright",   VER_COPYRIGHT_STR "\0"
-            VALUE "OriginalFilename", VER_ORIGINAL_FILENAME_STR "\0"
-            VALUE "ProductName",      VER_PRODUCTNAME_STR
-            VALUE "ProductVersion",   VER_PRODUCT_VERSION_STR "\0"
+            VALUE "CompanyName", "ShiN3"
+            VALUE "FileDescription", "Luna's Project64"
+            VALUE "FileVersion", "3.4.0.0"
+            VALUE "InternalName", "UIResources.rc"
+            VALUE "LegalCopyright", "Copyright (C) 2023"
+            VALUE "OriginalFilename", "UIResources.rc"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x409, 1200
+        VALUE "Translation", 0x809, 1200
     END
 END
 

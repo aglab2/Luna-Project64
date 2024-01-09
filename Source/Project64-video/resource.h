@@ -2,6 +2,10 @@
 // Microsoft Visual C++ generated include file.
 // Used by Project64-video.rc
 //
+#define VERSION_MINOR                   0
+#define VER_VER_DEBUG                   0
+#define VERSION_REVISION                1
+#define VERSION_MAJOR                   3
 #define IDD_CONFIG_BASIC                101
 #define IDD_EMULATION_SETTINGS          102
 #define IDD_TEXTURE_ENHANCEMENT         103
@@ -87,12 +91,13 @@
 #define IDC_TXT_TRACE_OGLWRAPPER2       1089
 #define IDC_CMB_TRACE_SETTINGS          1090
 #define IDC_SOFTWARE_RENDERING          1091
+#define VERSION_BUILD                   5672
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        107
+#define _APS_NEXT_RESOURCE_VALUE        108
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           101

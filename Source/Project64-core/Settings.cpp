@@ -118,7 +118,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)true));
     
 	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (bool)false));
-    AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("Settings", "Unique Game Dir", true));
+    AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("Settings", "Unique Game Dir", false));
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("Settings", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeTempBool(false));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
@@ -129,13 +129,13 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 	AddHandler(Default_RDRamSize, new CSettingTypeApplication("Defaults", "RDRAM Size", 0x800000u));
 	AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
 	AddHandler(Default_UseTlb, new CSettingTypeApplication("Defaults", "Use TLB", true));
-	AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 1500u));
+	AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 2200u));
 	AddHandler(Default_AiCountPerBytes, new CSettingTypeApplication("Defaults", "AiCountPerBytes", 0u));
-	AddHandler(Default_CounterFactor, new CSettingTypeApplication("Defaults", "Counter Factor", 2u));
-	AddHandler(Default_32Bit, new CSettingTypeApplication("Defaults", "32bit", false));
+	AddHandler(Default_CounterFactor, new CSettingTypeApplication("Defaults", "Counter Factor", 1u));
+	AddHandler(Default_32Bit, new CSettingTypeApplication("Defaults", "32bit", true));
 	AddHandler(Default_SyncViaAudio, new CSettingTypeApplication("Defaults", "Audio-Sync Audio", true));
 	AddHandler(Default_FixedAudio, new CSettingTypeApplication("Defaults", "Fixed Audio", true));
-	AddHandler(Default_UnalignedDMA, new CSettingTypeApplication("Defaults", "Unaligned DMA", false));
+	AddHandler(Default_UnalignedDMA, new CSettingTypeApplication("Defaults", "Unaligned DMA", true));
 	AddHandler(Default_RandomizeSIPIInterrupts, new CSettingTypeApplication("Defaults", "Randomize SI/PI Interrupts", true));
 	AddHandler(Default_SMM_Protect_Memory, new CSettingTypeApplication("Defaults", "SMM-Protect", false));
     AddHandler(Default_DiskSeekTiming, new CSettingTypeApplication("Defaults", "Disk Seek Timing", (uint32_t)DiskSeek_Turbo));
@@ -162,7 +162,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_LoadRomToMemory, new CSettingTypeRomDatabase("Rom In Memory", false));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
-    AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", true));
+    AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", false));
 #ifdef ANDROID
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
 #else
@@ -247,8 +247,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     // User interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("Settings", "Display CPU Usage", (uint32_t)false));
-    AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("Settings", "Display Frame Rate", (uint32_t)false));
-    AddHandler(UserInterface_FrameDisplayType, new CSettingTypeApplication("Settings", "Frame Rate Display Type", (uint32_t)FR_VIs));
+    AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("Settings", "Display Frame Rate", (uint32_t)true));
+    AddHandler(UserInterface_FrameDisplayType, new CSettingTypeApplication("Settings", "Frame Rate Display Type", (uint32_t)2));
     AddHandler(Directory_Plugin, new CSettingTypeSelectedDirectory("Dir:Plugin", Directory_PluginInitial, Directory_PluginSelected, Directory_PluginUseSelected, Directory_Plugin));
 #ifndef _M_X64
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin", ""));
@@ -317,12 +317,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(GameRunning_ScreenHertz, new CSettingTypeTempNumber(60));
     AddHandler(GameRunning_InReset, new CSettingTypeTempBool(false));
 
-    AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("Settings", "Basic Mode", (uint32_t)true));
+    AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("Settings", "Basic Mode", (uint32_t)false));
     AddHandler(File_DiskIPLPath, new CSettingTypeApplicationPath("Settings", "Disk IPL ROM Path", Default_None));
     AddHandler(File_DiskIPLUSAPath, new CSettingTypeApplicationPath("Settings", "Disk IPL USA ROM Path", Default_None));
     AddHandler(File_DiskIPLTOOLPath, new CSettingTypeApplicationPath("Settings", "Disk IPL TOOL ROM Path", Default_None));
 
-    AddHandler(Debugger_Enabled, new CSettingTypeApplication("Debugger", "Debugger", false));
+    AddHandler(Debugger_Enabled, new CSettingTypeApplication("Debugger", "Debugger", true));
     AddHandler(Debugger_ShowTLBMisses, new CSettingTypeApplication("Debugger", "Show TLB Misses", false));
     AddHandler(Debugger_ShowUnhandledMemory, new CSettingTypeApplication("Debugger", "Show Unhandled Memory", false));
     AddHandler(Debugger_ShowPifErrors, new CSettingTypeApplication("Debugger", "Show Pif Errors", false));
@@ -374,17 +374,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     // Plugin
 #ifdef _WIN32
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));
-#ifdef _DEBUG
-    AddHandler(Plugin_GFX_Default, new CSettingTypeApplication("Plugin", "Graphics Dll Default", "GFX\\Project64-Video_d.dll"));
-	AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", Plugin_GFX_Default));
-	AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Project64-Audio_d.dll"));
-    AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "Input\\Project64-Input_d.dll"));
-#else
-    AddHandler(Plugin_GFX_Default, new CSettingTypeApplication("Plugin", "Graphics Dll Default", "GFX\\Project64-Video.dll"));
+
+    AddHandler(Plugin_GFX_Default, new CSettingTypeApplication("Plugin", "Graphics Dll Default", "GFX\\GLideN64.dll"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", Plugin_GFX_Default));
-    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Project64-Audio.dll"));
-    AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "Input\\Project64-Input.dll"));
-#endif
+    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\AziAudio.dll"));
+    AddHandler(Plugin_CONT_Default, new CSettingTypeApplication("Plugin", "Controller Dll Default", "Input\\NRage_DInput8_V2.dll"));
+    AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", Plugin_CONT_Default));
 #else
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "libProject64-rsp-hle.so"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "libProject64-gfx.so"));
