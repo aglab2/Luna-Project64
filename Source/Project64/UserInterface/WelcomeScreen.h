@@ -2,6 +2,16 @@
 #include <Project64\UserInterface\WTLControls\wtl-BitmapPicture.h>
 #include "resource.h"
 
+namespace {
+    HWND hDlgItem;
+    LVCOLUMNA LvColumn;
+    LVITEMA LvItem;
+    LPARAM lParam;
+    int i;
+    int selectedIndexGFX;
+    int selectedIndexInput;
+};
+
 class WelcomeScreen :
     public CDialogImpl<WelcomeScreen>
 {
@@ -12,6 +22,8 @@ public:
         MSG_WM_ERASEBKGND(OnEraseBackground)
         COMMAND_ID_HANDLER_EX(IDC_SELECT_GAME_DIR, SelectGameDir)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
+        COMMAND_ID_HANDLER(IDPLUGINHELPA, OnPluginHelp)
+        MESSAGE_HANDLER(WM_NOTIFY, OnListNotify)
     END_MSG_MAP()
 
     enum { IDD = IDD_Welcome };
@@ -29,6 +41,8 @@ private:
     HBRUSH OnCtlColorStatic(CDCHandle dc, CStatic wndStatic);
     BOOL OnEraseBackground(CDCHandle dc);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+    LRESULT OnPluginHelp(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnListNotify(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     static int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
 

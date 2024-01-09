@@ -297,6 +297,7 @@ enum SettingID
     Plugin_GFX_CurVer,
     Plugin_AUDIO_Current,
     Plugin_AUDIO_CurVer,
+    Plugin_CONT_Default,
     Plugin_CONT_Current,
     Plugin_CONT_CurVer,
     Plugin_UseHleGfx,

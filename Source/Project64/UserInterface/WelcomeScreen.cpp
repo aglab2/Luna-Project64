@@ -6,6 +6,16 @@ WelcomeScreen::WelcomeScreen()
 {
 }
 
+
+static bool isWine(void)
+{
+    HMODULE ntdll = GetModuleHandle(L"ntdll.dll");
+    if (!ntdll)
+        return false;
+
+    return NULL != GetProcAddress(ntdll, "wine_get_version");
+}
+
 void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
@@ -54,7 +64,123 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     {
         LangCB.SetCurSel(0);
     }
-    CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).SetCheck(BST_CHECKED);
+
+    hDlgItem = GetDlgItem(IDC_GFX_PLUGIN);
+    LvColumn.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
+    LvColumn.cx = 0x70;
+    LvColumn.pszText = "Plugin";
+    SendMessageA(hDlgItem, LVM_INSERTCOLUMNA, 0, (LPARAM)&LvColumn);
+    LvColumn.cx = 0x120;
+    LvColumn.pszText = "Description";
+    SendMessageA(hDlgItem, LVM_INSERTCOLUMNA, 1, (LPARAM)&LvColumn);
+    LvItem.mask = LVIF_TEXT;
+    LvItem.cchTextMax = 256;
+    LvItem.pszText = "Init";
+    LvItem.iSubItem = 0;
+    for (i = 0; i < 4; i++) {
+        LvItem.iItem = i;
+        SendMessageA(hDlgItem, LVM_INSERTITEMA, 0, (LPARAM)&LvItem);
+    }
+    SendMessageA(hDlgItem, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT);
+
+    LvItem.iItem = 0;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "ANGLE GLideN64";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For most binary hacks (Recommended)";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 1;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "ParaLLel";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For advanced decomp hacks, best accuracy";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 2;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "GLideN64 4.0";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For most decomp hacks, better performance";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 3;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "Jabo";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "Use only if your PC is a hyper potato";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    hDlgItem = GetDlgItem(IDC_INPUT_PLUGIN);
+    LvColumn.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
+    LvColumn.cx = 0x70;
+    LvColumn.pszText = "Plugin";
+    SendMessageA(hDlgItem, LVM_INSERTCOLUMNA, 0, (LPARAM)&LvColumn);
+    LvColumn.cx = 0x120;
+    LvColumn.pszText = "Description";
+    SendMessageA(hDlgItem, LVM_INSERTCOLUMNA, 1, (LPARAM)&LvColumn);
+    LvItem.mask = LVIF_TEXT;
+    LvItem.cchTextMax = 256;
+    LvItem.pszText = "Init";
+    LvItem.iSubItem = 0;
+    for (i = 0; i < 6; i++) {
+        LvItem.iItem = i;
+        SendMessageA(hDlgItem, LVM_INSERTITEMA, 0, (LPARAM)&LvItem);
+    }
+    SendMessageA(hDlgItem, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT);
+
+    LvItem.iItem = 0;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "NRage";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For DirectInput controllers";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 1;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "Octomino";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For non-DirectInput controllers, may be jank";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 2;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "Luna DInput";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For keyboard";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 3;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "LINK's Mapper";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For non-DirectInput controllers, no GUI";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 4;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "pj64-wiiu-gcn";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For GCN controller with Wii U/Switch adapter";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 5;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "RaphnetRaw";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For OEM with RaphNet adapter";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
     return TRUE;
 }
 
@@ -108,10 +234,83 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     if (Project64VideoPluginPath.find("Project64-Video") == string::npos) {
         Project64VideoPluginPath = "GFX\\Project64-Video.dll";
     }
-    g_Settings->SaveString(Plugin_GFX_Default, CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).GetCheck() == BST_CHECKED ? "GFX\\GLideN64\\GLideN64.dll" : Project64VideoPluginPath);
+
+    switch (selectedIndexGFX)
+    {
+    case 0:
+        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\GLideN64.dll"); //ANGLE GLideN64
+        break;
+    case 1:
+        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\pj64-parallelrdp.dll"); //parallel
+        g_Settings->SaveString(Plugin_RSP_Current, "RSP\\parallel-rsp.dll");
+        g_Settings->SaveBool(Default_UseHleGfx, false);
+        break;
+    case 2:
+        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\GLideN64_Public_Release_4.0_Zilmar_spec\\GLideN64.dll"); //GLideN64
+        break;
+    case 3:
+        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\Jabo_Direct3D8_6.dll"); //Jabo
+        break;
+    }
     g_Settings->SaveString(Plugin_GFX_Current, g_Settings->LoadStringVal(Plugin_GFX_Default));
+
+    switch (selectedIndexInput)
+    {
+    case 0:
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\NRage_DInput8_V2.dll"); //NRage
+        break;
+    case 1:
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\wermi's Octomino SDL\\octomino-sdl-input.dll"); //Octomino
+        break;
+    case 2:
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\Luna's DirectInput8.dll"); //Luna
+        break;
+    case 3:
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\LMapper.dll"); //LMapper
+        break;
+    case 4:
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\pj64-wiiu-gcn.dll"); //pj64-wiiu-gcn
+        break;
+    case 5:
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\pj64raphnetraw_1player.dll"); //RaphnetRaw
+        break;
+    }
+    g_Settings->SaveString(Plugin_CONT_Current, g_Settings->LoadStringVal(Plugin_CONT_Default));
+
+    auto i = g_Settings->LoadStringVal(Plugin_CONT_Default);
+
     EndDialog(0);
     return TRUE;
+}
+
+LRESULT WelcomeScreen::OnPluginHelp(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    if (isWine())
+    {
+        ShellExecuteA(0, 0, "http://sites.google.com/view/shurislibrary/plugin-guide/linux/linux-301n", 0, 0, SW_HIDE);
+    }
+    else
+    {
+        ShellExecuteA(0, 0, "http://sites.google.com/view/shurislibrary/plugin-guide/windows/windows-301n", 0, 0, SW_HIDE);
+    }
+    return TRUE;
+}
+
+LRESULT WelcomeScreen::OnListNotify(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+    if (lParam != NULL) {
+        switch (((LPNMHDR)lParam)->code)
+        {
+        case NM_CLICK:
+            hDlgItem = GetDlgItem(IDC_GFX_PLUGIN);
+            selectedIndexGFX = SendMessage(hDlgItem, LVM_GETNEXTITEM, -1, LVNI_FOCUSED);
+            hDlgItem = GetDlgItem(IDC_INPUT_PLUGIN);
+            selectedIndexInput = SendMessage(hDlgItem, LVM_GETNEXTITEM, -1, LVNI_FOCUSED);
+            return TRUE;
+            break;
+        }
+    }
+    return FALSE;
 }
 
 int CALLBACK WelcomeScreen::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
