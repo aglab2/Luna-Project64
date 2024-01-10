@@ -9,10 +9,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     {
         CoInitialize(nullptr);
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
-        if (!g_Lang->IsLanguageLoaded())
-        {
-            WelcomeScreen().DoModal();
-        }
 
         // Create the main window with menu
 		
@@ -23,6 +19,12 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         g_Debugger = &Debugger;
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
+
+        if (!g_Lang->IsLanguageLoaded())
+        {
+            WelcomeScreen().DoModal();
+        }
+
         bool isROMLoaded = false;
 
         if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0 && g_Settings->LoadStringVal(Cmd_ComboDiskFile).length() > 0)
