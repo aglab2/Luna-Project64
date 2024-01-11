@@ -1594,15 +1594,8 @@ BEGIN
 
     IDD_Welcome, DIALOG
     BEGIN
-        RIGHTMARGIN, 288
-        VERTGUIDE, 26
-        VERTGUIDE, 179
-        VERTGUIDE, 210
-        VERTGUIDE, 263
-        BOTTOMMARGIN, 345
-        HORZGUIDE, 121
-        HORZGUIDE, 132
-        HORZGUIDE, 215
+        RIGHTMARGIN, 234
+        BOTTOMMARGIN, 165
     END
 
     IDD_Debugger_Memory, DIALOG
