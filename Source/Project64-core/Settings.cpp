@@ -162,12 +162,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_LoadRomToMemory, new CSettingTypeRomDatabase("Rom In Memory", false));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
-    AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", false));
-#ifdef ANDROID
-    AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
-#else
 	AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
-#endif
 	AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
     AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
@@ -210,11 +205,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_RspAudioSignal, new CSettingTypeGame("Audio Signal", Rdb_RspAudioSignal));
     AddHandler(Game_32Bit, new CSettingTypeGame("32bit", Rdb_32Bit));
     AddHandler(Game_FastSP, new CSettingTypeGame("Fast SP", Rdb_FastSP));
-#ifdef ANDROID
-    AddHandler(Game_CurrentSaveState, new CSettingTypeTempNumber(1));
-#else
     AddHandler(Game_CurrentSaveState, new CSettingTypeTempNumber(0));
-#endif
     AddHandler(Game_LastSaveTime, new CSettingTypeTempNumber(0));
     AddHandler(Game_SyncViaAudio, new CSettingTypeGame("Sync Audio", Rdb_SyncViaAudio));
     AddHandler(Game_UseHleGfx, new CSettingTypeGame("HLE GFX", Rdb_UseHleGfx));
@@ -380,11 +371,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\AziAudio.dll"));
     AddHandler(Plugin_CONT_Default, new CSettingTypeApplication("Plugin", "Controller Dll Default", "Input\\NRage_DInput8_V2.dll"));
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", Plugin_CONT_Default));
-#else
-    AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "libProject64-rsp-hle.so"));
-    AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "libProject64-gfx.so"));
-    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "libProject64-audio-android.so"));
-    AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "libProject64-input-android.so"));
 #endif
     AddHandler(Plugin_RSP_CurVer, new CSettingTypeApplication("Plugin", "RSP Dll Ver", ""));
     AddHandler(Plugin_GFX_CurVer, new CSettingTypeApplication("Plugin", "Graphics Dll Ver", ""));

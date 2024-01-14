@@ -11,11 +11,6 @@
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
-#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-/* bug-fix to implement __clear_cache (missing in Android; http://code.google.com/p/android/issues/detail?id=1803) */
-extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
-#endif
-
 CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
 m_VAddrEnter(VAddrEnter),
 m_VAddrFirst(VAddrEnter),
@@ -770,9 +765,6 @@ bool CCodeBlock::Compile()
     g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
     MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
-#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
-#endif
     return true;
 }
 

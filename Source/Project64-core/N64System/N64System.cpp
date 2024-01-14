@@ -17,9 +17,6 @@
 #include <Common/Util.h>
 #include <float.h>
 #include <time.h>
-#if defined(ANDROID)
-#include <utime.h>
-#endif
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
@@ -1788,9 +1785,6 @@ bool CN64System::SaveState()
         zipCloseFileInZip(file);
 
         zipClose(file, "");
-#if defined(ANDROID)
-        utimes((const char *)ZipFile, nullptr);
-#endif
     }
     else
     {

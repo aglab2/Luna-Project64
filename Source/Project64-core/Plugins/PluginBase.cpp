@@ -153,20 +153,7 @@ void CPlugin::RomOpened(RenderWindow * Render)
         return;
     }
 
-#ifdef ANDROID
-    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
-    {
-        WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
-        if (Render != nullptr)
-        {
-            WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadInit");
-            Render->GfxThreadInit();
-            WriteTrace(PluginTraceType(), TraceDebug, "GfxThreadInit Done");
-        }
-    }
-#else
     Render = Render; // Used just for the Android port
-#endif
 
     if (RomOpen != nullptr)
     {
@@ -185,20 +172,7 @@ void CPlugin::RomClose(RenderWindow * Render)
         return;
     }
 
-#ifdef ANDROID
-    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
-    {
-        WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
-        if (Render != NULL)
-        {
-            WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadDone");
-            Render->GfxThreadDone();
-            WriteTrace(PluginTraceType(), TraceDebug, "GfxThreadDone Done");
-        }
-    }
-#else
     Render = Render; // Used just for the Android port
-#endif
 
     WriteTrace(PluginTraceType(), TraceDebug, "Before ROM close");
     RomClosed();

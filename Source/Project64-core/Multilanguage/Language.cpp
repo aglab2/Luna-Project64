@@ -691,52 +691,6 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_TOOL_IPL_REQUIRED, "Nintendo 64DD development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the settings.");
     DEF_STR(MSG_CHEAT_INVALID_MSG, "Failed to update cheat, it is invalid");
     DEF_STR(MSG_CHEAT_INVALID_TITLE, "Invalid Cheat");
-
-    /*** Android ***/
-
-    DEF_STR(ANDROID_SETTINGS, "Settings");
-    DEF_STR(ANDROID_FORUM, "Help/Forum");
-    DEF_STR(ANDROID_REPORT_BUG, "Report Issue");
-    DEF_STR(ANDROID_ABOUT, "About");
-    DEF_STR(ANDROID_GALLERY_RECENTLYPLAYED, "Recently played");
-    DEF_STR(ANDROID_GALLERY_LIBRARY, "Games");
-    DEF_STR(ANDROID_GAMEDIR, "Game Dir");
-    DEF_STR(ANDROID_SELECTDIR, "Select a folder to scan");
-    DEF_STR(ANDROID_INCLUDE_SUBDIRECTORIES, "Include subdirectories");
-    DEF_STR(ANDROID_PARENTFOLDER, "Parent folder");
-    DEF_STR(ANDROID_DIRECTORIES, "Directories");
-    DEF_STR(ANDROID_INTERNAL_MEMORY, "Internal memory");
-    DEF_STR(ANDROID_TITLE, "Scanning...");
-    DEF_STR(ANDROID_OK, "OK");
-    DEF_STR(ANDROID_CANCEL, "Cancel");
-    DEF_STR(ANDROID_ABOUT_INFO, "Information");
-    DEF_STR(ANDROID_ABOUT_APP_NAME, "Project64 for Android");
-    DEF_STR(ANDROID_ABOUT_LICENCE, "License");
-    DEF_STR(ANDROID_ABOUT_REVISION, "Revision");
-    DEF_STR(ANDROID_ABOUT_TEXT, "Project64 for Android\u2122 is a port of the Windows version of Project64.The Android\u2122 version can play most N64 games.");
-    DEF_STR(ANDROID_ABOUT_PJ64_AUTHORS, "Project64 Authors.");
-    DEF_STR(ANDROID_DISCORD, "Discord");
-    DEF_STR(ANDROID_SUPPORT_PJ64, "Support Project64");
-    DEF_STR(ANDROID_REVIEW_PJ64, "Review Project64");
-
-    // In-game menu
-    DEF_STR(ANDROID_MENU_SETTINGS, "Settings");
-    DEF_STR(ANDROID_MENU_SAVESTATE, "Save State");
-    DEF_STR(ANDROID_MENU_LOADSTATE, "Load State");
-    DEF_STR(ANDROID_MENU_ENDEMULATION, "End Emulation");
-    DEF_STR(ANDROID_MENU_PAUSE, "Pause");
-    DEF_STR(ANDROID_MENU_RESUME, "Resume");
-    DEF_STR(ANDROID_MENU_GAMESPEED, "Game Speed");
-    DEF_STR(ANDROID_MENU_CURRENTSAVESTATE, "Current Save State...");
-    DEF_STR(ANDROID_MENU_CURRENTSAVEAUTO, "Auto");
-    DEF_STR(ANDROID_MENU_CURRENTSAVESLOT, "Slot");
-    DEF_STR(ANDROID_MENU_CONSOLERESET, "Reset");
-    DEF_STR(ANDROID_MENU_DEBUGGINGOPTIONS, "Debugging Options");
-    DEF_STR(ANDROID_MENU_RESETFUNCTIONTIMES, "Reset Function Times");
-    DEF_STR(ANDROID_MENU_DUMPFUNCTIONTIMES, "Dump Function Times");
-
-    // Video plugin
-    DEF_STR(ANDROID_VIDEO_NATIVE_RES, "Native");
 }
 
 CLanguage::CLanguage() :
