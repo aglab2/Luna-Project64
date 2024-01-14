@@ -541,6 +541,92 @@ void CShortCuts::Load(bool InitialValues)
         m_ShortCuts.find(ID_CURRENT_SAVE_8)->second.AddShortCut('8', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
         m_ShortCuts.find(ID_CURRENT_SAVE_9)->second.AddShortCut('9', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
         m_ShortCuts.find(ID_CURRENT_SAVE_10)->second.AddShortCut('0', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_11)->second.AddShortCut('1', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_12)->second.AddShortCut('2', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_13)->second.AddShortCut('3', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_14)->second.AddShortCut('4', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_15)->second.AddShortCut('5', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_16)->second.AddShortCut('6', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_17)->second.AddShortCut('7', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_18)->second.AddShortCut('8', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_19)->second.AddShortCut('9', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_20)->second.AddShortCut('0', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_21)->second.AddShortCut('1', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_22)->second.AddShortCut('2', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_23)->second.AddShortCut('3', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_24)->second.AddShortCut('4', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_25)->second.AddShortCut('5', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_26)->second.AddShortCut('6', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_27)->second.AddShortCut('7', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_28)->second.AddShortCut('8', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_29)->second.AddShortCut('9', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_30)->second.AddShortCut('0', false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_31)->second.AddShortCut('1', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_32)->second.AddShortCut('2', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_33)->second.AddShortCut('3', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_34)->second.AddShortCut('4', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_35)->second.AddShortCut('5', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_36)->second.AddShortCut('6', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_37)->second.AddShortCut('7', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_38)->second.AddShortCut('8', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_39)->second.AddShortCut('9', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_40)->second.AddShortCut('0', false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_41)->second.AddShortCut('1', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_42)->second.AddShortCut('2', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_43)->second.AddShortCut('3', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_44)->second.AddShortCut('4', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_45)->second.AddShortCut('5', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_46)->second.AddShortCut('6', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_47)->second.AddShortCut('7', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_48)->second.AddShortCut('8', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_49)->second.AddShortCut('9', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_50)->second.AddShortCut('0', true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_51)->second.AddShortCut('1', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_52)->second.AddShortCut('2', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_53)->second.AddShortCut('3', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_54)->second.AddShortCut('4', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_55)->second.AddShortCut('5', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_56)->second.AddShortCut('6', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_57)->second.AddShortCut('7', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_58)->second.AddShortCut('8', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_59)->second.AddShortCut('9', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_60)->second.AddShortCut('0', true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_61)->second.AddShortCut('1', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_62)->second.AddShortCut('2', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_63)->second.AddShortCut('3', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_64)->second.AddShortCut('4', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_65)->second.AddShortCut('5', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_66)->second.AddShortCut('6', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_67)->second.AddShortCut('7', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_68)->second.AddShortCut('8', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_69)->second.AddShortCut('9', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_70)->second.AddShortCut('0', false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_71)->second.AddShortCut('1', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_72)->second.AddShortCut('2', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_73)->second.AddShortCut('3', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_74)->second.AddShortCut('4', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_75)->second.AddShortCut('5', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_76)->second.AddShortCut('6', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_77)->second.AddShortCut('7', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_78)->second.AddShortCut('8', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_79)->second.AddShortCut('9', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_80)->second.AddShortCut('0', true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
+        m_ShortCuts.find(ID_CURRENT_SAVE_93)->second.AddShortCut(0xC0, true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_94)->second.AddShortCut(0xC0, false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_95)->second.AddShortCut(0xC0, false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_96)->second.AddShortCut(0xC0, true, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_97)->second.AddShortCut(0xC0, true, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_98)->second.AddShortCut(0xC0, false, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_99)->second.AddShortCut(0xC0, true, true, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+
         m_ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_RETURN, false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
         m_ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_ESCAPE, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
         m_ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A', true, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
