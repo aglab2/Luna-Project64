@@ -94,6 +94,7 @@ enum LanguageStringID
     MENU_ABOUT_PJ64 = 182,
     MENU_WEBSITE = 184,
     MENU_SUPPORT_PROJECT64 = 185,
+    MENU_SUPPORT_LUNA = 187,
     MENU_DISCORD = 186,
 
     // Current save slot menu
