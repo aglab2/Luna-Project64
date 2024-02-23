@@ -65,56 +65,6 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
         LangCB.SetCurSel(0);
     }
 
-    hDlgItem = GetDlgItem(IDC_GFX_PLUGIN);
-    LvColumn.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-    LvColumn.cx = 0x70;
-    LvColumn.pszText = "Plugin";
-    SendMessageA(hDlgItem, LVM_INSERTCOLUMNA, 0, (LPARAM)&LvColumn);
-    LvColumn.cx = 0x120;
-    LvColumn.pszText = "Description";
-    SendMessageA(hDlgItem, LVM_INSERTCOLUMNA, 1, (LPARAM)&LvColumn);
-    LvItem.mask = LVIF_TEXT;
-    LvItem.cchTextMax = 256;
-    LvItem.pszText = "Init";
-    LvItem.iSubItem = 0;
-    for (i = 0; i < 4; i++) {
-        LvItem.iItem = i;
-        SendMessageA(hDlgItem, LVM_INSERTITEMA, 0, (LPARAM)&LvItem);
-    }
-    SendMessageA(hDlgItem, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT);
-
-    LvItem.iItem = 0;
-    LvItem.iSubItem = 0;
-    LvItem.pszText = "ANGLE GLideN64";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-    LvItem.iSubItem = 1;
-    LvItem.pszText = "For most binary hacks (Recommended)";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-
-    LvItem.iItem = 1;
-    LvItem.iSubItem = 0;
-    LvItem.pszText = "ParaLLel";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-    LvItem.iSubItem = 1;
-    LvItem.pszText = "For advanced decomp hacks, best accuracy";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-
-    LvItem.iItem = 2;
-    LvItem.iSubItem = 0;
-    LvItem.pszText = "GLideN64 4.0";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-    LvItem.iSubItem = 1;
-    LvItem.pszText = "For most decomp hacks, better performance";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-
-    LvItem.iItem = 3;
-    LvItem.iSubItem = 0;
-    LvItem.pszText = "Jabo";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-    LvItem.iSubItem = 1;
-    LvItem.pszText = "Use only if your PC is a hyper potato";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-
     hDlgItem = GetDlgItem(IDC_INPUT_PLUGIN);
     LvColumn.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
     LvColumn.cx = 0x70;
