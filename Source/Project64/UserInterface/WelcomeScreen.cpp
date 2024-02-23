@@ -185,25 +185,6 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         Project64VideoPluginPath = "GFX\\Project64-Video.dll";
     }
 
-    switch (selectedIndexGFX)
-    {
-    case 0:
-        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\GLideN64.dll"); //ANGLE GLideN64
-        break;
-    case 1:
-        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\pj64-parallelrdp.dll"); //parallel
-        g_Settings->SaveString(Plugin_RSP_Current, "RSP\\parallel-rsp.dll");
-        g_Settings->SaveBool(Default_UseHleGfx, false);
-        break;
-    case 2:
-        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\GLideN64_Public_Release_4.0_Zilmar_spec\\GLideN64.dll"); //GLideN64
-        break;
-    case 3:
-        g_Settings->SaveString(Plugin_GFX_Default, "GFX\\Jabo_Direct3D8_6.dll"); //Jabo
-        break;
-    }
-    g_Settings->SaveString(Plugin_GFX_Current, g_Settings->LoadStringVal(Plugin_GFX_Default));
-
     switch (selectedIndexInput)
     {
     case 0:
