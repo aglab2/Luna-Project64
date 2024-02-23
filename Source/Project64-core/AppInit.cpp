@@ -298,7 +298,7 @@ void AppCleanup(void)
 void FixDirectories(void)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Starting");
-    CPath Directory(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
+    CPath Directory(g_Settings->LoadStringVal(Cmd_AppdataDirectory), "");
     Directory.AppendDirectory("Config");
     if (!Directory.DirectoryExists())
     {

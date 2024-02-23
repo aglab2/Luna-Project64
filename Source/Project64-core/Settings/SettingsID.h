@@ -13,6 +13,7 @@ enum SettingID
 
     // Command settings
     Cmd_BaseDirectory,
+    Cmd_AppdataDirectory,
     Cmd_RomFile,
     Cmd_ComboDiskFile,
     Cmd_ShowHelp,

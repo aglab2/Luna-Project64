@@ -22,6 +22,7 @@ enum SettingType
     SettingType_SelectedDirectory = 12,
 	SettingType_RdbSetting = 13,
 	SettingType_Enhancement = 14,
+    SettingType_AppdataPath = 15,
 };
 
 class CSettingType
