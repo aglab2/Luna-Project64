@@ -169,7 +169,7 @@ void TraceDone(void)
 
 const char * AppName(void)
 {
-    static stdstr_f ApplicationName("Project64 3.0.1-N-v3b");
+    static stdstr_f ApplicationName("Luna's Project64 v3.4.0");
     return ApplicationName.c_str();
 }
 

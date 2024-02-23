@@ -13,7 +13,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         // Create the main window with menu
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
-        CMainGui MainWindow(true, stdstr_f("Project64 3.0.1-N-v3b").c_str()), HiddenWindow(false);
+        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v3.4.0").c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
         CDebuggerUI Debugger;
         g_Debugger = &Debugger;
