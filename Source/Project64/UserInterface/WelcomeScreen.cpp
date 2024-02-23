@@ -207,7 +207,7 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     switch (selectedIndexInput)
     {
     case 0:
-        g_Settings->SaveString(Plugin_CONT_Default, "Input\\NRage_DInput8_V2.dll"); //NRage
+        g_Settings->SaveString(Plugin_CONT_Default, "Input\\NRage_Input_V2.4.dll"); //NRage
         break;
     case 1:
         g_Settings->SaveString(Plugin_CONT_Default, "Input\\wermi's Octomino SDL\\octomino-sdl-input.dll"); //Octomino

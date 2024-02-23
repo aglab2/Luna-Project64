@@ -379,7 +379,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Plugin_GFX_Default, new CSettingTypeApplication("Plugin", "Graphics Dll Default", "GFX\\GLideN64.dll"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", Plugin_GFX_Default));
     AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\AziAudio.dll"));
-    AddHandler(Plugin_CONT_Default, new CSettingTypeApplication("Plugin", "Controller Dll Default", "Input\\NRage_DInput8_V2.dll"));
+    AddHandler(Plugin_CONT_Default, new CSettingTypeApplication("Plugin", "Controller Dll Default", "Input\\NRage_Input_V2.4.dll"));
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", Plugin_CONT_Default));
 #endif
     AddHandler(Plugin_RSP_CurVer, new CSettingTypeApplication("Plugin", "RSP Dll Ver", ""));
