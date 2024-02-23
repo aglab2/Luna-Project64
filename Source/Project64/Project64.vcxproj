@@ -70,6 +70,9 @@
     <PostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">(robocopy $(SolutionDir)Prebuilt $(OutDir) /s) ^&amp; if %errorlevel% leq 3 exit 0 else exit %errorlevel%</Command>
     </PostBuildEvent>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">(robocopy $(SolutionDir)Prebuilt $(OutDir) /s) ^&amp; if %errorlevel% leq 3 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="UserInterface\About.cpp" />
