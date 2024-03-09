@@ -249,11 +249,13 @@
 #define IDC_PAGELIST                    1090
 #define IDC_GAME_DIR_STATIC             1090
 #define IDC_VIDEO_PLUGIN_STATIC         1091
+#define IDC_GAME_DIR_STATIC2            1091
 #define IDC_CPU_TYPE_TEXT               1092
 #define IDC_ZIP                         1092
 #define IDC_SETTING_INFO                1092
 #define IDC_VIDEO_PLUGIN_STATIC2        1092
 #define IDC_GOOD_NAME_TEXT              1093
+#define IDC_GAME_DIR_STATIC3            1093
 #define IDC_FUNCFIND_TEXT               1094
 #define IDC_REMEMBER                    1095
 #define IDC_GFX_NAME                    1095
@@ -715,9 +717,11 @@
 #define IDC_EMAIL                       1577
 #define IDC_F3_LBL                      1578
 #define IDC_SCRIPTS_GRP                 1578
+#define IDC_PREV_DIR                    1578
 #define IDC_F4_LBL                      1579
 #define IDC_OUTPUT_GRP                  1579
 #define IDC_DISKSEEKTIMING_TEXT2        1579
+#define IDC_SELECT_PREV_DIR             1579
 #define IDC_F5_LBL                      1580
 #define IDC_EVAL_LBL                    1580
 #define IDC_DISKSEEKTIMING              1580

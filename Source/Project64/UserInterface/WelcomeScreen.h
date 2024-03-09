@@ -1,6 +1,7 @@
 #pragma once
 #include <Project64\UserInterface\WTLControls\wtl-BitmapPicture.h>
 #include "resource.h"
+#include <filesystem>
 
 namespace {
     HWND hDlgItem;
@@ -21,6 +22,7 @@ public:
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic)
         MSG_WM_ERASEBKGND(OnEraseBackground)
         COMMAND_ID_HANDLER_EX(IDC_SELECT_GAME_DIR, SelectGameDir)
+        COMMAND_ID_HANDLER_EX(IDC_SELECT_PREV_DIR, SelectPrevDir)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
         COMMAND_ID_HANDLER(IDPLUGINHELPA, OnPluginHelp)
         MESSAGE_HANDLER(WM_NOTIFY, OnListNotify)
@@ -35,6 +37,8 @@ private:
     WelcomeScreen& operator=(const WelcomeScreen&);
 
     void SelectGameDir(UINT Code, int id, HWND ctl);
+
+    void SelectPrevDir(UINT Code, int id, HWND ctl);
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     LRESULT OnCtlColorStatic(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

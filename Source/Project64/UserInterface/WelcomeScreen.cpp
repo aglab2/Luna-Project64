@@ -45,6 +45,35 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     }
 }
 
+void WelcomeScreen::SelectPrevDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
+    LPITEMIDLIST pidl;
+    BROWSEINFO bi;
+
+    stdstr InitialDir = g_Settings->LoadStringVal(RomList_GameDir);
+    std::wstring wTitle = L"Select your previous Project64 folder";
+    bi.hwndOwner = m_hWnd;
+    bi.pidlRoot = nullptr;
+    bi.pszDisplayName = Buffer;
+    bi.lpszTitle = wTitle.c_str();
+    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
+    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
+    bi.lParam = (DWORD)InitialDir.c_str();
+    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    {
+        if (SHGetPathFromIDList(pidl, Directory))
+        {
+            stdstr path;
+            CPath SelectedDir(path.FromUTF16(Directory), "");
+            if (SelectedDir.DirectoryExists())
+            {
+                GetDlgItem(IDC_PREV_DIR).SetWindowText(Directory);
+            }
+        }
+    }
+}
+
 LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     m_Logo.SubclassWindow(GetDlgItem(IDC_BMP_LOGO));
@@ -180,6 +209,47 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         Notify().AddRecentDir(GameDir);
     }
 
+    CPath PrevDir(GetCWindowText(GetDlgItem(IDC_PREV_DIR)).c_str(), "");
+    std::string DriveDirectoryStr = PrevDir.GetDriveDirectory();
+    if (DriveDirectoryStr != "\\") {
+        PrevDir.AppendDirectory("Save");
+        if (PrevDir.DirectoryExists())
+        {
+            std::string DriveDirectoryStr = PrevDir.GetDriveDirectory();
+            char* PrevDirChar = const_cast<char*>(DriveDirectoryStr.c_str());
+
+            wchar_t* AppdataPathW = NULL;
+            SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+            char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
+            wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
+            strcat(AppdataPath, "\\Luna-Project64\\Save\\");
+            strcat(PrevDirChar, "\\");
+            std::error_code ec;
+
+            std::filesystem::copy(PrevDirChar, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+
+            if (strstr(PrevDirChar, "Program Files") != NULL)
+            {
+                wchar_t* LocalPathW = NULL;
+                SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &LocalPathW);
+                char* LocalPath = new char[wcslen(LocalPathW) * sizeof(LocalPathW[0]) + 20];
+                wcstombs(LocalPath, LocalPathW, wcslen(LocalPathW) * sizeof(LocalPathW[0]) + 20);
+                strcat(LocalPath, "\\VirtualStore\\");
+                char* ptr = strstr(PrevDirChar, "Project64");
+                if (ptr != NULL) {
+                    strcat(LocalPath, strstr(PrevDirChar, "Project64"));
+                    std::filesystem::copy(LocalPath, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+                }
+                delete[] LocalPath;
+            }
+            delete[] AppdataPath;
+        }
+        else
+        {
+            MessageBox(L"The chosen folder isn't a valid Project64 installation directory.", L"Invalid directory", MB_OK);
+            return FALSE;
+        }
+    }
     string Project64VideoPluginPath = g_Settings->LoadStringVal(Plugin_GFX_Default);
     if (Project64VideoPluginPath.find("Project64-Video") == string::npos) {
         Project64VideoPluginPath = "GFX\\Project64-Video.dll";
@@ -233,8 +303,6 @@ LRESULT WelcomeScreen::OnListNotify(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lPa
         switch (((LPNMHDR)lParam)->code)
         {
         case NM_CLICK:
-            hDlgItem = GetDlgItem(IDC_GFX_PLUGIN);
-            selectedIndexGFX = SendMessage(hDlgItem, LVM_GETNEXTITEM, -1, LVNI_FOCUSED);
             hDlgItem = GetDlgItem(IDC_INPUT_PLUGIN);
             selectedIndexInput = SendMessage(hDlgItem, LVM_GETNEXTITEM, -1, LVNI_FOCUSED);
             return TRUE;
