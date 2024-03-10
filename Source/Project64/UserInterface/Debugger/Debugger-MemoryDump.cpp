@@ -84,8 +84,8 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
             if (FileName.GetExtension().length() == 0)
             {
                 FileName.SetExtension(Format == RawBigEndian ? "bin" : "txt");
-                m_FileName.SetWindowText(stdstr((const char *)FileName).ToUTF16().c_str());
             }
+            GetDlgItem(IDC_FILENAME).SetWindowText(stdstr((const char*)FileName).ToUTF16().c_str());
         }
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_DumpMemory);
     }
