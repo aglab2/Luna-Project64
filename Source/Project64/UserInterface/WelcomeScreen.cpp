@@ -252,6 +252,22 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
                         return FALSE;
                     }
                 }
+                try {
+                    for (auto const& file : std::filesystem::directory_iterator{ AppdataPath }) {
+                        const std::string oldSaveStateName = ".pj0";
+                        const std::string newSaveStateName = ".pj";
+                        const size_t pos = file.path().string().find(oldSaveStateName);
+
+                        if (pos != std::string::npos) {
+                            const std::string newFile = file.path().string().replace(pos, oldSaveStateName.length(), newSaveStateName);
+                            std::rename(file.path().string().c_str(), newFile.c_str());
+                        }
+                    }
+                }
+                catch (...) {
+                    MessageBox(L"Failed to convert savestate file extensions from PJ64 1.6.", L"Error", MB_OK);
+                    return FALSE;
+                }
                 delete[] LocalPath;
             }
             delete[] AppdataPath;
