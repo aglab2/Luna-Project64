@@ -226,7 +226,13 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
             strcat(PrevDirChar, "\\");
             std::error_code ec;
 
-            std::filesystem::copy(PrevDirChar, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+            try {
+                std::filesystem::copy(PrevDirChar, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+            }
+            catch (...) {
+                MessageBox(L"Failed to copy folder.", L"Error", MB_OK);
+                return FALSE;
+            }
 
             if (strstr(PrevDirChar, "Program Files") != NULL)
             {
@@ -238,7 +244,13 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
                 char* ptr = strstr(PrevDirChar, "Project64");
                 if (ptr != NULL) {
                     strcat(LocalPath, strstr(PrevDirChar, "Project64"));
-                    std::filesystem::copy(LocalPath, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+                    try {
+                        std::filesystem::copy(LocalPath, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+                    }
+                    catch (...) {
+                        MessageBox(L"Failed to copy VirtualStore folder.", L"Error", MB_OK);
+                        return FALSE;
+                    }
                 }
                 delete[] LocalPath;
             }
