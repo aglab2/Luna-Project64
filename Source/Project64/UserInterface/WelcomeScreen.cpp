@@ -117,15 +117,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "NRage";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
     LvItem.iSubItem = 1;
-    LvItem.pszText = "For DirectInput controllers";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-
-    LvItem.iItem = 1;
-    LvItem.iSubItem = 0;
-    LvItem.pszText = "Octomino";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-    LvItem.iSubItem = 1;
-    LvItem.pszText = "For non-DirectInput controllers, may be jank";
+    LvItem.pszText = "For most controllers";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
     LvItem.iItem = 2;
@@ -141,7 +133,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "LINK's Mapper";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
     LvItem.iSubItem = 1;
-    LvItem.pszText = "For non-DirectInput controllers, no GUI";
+    LvItem.pszText = "For XInput controllers, no GUI";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
     LvItem.iItem = 4;
