@@ -43,7 +43,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         updaterExePath,
         commandLine,
         currentPath,
-        NULL)
+        SW_SHOWNORMAL)
     ) {
         // If the function fails, print the error and exit
         int err;
