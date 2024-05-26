@@ -35,14 +35,13 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
     snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.4.0");
 
-
     // Create the process
     if (!ShellExecuteA(
         NULL,
-        "open",
+        "runas",
         updaterExePath,
         commandLine,
-        currentPath,
+        0,
         SW_SHOWNORMAL)
     ) {
         // If the function fails, print the error and exit
