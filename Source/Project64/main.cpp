@@ -2,9 +2,63 @@
 #include <Project64-core/AppInit.h>
 #include "UserInterface/WelcomeScreen.h"
 #include "Settings/UISettings.h"
+#define MAX_PATH_LENGTH 1024
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
+
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    char currentPath[MAX_PATH_LENGTH];
+    char updaterExePath[MAX_PATH_LENGTH];
+
+    // Zero memory for STARTUPINFO and PROCESS_INFORMATION structures
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    // Get the path of the current executable
+    if (GetModuleFileNameA(NULL, currentPath, MAX_PATH_LENGTH) == 0) {
+        printf("GetModuleFileName failed (%d).\n", GetLastError());
+        MessageBox(NULL, L"Failed to get current executable path.", L"Updater error", MB_OK);
+    }
+
+    // Remove the executable name from the path to get the directory
+    char* lastBackslash = strrchr(currentPath, '\\');
+    if (lastBackslash != NULL) {
+        *lastBackslash = '\0'; // Terminate the string to get the directory
+    }
+
+    // Construct the full path to updater.exe
+    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaUpdater.exe", currentPath);
+
+    char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
+    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.4.0");
+
+
+    // Create the process
+    if (!ShellExecuteA(
+        NULL,
+        "open",
+        updaterExePath,
+        commandLine,
+        currentPath,
+        NULL)
+    ) {
+        // If the function fails, print the error and exit
+        int err;
+        err = GetLastError();
+        printf("CreateProcess failed (%d).\n", GetLastError());
+        MessageBox(NULL, L"Failed to create updater process.", L"Updater error", MB_OK);
+    }
+
+    // Successfully created the process
+    printf("Process launched asynchronously: %s\n", updaterExePath);
+
+    // Close process and thread handles to avoid memory leaks
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
     try
     {
         CoInitialize(nullptr);
