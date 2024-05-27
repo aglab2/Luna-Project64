@@ -106,7 +106,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.cchTextMax = 256;
     LvItem.pszText = "Init";
     LvItem.iSubItem = 0;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 6; i++) {
         LvItem.iItem = i;
         SendMessageA(hDlgItem, LVM_INSERTITEMA, 0, (LPARAM)&LvItem);
     }
@@ -117,10 +117,18 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "NRage";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
     LvItem.iSubItem = 1;
-    LvItem.pszText = "For most controllers";
+    LvItem.pszText = "For DirectInput controllers";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
     LvItem.iItem = 1;
+    LvItem.iSubItem = 0;
+    LvItem.pszText = "Octomino's SDL Input";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+    LvItem.iSubItem = 1;
+    LvItem.pszText = "For non-DirectInput controllers, may be jank";
+    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
+
+    LvItem.iItem = 2;
     LvItem.iSubItem = 0;
     LvItem.pszText = "Luna DInput";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
@@ -128,7 +136,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "For keyboard";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
-    LvItem.iItem = 2;
+    LvItem.iItem = 3;
     LvItem.iSubItem = 0;
     LvItem.pszText = "LINK's Mapper";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
@@ -136,7 +144,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "For XInput controllers, no GUI";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
-    LvItem.iItem = 3;
+    LvItem.iItem = 4;
     LvItem.iSubItem = 0;
     LvItem.pszText = "pj64-wiiu-gcn";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
@@ -144,7 +152,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "For GCN controller with Wii U/Switch adapter";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
-    LvItem.iItem = 4;
+    LvItem.iItem = 5;
     LvItem.iSubItem = 0;
     LvItem.pszText = "RaphnetRaw";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
