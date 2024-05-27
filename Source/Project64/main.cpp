@@ -38,7 +38,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     // Create the process
     if (!ShellExecuteA(
         NULL,
-        "runas",
+        "open",
         updaterExePath,
         commandLine,
         0,

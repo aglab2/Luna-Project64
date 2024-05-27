@@ -223,7 +223,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Game_LoadRomToMemory, new CSettingTypeGame("Rom In Memory", Rdb_LoadRomToMemory));
     AddHandler(Game_ScreenHertz, new CSettingTypeGame("ScreenHertz", Rdb_ScreenHertz));
     AddHandler(Game_FuncLookupMode, new CSettingTypeGame("FuncFind", Rdb_FuncLookupMode));
-    AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", Rdb_RegCache));
+    AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", false));
     AddHandler(Game_BlockLinking, new CSettingTypeGame("Linking", Rdb_BlockLinking));
     AddHandler(Game_SMM_StoreInstruc, new CSettingTypeGame("SMM-StoreInst", Rdb_SMM_StoreInstruc));
     AddHandler(Game_SMM_Cache, new CSettingTypeGame("SMM-Cache", Rdb_SMM_Cache));

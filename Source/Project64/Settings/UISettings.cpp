@@ -4,6 +4,7 @@
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationIndex.h>
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationPath.h>
 #include <Project64-core/Settings/SettingType/SettingsType-RelativePath.h>
+#include <Project64-core/Settings/SettingType/SettingsType-AppdataPath.h>
 #include <Project64-core/Settings/SettingType/SettingsType-RomDatabase.h>
 #include <Project64-core/Settings/SettingType/SettingsType-SelectedDirectory.h>
 #include <Project64-core/Settings/SettingType/SettingsType-TempBool.h>
@@ -20,7 +21,7 @@ void RegisterUISettings (void)
 
     // Support files
     AddUISetting(SupportFile_ShortCuts, new CSettingTypeApplicationPath("", "ShortCuts", (SettingID)SupportFile_ShortCutsDefault));
-    AddUISetting(SupportFile_ShortCutsDefault, new CSettingTypeRelativePath("Config", "Project64.sc3"));
+    AddUISetting(SupportFile_ShortCutsDefault, new CSettingTypeAppdataPath("Config", "Project64.sc3"));
 
     // Settings location
     AddUISetting(Setting_PluginPageFirst, new CSettingTypeApplication("Settings", "Plugin Page First", false));
