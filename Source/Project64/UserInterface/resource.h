@@ -265,6 +265,7 @@
 #define IDC_REMEMBERDIR                 1097
 #define IDC_VIREFESH_TEXT               1097
 #define IDC_VIREFRESH                   1098
+#define IDC_MINIMIZEDSLEEP              1098
 #define IDC_AUDIO_NAME                  1099
 #define IDC_ROM_REGCACHE                1099
 #define IDC_COUNTPERBYTE_TEXT           1099

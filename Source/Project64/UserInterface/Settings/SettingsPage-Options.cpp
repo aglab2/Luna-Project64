@@ -12,6 +12,7 @@ m_SettingsConfig(SettingsConfig)
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_AUTOSLEEP, wGS(OPTION_AUTO_SLEEP).c_str());
+    SetDlgItemText(IDC_MINIMIZEDSLEEP, wGS(OPTION_MINIMIZED_SLEEP).c_str());
     SetDlgItemText(IDC_LOAD_FULLSCREEN, wGS(OPTION_AUTO_FULLSCREEN).c_str());
     SetDlgItemText(IDC_SCREEN_SAVER, wGS(OPTION_DISABLE_SS).c_str());
     SetDlgItemText(IDC_DISCORD_RPC, wGS(OPTION_DISCORD_RPC).c_str());
@@ -23,6 +24,7 @@ m_SettingsConfig(SettingsConfig)
     SetDlgItemText(IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
+    AddModCheckBox(GetDlgItem(IDC_MINIMIZEDSLEEP), (SettingID)Setting_MinimizedSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);
     AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), (SettingID)Setting_DisableScrSaver);
 	AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);

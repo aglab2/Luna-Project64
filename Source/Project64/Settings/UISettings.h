@@ -18,6 +18,7 @@ enum UISettingID
     Setting_DisableScrSaver,
 	Setting_EnableDiscordRPC,
     Setting_AutoSleep,
+    Setting_MinimizedSleep,
     Setting_AutoFullscreen,
 
     // RDB TLB settings

@@ -712,6 +712,15 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             if (_this) { _this->Resize(wParam, LOWORD(lParam), HIWORD(lParam)); }
             if (_this)
             {
+                if (wParam == SIZE_MINIMIZED) {
+                    if (_this->m_bMainWindow && bCPURunning() && bMinimizedSleep())
+                    {
+                        if (g_BaseSystem)
+                        {
+                            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_AppLostFocus);
+                        }
+                    }
+                }
                 if (wParam == SIZE_MAXIMIZED)
                 {
                     if (_this->RomBrowserVisible())
@@ -805,7 +814,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 break;
             }
 
-            if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
+            if (_this->m_bMainWindow && bCPURunning() && (bAutoSleep() || bMinimizedSleep()))
             {
                 if (g_BaseSystem)
                 {
