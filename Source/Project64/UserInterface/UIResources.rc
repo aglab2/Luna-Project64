@@ -158,7 +158,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,54,206,10
     CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,69,206,10
     CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,84,206,10
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,84,208,1
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,99,208,1
     LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,107,145,10
     EDITTEXT        IDC_REMEMBER,148,105,26,12,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "roms",IDC_ROMSEL_TEXT2,178,108,31,10
@@ -1461,10 +1461,8 @@ BEGIN
     BEGIN
         LEFTMARGIN, 4
         RIGHTMARGIN, 230
-        VERTGUIDE, 6
         TOPMARGIN, 4
         BOTTOMMARGIN, 204
-        HORZGUIDE, 29
     END
 
     IDD_Rom_Information, DIALOG
