@@ -1,63 +1,68 @@
-# Project64 - Nintendo 64 Emulator
+# Luna's Project64 - Nintendo 64 Emulator
 
-Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64 Disk Drive written in C++ currently for Windows (planned support for other platforms in the future)
+This is a fork of Project64 3.0.1 that I made to have a Linux compatible alternative to 2.4 (Yes, it works on Windows too).
+It is not focused on accuracy or compatibility, but rather on functionality that improves the general gameplay experience on a select set of games.
+As such, it removes the nagware screen, and it contains the plugins that are necessary to play these games without issues.
 
-## System Requirements
+## Changes from vanilla:
 
-* Operating System
-  * Windows XP/Vista/7/8/10
-* CPU
-  * Intel or AMD processor with SSE2 support
-* RAM
-  * 512MB or more
-* Graphics card
-  * DirectX 8 capable (Jabo's Direct3D8)
-  * OpenGL 1.1 capable (Project64 Video)
-  * OpenGL 3.3 capable (GLideN64)
-  
+- The emu will prompt you to update when a new version is ready.
+- There are now extra savestate slots, for a total of 100. You can change them in the hotkeys tab from the settings window, or just access them through the system menu.
+- Loading savestates is now faster, and doing that a lot while screensharing on Discord will no longer crash the game.
+- The keyboard shortcuts to increase and decrease the game's speed have been changed to Ctrl + and Ctrl - respectively, since the original shortcuts kept getting in the way and it wasn't good.
+- The bug that caused the EEPROM to show corrupted data (182 stars in every file, etc) the first time you open certain hacks has been patched.
+- The Project64 icons are now purple. Just a little silly thing. ^-^
+- And a couple more!
+
 ### Stable Builds
 
-Installer for the latest stable release: https://www.pj64-emu.com/download/project64-latest
-
-Follow the instructions in the setup window to complete the installation.
-
-Download nightly builds here: https://www.pj64-emu.com/nightly-builds
-
-AppVeyor (Windows x86/x64): [![Build status](https://ci.appveyor.com/api/projects/status/sbtwyhaexslyhgx3?svg=true
-)](https://ci.appveyor.com/project/project64/project64/branch/develop)
-
-<sub>Note: x64 builds are **NOT** recommended for regular use. They are incomplete and very experimental. Due to this, x64 builds are currently _slower_ than 32-bit builds.</sub>
+Download the latest build in the Releases tab of this GitHub repo.
+The emulator will prompt you to update when a new version is available.
 
 ## Support
 
-[**Join the official Project64 Discord server**](https://discord.gg/Cg3zquF) to seek help from Project64 developers, contributors, and the community!
+[**Join the Lunatic Realm Discord server**](https://discord.gg/w9aCXwsKH9) if you need any help regarding the emu.
 
 ### Compiling
 
 ```
-Visual Studio Community
+Visual Studio
 ```
 
 Load .sln project file and compile
 
-See the [BUILDING.md](https://github.com/project64/project64/blob/develop/BUILDING.md) file for details.
+See the [BUILDING.md](https://github.com/luna-project64/luna-project64/blob/develop/BUILDING.md) file for details.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/project64/project64/blob/develop/.github/CONTRIBUTING.md) before contributing.
+Message @lunaticshin3 on Discord if you would like to contribute. Any help is highly appreciated.
 
 ## Versioning
 
-We use semantic versioning for Project64. For the versions available, see the [tags on this repository](https://github.com/project64/project64/tags)
+The emu currently uses a variation of semantic versioning, starting with "v3." to differentiate it from official Project64 versions (ie. Project64 v1.6 vs Luna's Project64 v3.6).
+This works because official Project64 jumped from v3.0.1 to v4.0.0, so version numbers 3.X.X are unused.
+Older versions used a number+letter naming convention that can be translated to the newer versioning system as such:
+N-v1  --> v3.1.0
+N-v2  --> v3.2.0
+N-v2a --> v3.2.1
+N-v2b --> v3.2.2
+N-v2c --> v3.2.3
+N-v3  --> v3.3.0
+N-v3a --> v3.3.1
+N-v3b --> v3.3.2
 
 ## Author / Contributors
 
-* **Zilmar** - *Current maintainer* - [Zilmar](https://github.com/project64)
-* **Jabo** - *Previous contributor* - Jabo
-* **Smiff** - *Previous contributor* - Smiff
-* **Gent** - *Previous contributor* - Gent
-
-See also the list of [contributors](https://github.com/project64/project64/contributors) who participated in this project.
+* Original Project64 by [Zilmar](https://github.com/project64), **Jabo** and other [contributors](https://github.com/project64/project64/contributors).
+* Luna's Project64 by [ShiN3](https://github.com/LunaticShiN3).
+* Auto updater by [MarvJungs](https://github.com/MarvJungs) and [aglab2](https://github.com/aglab2).
+* See [plugin guide](https://sites.google.com/view/shurislibrary/plugin-guide) for plugin credits.
+* Tested by **Winter**, **Hyena Chan**, **HeralayanSalty**, **gnavidude**, **Dackage**, **katze789** and **AndrewSM64**.
+* Nagware removal based on a fork by [Kelvinnkat](https://github.com/kelvinnkat).
+* Help building by [Kelvinnkat](https://github.com/kelvinnkat) and [Derpyhsi](https://github.com/derpyhsi).
+* Help with plugins by [aglab2](https://github.com/aglab2) and [wermi](https://github.com/wermipls).
+* Help with new features by [aglab2](https://github.com/aglab2) and **HeralayanSalty**.
+* Thanks to [Prakxo](https://github.com/Prakxo) for convincing me to make this, and to [aglab2](https://github.com/aglab2) for annoying me enough to get v3.4.0 out.
 
 ## License
 
