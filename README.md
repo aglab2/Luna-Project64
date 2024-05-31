@@ -31,7 +31,6 @@ Visual Studio
 
 Load .sln project file and compile
 
-See the [BUILDING.md](https://github.com/luna-project64/luna-project64/blob/develop/BUILDING.md) file for details.
 
 ## Contributing
 
