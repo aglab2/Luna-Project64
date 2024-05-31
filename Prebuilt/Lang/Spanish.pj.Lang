@@ -75,10 +75,11 @@
 
 //Help Menu
 #180#  "Ayuda"
-#182#  "&Acerca de Project64"
-#184#  "&Página Web"
-#185#  "&Apoyar a Project64"
-#186#  "&Discord"
+#182#  "&Acerca de Luna's Project64"
+#184#  "&Página Web (Shuri's Library)"
+#185#  "Apoyar a Vanilla Project64"
+#186#  "&Discord de ShiN3"
+#187#  "Apoyar a Luna's Project64"
 
 //Current Save Slot menu
 #190#  "Predeterminada"
@@ -249,6 +250,7 @@
 #474#  "Mostrar barra de estado"
 #475#  "Salir de pantalla completa al perder foco"
 #476#  "Habilitar Discord Rich Presence"
+#460#  "Pausar emulación cuando la ventana esté minimizada"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs recordadas (0-10):"

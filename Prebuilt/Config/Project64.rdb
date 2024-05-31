@@ -1,5 +1,5 @@
 ﻿// ============ RDB for PJ64 v3.0. GoodN64 v327 =====================================
-// PJ64 v3.0 Official RDB
+// PJ64 v3.0 Official RDB (Edited for Luna's Project64 v3.4.0 and higher)
 // Not for use with previous versions of PJ64
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
 
@@ -9588,3 +9588,15 @@ SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
 ViRefresh=2200
+
+[219F8B4C-5E68ED5C-C:45]
+Good Name=SM64 Sapphire (Console Compatible).z64
+Internal Name=SM64 SAPPHIRE
+Status=Compatible
+ViRefresh=1500
+
+[904626B3-4A2E48D5-C:45]
+Good Name=Return To Yoshi's Island 64 DEMO.z64
+Internal Name=YOSHIS ISLAND 64
+Status=Compatible
+ViRefresh=1500
