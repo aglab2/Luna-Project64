@@ -41,14 +41,14 @@ Message @lunaticshin3 on Discord if you would like to contribute. Any help is hi
 The emu currently uses a variation of semantic versioning, starting with "v3." to differentiate it from official Project64 versions (ie. Project64 v1.6 vs Luna's Project64 v3.6).
 This works because official Project64 jumped from v3.0.1 to v4.0.0, so version numbers 3.X.X are unused.
 Older versions used a number+letter naming convention that can be translated to the newer versioning system as such:
-N-v1  --> v3.1.0
-N-v2  --> v3.2.0
-N-v2a --> v3.2.1
-N-v2b --> v3.2.2
-N-v2c --> v3.2.3
-N-v3  --> v3.3.0
-N-v3a --> v3.3.1
-N-v3b --> v3.3.2
+- N-v1  --> v3.1.0
+- N-v2  --> v3.2.0
+- N-v2a --> v3.2.1
+- N-v2b --> v3.2.2
+- N-v2c --> v3.2.3
+- N-v3  --> v3.3.0
+- N-v3a --> v3.3.1
+- N-v3b --> v3.3.2
 
 ## Author / Contributors
 
