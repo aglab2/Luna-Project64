@@ -6,7 +6,7 @@
 #define TICKS_PER_SECOND   10000000
 
 // Discord Project64 app ID
-#define PJ64_DISCORD_APPID "704794684387491891"
+#define PJ64_DISCORD_APPID "1245116784789684315"
 
 void CDiscord::Init()
 {
@@ -48,15 +48,15 @@ void CDiscord::Update(bool bHaveGame)
 	DiscordRichPresence discordPresence = {}; // Activates DiscordRPC
 	if (artwork.empty())
 	{
-		discordPresence.largeImageKey = "pj64_icon";
-		discordPresence.largeImageText = "Project64";
+		discordPresence.largeImageKey = "pj64-icon";
+		discordPresence.largeImageText = "Luna's Project64";
 	}
 	else
 	{
 		discordPresence.largeImageKey = artwork.c_str();
 		discordPresence.largeImageText = title.c_str();
-		discordPresence.smallImageKey = "pj64_icon";
-		discordPresence.smallImageText = "Project64";
+		discordPresence.smallImageKey = "spiny";
+		discordPresence.smallImageText = "Luna's Project64";
 	}
 	discordPresence.details = title.empty() ? "Not in-game" : title.c_str();
 	discordPresence.startTimestamp = Timestamp();
