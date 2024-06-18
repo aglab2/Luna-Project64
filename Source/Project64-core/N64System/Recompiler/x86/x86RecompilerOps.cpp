@@ -9533,8 +9533,8 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
         }
             break;
         default:
-            CPU_Message("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            //CPU_Message("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
+            //g_Notify->BreakPoint(__FILE__, __LINE__);
             changed = false;
         }
     }
