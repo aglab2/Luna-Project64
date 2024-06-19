@@ -2101,7 +2101,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "ShiN3"
             VALUE "FileDescription", "Luna's Project64"
-            VALUE "FileVersion", "3.4.0.0"
+            VALUE "FileVersion", "3.4.1.0"
             VALUE "InternalName", "UIResources.rc"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "UIResources.rc"
