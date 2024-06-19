@@ -43,6 +43,8 @@ enum LanguageStringID
     // File menu
     MENU_FILE = 100,
     MENU_OPEN = 101,
+    MENU_MOUNT_SDCARD = 111,
+    MENU_UNMOUNT_SDCARD = 112,
     MENU_ROM_INFO = 102,
     MENU_START = 103,
     MENU_END = 104,

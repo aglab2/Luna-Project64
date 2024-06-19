@@ -993,7 +993,14 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     Item.Reset(ID_FILE_OPEN_ROM, MENU_OPEN, m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM, RunningState));
     FileMenu.push_back(Item);
     Item.Reset(ID_FILE_OPEN_COMBO, MENU_OPEN_COMBO, m_ShortCuts.ShortCutString(ID_FILE_OPEN_COMBO, RunningState));
-    FileMenu.push_back(Item);
+    FileMenu.push_back(Item); if (g_Settings->LoadBool(File_SDCardMounted))
+    {
+        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_MOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
+    }
+    else
+    {
+        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_UNMOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
+    }
     if (!inBasicMode)
     {
         Item.Reset(ID_FILE_ROM_INFO, MENU_ROM_INFO, m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO, RunningState));
