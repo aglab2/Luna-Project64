@@ -6,7 +6,7 @@
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
-
+#if 0
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     char currentPath[MAX_PATH_LENGTH];
@@ -57,9 +57,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     // Close process and thread handles to avoid memory leaks
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
+#endif
 
-    try
-    {
+    //try
+    //{
         CoInitialize(nullptr);
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
 
@@ -147,12 +148,12 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             g_BaseSystem = nullptr;
         }
         WriteTrace(TraceUserInterface, TraceDebug, "System closed");
-    }
-    catch (...)
-    {
-        WriteTrace(TraceUserInterface, TraceError, "Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
-        MessageBox(nullptr, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str(), L"Exception", MB_OK);
-    }
+    //}
+    //catch (...)
+    //{
+    //    WriteTrace(TraceUserInterface, TraceError, "Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
+    //    MessageBox(nullptr, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str(), L"Exception", MB_OK);
+    //}
     AppCleanup();
     CoUninitialize();
     return true;

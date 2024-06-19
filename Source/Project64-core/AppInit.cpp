@@ -215,7 +215,7 @@ static bool ParseCommand(int32_t argc, char **argv)
 
 bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char **argv)
 {
-    try
+    //try
     {
         g_Notify = Notify;
         InitializeLog();
@@ -270,12 +270,12 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         WriteTrace(TraceAppInit, TraceDebug, "Initialized successfully");
         return true;
     }
-    catch (...)
-    {
-        g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
-        WriteTrace(TraceAppInit, TraceError, "Exception caught, initialization was not successful");
-        return false;
-    }
+    //catch (...)
+    //{
+    //    g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
+    //    WriteTrace(TraceAppInit, TraceError, "Exception caught, initialization was not successful");
+    //    return false;
+    //}
 }
 
 void AppCleanup(void)

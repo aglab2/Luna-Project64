@@ -9,7 +9,7 @@
 #include "GFXPlugin.h"
 #include <Project64-core/Plugins/AudioPlugin.h>
 
-void DummyFunc1(int a) { a += 1; }
+void CALL DummyFunc1(int a) { a += 1; }
 
 CRSP_Plugin::CRSP_Plugin(void) :
     DoRspCycles(nullptr),

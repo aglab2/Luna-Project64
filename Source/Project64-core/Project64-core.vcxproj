@@ -48,6 +48,18 @@
     <PreBuildEvent>
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
     </PreBuildEvent>
+    <ClCompile>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FastCall</CallingConvention>
+    </ClCompile>
+    <ClCompile>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FastCall</CallingConvention>
+    </ClCompile>
+    <ClCompile>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FastCall</CallingConvention>
+    </ClCompile>
+    <ClCompile>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FastCall</CallingConvention>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3rdParty\7zip.cpp">

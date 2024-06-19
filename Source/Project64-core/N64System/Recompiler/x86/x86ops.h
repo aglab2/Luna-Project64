@@ -22,6 +22,9 @@ public:
         x86_AH = 4, x86_BH = 7, x86_CH = 5, x86_DH = 6
     };
 
+    static const x86Reg kFastCallArg0 = x86_ECX;
+    static const x86Reg kFastCallArg1 = x86_EDX;
+
     enum x86FpuValues
     {
         x86_ST_Unknown = -1,

@@ -54,6 +54,10 @@
     <ClCompile>
       <PrecompiledHeader />
       <UndefinePreprocessorDefinitions>UNICODE;_UNICODE</UndefinePreprocessorDefinitions>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FastCall</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FastCall</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FastCall</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FastCall</CallingConvention>
     </ClCompile>
     <Link />
     <Bscmake>

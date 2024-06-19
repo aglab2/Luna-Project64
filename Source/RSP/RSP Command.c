@@ -49,7 +49,7 @@ Boolean InRSPCommandsWindow;
 char CommandName[100];
 DWORD Stepping_Commands, WaitingForStep;
 
-void Create_RSP_Commands_Window ( int Child )
+void CALLBACK Create_RSP_Commands_Window ( int Child )
 {
 	DWORD ThreadID;
 
