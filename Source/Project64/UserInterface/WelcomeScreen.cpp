@@ -122,21 +122,13 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     LvItem.iItem = 1;
     LvItem.iSubItem = 0;
-    LvItem.pszText = "Octomino's SDL Input";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-    LvItem.iSubItem = 1;
-    LvItem.pszText = "For non-DirectInput controllers, may be jank";
-    SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
-
-    LvItem.iItem = 2;
-    LvItem.iSubItem = 0;
     LvItem.pszText = "Luna DInput";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
     LvItem.iSubItem = 1;
     LvItem.pszText = "For keyboard";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
-    LvItem.iItem = 3;
+    LvItem.iItem = 2;
     LvItem.iSubItem = 0;
     LvItem.pszText = "LINK's Mapper";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
@@ -144,7 +136,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "For XInput controllers, no GUI";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
-    LvItem.iItem = 4;
+    LvItem.iItem = 3;
     LvItem.iSubItem = 0;
     LvItem.pszText = "pj64-wiiu-gcn";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
@@ -152,7 +144,7 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     LvItem.pszText = "For GCN controller with Wii U/Switch adapter";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
 
-    LvItem.iItem = 5;
+    LvItem.iItem = 4;
     LvItem.iSubItem = 0;
     LvItem.pszText = "RaphnetRaw";
     SendMessageA(hDlgItem, LVM_SETITEMA, 0, (LPARAM)&LvItem);
@@ -289,18 +281,15 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
         g_Settings->SaveString(Plugin_CONT_Default, "Input\\NRage_Input_V2.4.dll"); //NRage
         break;
     case 1:
-        g_Settings->SaveString(Plugin_CONT_Default, "Input\\wermi's Octomino SDL\\octomino-sdl-input.dll"); //Octomino
-        break;
-    case 2:
         g_Settings->SaveString(Plugin_CONT_Default, "Input\\Luna's DirectInput8.dll"); //Luna
         break;
-    case 3:
+    case 2:
         g_Settings->SaveString(Plugin_CONT_Default, "Input\\LMapper.dll"); //LMapper
         break;
-    case 4:
+    case 3:
         g_Settings->SaveString(Plugin_CONT_Default, "Input\\pj64-wiiu-gcn.dll"); //pj64-wiiu-gcn
         break;
-    case 5:
+    case 4:
         g_Settings->SaveString(Plugin_CONT_Default, "Input\\pj64raphnetraw_1player.dll"); //RaphnetRaw
         break;
     }
