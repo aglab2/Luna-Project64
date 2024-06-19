@@ -65,7 +65,7 @@ void CGameSettings::RefreshGameSettings()
     m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
     if (m_CountPerOp == 0)
     {
-        m_CountPerOp = 2;
+        //m_CountPerOp = 2;
     }
 	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
