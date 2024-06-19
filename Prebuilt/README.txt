@@ -16,8 +16,11 @@ CHANGELOG:
 	- Fixed register caching crashing on certain decomp hacks (Thanks to aglab2).
 	- Register caching is now enabled by default, improving performance.
 	- Added "1.6 labels" language, for people who hate having correct text in their settings.
+	- Removed Octomino from welcome screen.
+	- Real N64 Range is now properly disabled by default in NRage.
+	- Lock mouse keybind is now unmapped by default in NRage.
 	- Added libhidapi-0.dll, required for raphnetraw to work.
-	- Updated ParaLLel RSP (Unknown --> aglab2 v0.1)
+	- Updated ParaLLel RSP (Unknown --> aglab2 v0.1).
 
 -- v3.4.0 --
 	- Added auto updater (Thanks to MarvJungs and aglab2).
