@@ -36,6 +36,9 @@ m_SettingsConfig(SettingsConfig)
     TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBERDIR), (SettingID)Directory_RecentGameDirCount, false);
     TxtBox->SetTextField(GetDlgItem(IDC_MAXROMDIR_TXT));
 
+    TxtBox = AddModTextBox(GetDlgItem(IDC_INPUTDELAY), (SettingID)Setting_InputDelay, false);
+    TxtBox->SetTextField(GetDlgItem(IDC_INPUTDELAY));
+
     UpdatePageSettings();
 }
 

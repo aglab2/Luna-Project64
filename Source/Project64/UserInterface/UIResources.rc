@@ -167,6 +167,8 @@ BEGIN
     LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,124,34,10
     CONTROL         "Pause emulation when window is minimized",IDC_MINIMIZEDSLEEP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,206,10
+    LTEXT           "Input delay in milliseconds:",IDC_INPUTDELAY_TXT,4,179,100,10
+    EDITTEXT        IDC_INPUTDELAY,99,177,41,12,ES_AUTOHSCROLL | ES_NUMBER
 END
 
 IDD_Rom_Information DIALOGEX 0, 0, 239, 207

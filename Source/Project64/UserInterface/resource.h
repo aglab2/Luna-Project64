@@ -269,6 +269,8 @@
 #define IDC_AUDIO_NAME                  1099
 #define IDC_ROM_REGCACHE                1099
 #define IDC_COUNTPERBYTE_TEXT           1099
+#define IDC_REMEMBERDIR2                1099
+#define IDC_INPUTDELAY                  1099
 #define IDC_CONT_NAME                   1100
 #define IDC_COUNTPERBYTE                1100
 #define ID_SUPPORT_PJ64                 1100
@@ -295,6 +297,7 @@
 #define IDC_CMD_LIST                    1113
 #define IDC_ROMSEL_TEXT4                1114
 #define IDC_R1_EDIT                     1114
+#define IDC_INPUTDELAY_TXT              1115
 #define IDC_GO_BTN                      1116
 #define IDC_UNMARK                      1119
 #define IDC_STEP_BTN                    1119

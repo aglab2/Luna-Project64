@@ -20,6 +20,7 @@ enum UISettingID
     Setting_AutoSleep,
     Setting_MinimizedSleep,
     Setting_AutoFullscreen,
+    Setting_InputDelay,
 
     // RDB TLB settings
     Rdb_Status,
