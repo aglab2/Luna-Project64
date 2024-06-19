@@ -30,7 +30,7 @@ void RegisterUISettings (void)
     AddUISetting(Setting_AutoSleep, new CSettingTypeApplication("Settings", "Auto Sleep", (uint32_t)false));
     AddUISetting(Setting_MinimizedSleep, new CSettingTypeApplication("Settings", "Minimized Sleep", (uint32_t)false));
     AddUISetting(Setting_AutoFullscreen, new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
-    AddUISetting(Directory_RecentGameDirCount, new CSettingTypeApplication("Settings", "Input Delay", (uint32_t)0));
+    AddUISetting(Setting_InputDelay, new CSettingTypeApplication("Settings", "Input Delay", (uint32_t)0));
 
     // RDB settings
     AddUISetting(Rdb_Status, new CSettingTypeRomDatabase("Status", "Unknown"));

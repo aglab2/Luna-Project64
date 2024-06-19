@@ -995,11 +995,11 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     Item.Reset(ID_FILE_OPEN_COMBO, MENU_OPEN_COMBO, m_ShortCuts.ShortCutString(ID_FILE_OPEN_COMBO, RunningState));
     FileMenu.push_back(Item); if (g_Settings->LoadBool(File_SDCardMounted))
     {
-        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_MOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
+        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_UNMOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
     }
     else
     {
-        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_UNMOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
+        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_MOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
     }
     if (!inBasicMode)
     {
