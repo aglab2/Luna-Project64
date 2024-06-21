@@ -193,7 +193,7 @@ void CX86Ops::X86HardBreakPoint()
 void CX86Ops::X86BreakPoint(const char * FileName, int LineNumber)
 {
     Pushad();
-#if 1
+#ifdef USE_FASTCALL
     MoveConstToX86reg((uint32_t)g_System, kFastCallArg0);
     MoveConstToX86reg((uint32_t)FileName, kFastCallArg1);
 #else

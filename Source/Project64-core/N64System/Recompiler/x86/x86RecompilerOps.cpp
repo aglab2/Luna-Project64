@@ -2657,30 +2657,18 @@ void CX86RecompilerOps::CACHE()
         if (IsConst(m_Opcode.base))
         {
             uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-#if 1
             PushImm32("Address", Address);
-#else
-            MoveConstToX86reg((uint32_t)Address, kFastCallArg1);
-#endif
         }
         else if (IsMapped(m_Opcode.base))
         {
             AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-#if 1
             Push(GetMipsRegMapLo(m_Opcode.base));
-#else
-            MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.base), kFastCallArg1);
-#endif
         }
         else
         {
             MoveVariableToX86reg(&_GPR[m_Opcode.base].UW[0], CRegName::GPR_Lo[m_Opcode.base], x86_EAX);
             AddConstToX86Reg(x86_EAX, (int16_t)m_Opcode.offset);
-#if 1
             Push(x86_EAX);
-#else
-            MoveX86RegToX86Reg(x86_EAX, kFastCallArg1);
-#endif
         }
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_Recompiler, x86_ECX);
@@ -3285,11 +3273,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                  static uint32_t TempValue = 0;
                  m_RegWorkingSet.BeforeCallDirect();
                  PushImm32("TempValue", (uint32_t)&TempValue);
-#if 1
                  PushImm32(PAddr);
-#else
-                 MoveConstToX86reg(PAddr, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
                  MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
                  Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
@@ -8106,11 +8090,7 @@ void CX86RecompilerOps::COP0_CO_TLBWI(void)
     PushImm32("false", 0);
     MoveVariableToX86reg(&g_Reg->INDEX_REGISTER, "INDEX_REGISTER", x86_ECX);
     AndConstToX86Reg(x86_ECX, 0x1F);
-#if 1
     Push(x86_ECX);
-#else
-    MoveX86RegToX86Reg(x86_ECX, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
     Call_Direct(AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
@@ -8142,11 +8122,7 @@ void CX86RecompilerOps::COP0_CO_TLBWR(void)
     PushImm32("true", true);
     MoveVariableToX86reg(&g_Reg->RANDOM_REGISTER, "RANDOM_REGISTER", x86_ECX);
     AndConstToX86Reg(x86_ECX, 0x1F);
-#if 1
     Push(x86_ECX);
-#else
-    MoveX86RegToX86Reg(x86_ECX, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
     Call_Direct(AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
@@ -10073,11 +10049,7 @@ void CX86RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     WriteX86Comment("Updating sync CPU");
     RegSet.BeforeCallDirect();
     PushImm32(stdstr_f("%d", Cycles).c_str(), Cycles);
-#if 1
     PushImm32("g_SyncSystem", (uint32_t)g_SyncSystem);
-#else
-    MoveConstToX86reg((uint32_t)g_SyncSystem, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_System, x86_ECX);
     Call_Direct(AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU");
@@ -10233,13 +10205,13 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
         MoveConstToVariable(TestTimer, &R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer");
     }
 
-#if 0
+#ifndef USE_FASTCALL
     PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
 #else
     MoveConstToX86reg((uint32_t)g_System->CountPerOp(), kFastCallArg0);
 #endif
     Call_Direct((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
-#if 0
+#ifndef USE_FASTCALL
     AddConstToX86Reg(x86_ESP, 4);
 #endif
 
@@ -10445,11 +10417,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     case CExitInfo::DoSysCall:
         {
              bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-#if 1
              PushImm32(bDelay ? "true" : "false", bDelay);
-#else
-             MoveConstToX86reg((uint32_t)bDelay, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
              MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
              Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
@@ -10465,11 +10433,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         {
             bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
             PushImm32("1", 1);
-#if 1
             PushImm32(bDelay ? "true" : "false", bDelay);
-#else
-            MoveConstToX86reg((uint32_t)bDelay, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
@@ -10502,11 +10466,7 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     case CExitInfo::TLBReadMiss:
         MoveVariableToX86reg(g_TLBLoadAddress, "g_TLBLoadAddress", x86_EDX);
         Push(x86_EDX);
-#if 1
         PushImm32(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
-#else
-        MoveConstToX86reg(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
         Call_Direct(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
@@ -10556,14 +10516,7 @@ void CX86RecompilerOps::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Le
     m_RegWorkingSet.BeforeCallDirect();
     PushImm32("CRecompiler::Remove_StoreInstruc", CRecompiler::Remove_StoreInstruc);
     PushImm32(Length);
-#if 1
     Push(AddressReg);
-#else
-    if (AddressReg != kFastCallArg1)
-    {
-		MoveX86RegToX86Reg(AddressReg, kFastCallArg1);
-	}
-#endif
 #ifdef _MSC_VER
     MoveConstToX86reg((uint32_t)g_Recompiler, x86_ECX);
     Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
@@ -10900,11 +10853,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
                 m_RegWorkingSet.BeforeCallDirect();
                 PushImm32(Value);
-#if 1
                 PushImm32(PAddr);
-#else
-                MoveConstToX86reg(PAddr, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
                 MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
                 Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -10931,11 +10880,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0410000C:
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
-#if 1
             PushImm32(PAddr);
-#else
-            MoveConstToX86reg(PAddr, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -11347,11 +11292,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
             m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
-#if 1
             PushImm32(PAddr);
-#else
-            MoveConstToX86reg(PAddr, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
             MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -11374,11 +11315,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
         m_RegWorkingSet.BeforeCallDirect();
         PushImm32(Value);
-#if 1
         PushImm32(PAddr);
-#else
-        MoveConstToX86reg(PAddr, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
         Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
@@ -11504,11 +11441,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         }
         m_RegWorkingSet.BeforeCallDirect();
         Push(Reg);
-#if 1
         PushImm32(PAddr);
-#else
-        MoveConstToX86reg(PAddr, kFastCallArg1);
-#endif
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
         Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");

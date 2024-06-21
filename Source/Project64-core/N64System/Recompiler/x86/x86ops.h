@@ -1,5 +1,7 @@
 #pragma once
 
+#define USE_FASTCALL 1
+
 #if defined(__i386__) || defined(_M_IX86)
 class CX86Ops
 {
