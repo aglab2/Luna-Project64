@@ -48,40 +48,40 @@ typedef struct
     int DefaultLocation;
     void * handle;
 
-    unsigned int(*GetSetting)      (void * handle, int ID);
-    const char * (*GetSettingSz)    (void * handle, int ID, char * Buffer, int BufferLen);
-    void(*SetSetting)      (void * handle, int ID, unsigned int Value);
-    void(*SetSettingSz)    (void * handle, int ID, const char * Value);
-    void(*RegisterSetting) (void * handle, int ID, int DefaultID, SettingDataType Type,
+    unsigned int(CALL *GetSetting)      (void * handle, int ID);
+    const char * (CALL *GetSettingSz)    (void * handle, int ID, char * Buffer, int BufferLen);
+    void(CALL *SetSetting)      (void * handle, int ID, unsigned int Value);
+    void(CALL *SetSettingSz)    (void * handle, int ID, const char * Value);
+    void(CALL *RegisterSetting) (void * handle, int ID, int DefaultID, SettingDataType Type,
         SettingLocation Location, const char * Category, const char * DefaultStr, uint32_t Value);
-    void(*UseUnregisteredSetting) (int ID);
+    void(CALL *UseUnregisteredSetting) (int ID);
 } PLUGIN_SETTINGS;
 
 typedef struct
 {
-    unsigned int(*FindSystemSettingId) (void * handle, const char * Name);
+    unsigned int(CALL *FindSystemSettingId) (void * handle, const char * Name);
 } PLUGIN_SETTINGS2;
 
 typedef struct
 {
-    void(*FlushSettings) (void * handle);
+    void(CALL *FlushSettings) (void * handle);
 } PLUGIN_SETTINGS3;
 
 typedef struct
 {
-    typedef void(*SettingChangedFunc)(void *);
+    typedef void(CALL *SettingChangedFunc)(void *);
 
-    void(*RegisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
-    void(*UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
+    void(CALL *RegisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
+    void(CALL *UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
 } PLUGIN_SETTINGS_NOTIFICATION;
 
 typedef struct
 {
-    void(*DisplayError)(const char * Message);
-    void(*FatalError)(const char * Message);
-    void(*DisplayMessage)(int DisplayTime, const char * Message);
-    void(*DisplayMessage2)(const char * Message);
-    void(*BreakPoint)(const char * FileName, int32_t LineNumber);
+    void(CALL *DisplayError)(const char * Message);
+    void(CALL *FatalError)(const char * Message);
+    void(CALL *DisplayMessage)(int DisplayTime, const char * Message);
+    void(CALL *DisplayMessage2)(const char * Message);
+    void(CALL *BreakPoint)(const char * FileName, int32_t LineNumber);
 } PLUGIN_NOTIFICATION;
 
 static PLUGIN_SETTINGS  g_PluginSettings;
@@ -92,34 +92,34 @@ static PLUGIN_NOTIFICATION g_PluginNotification;
 static bool g_PluginInitilized = false;
 static char g_PluginSettingName[300];
 
-EXPORT void SetSettingInfo(PLUGIN_SETTINGS * info);
-EXPORT void SetSettingInfo2(PLUGIN_SETTINGS2 * info);
-EXPORT void SetSettingInfo3(PLUGIN_SETTINGS3 * info);
-EXPORT void SetPluginNotification(PLUGIN_NOTIFICATION * info);
+EXPORT void CALL SetSettingInfo(PLUGIN_SETTINGS * info);
+EXPORT void CALL SetSettingInfo2(PLUGIN_SETTINGS2 * info);
+EXPORT void CALL SetSettingInfo3(PLUGIN_SETTINGS3 * info);
+EXPORT void CALL SetPluginNotification(PLUGIN_NOTIFICATION * info);
 
-EXPORT void SetSettingInfo(PLUGIN_SETTINGS * info)
+EXPORT void CALL SetSettingInfo(PLUGIN_SETTINGS * info)
 {
     g_PluginSettings = *info;
     g_PluginInitilized = true;
     info->UseUnregisteredSetting = UseUnregisteredSetting;
 }
 
-EXPORT void SetSettingInfo2(PLUGIN_SETTINGS2 * info)
+EXPORT void CALL SetSettingInfo2(PLUGIN_SETTINGS2 * info)
 {
     g_PluginSettings2 = *info;
 }
 
-EXPORT void SetSettingInfo3(PLUGIN_SETTINGS3 * info)
+EXPORT void CALL SetSettingInfo3(PLUGIN_SETTINGS3 * info)
 {
     g_PluginSettings3 = *info;
 }
 
-EXPORT void SetSettingNotificationInfo(PLUGIN_SETTINGS_NOTIFICATION * info)
+EXPORT void CALL SetSettingNotificationInfo(PLUGIN_SETTINGS_NOTIFICATION * info)
 {
     g_PluginSettingsNotification = *info;
 }
 
-EXPORT void SetPluginNotification(PLUGIN_NOTIFICATION * info)
+EXPORT void CALL SetPluginNotification(PLUGIN_NOTIFICATION * info)
 {
     g_PluginNotification = *info;
 }
