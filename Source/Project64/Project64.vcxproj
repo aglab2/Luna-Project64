@@ -81,6 +81,8 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DarkMode.cpp" />
+    <ClCompile Include="DarkModeUtils.cpp" />
     <ClCompile Include="UserInterface\About.cpp" />
     <ClCompile Include="UserInterface\Debugger\CPULog.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-CPULogView.cpp" />
@@ -154,6 +156,10 @@
     <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DarkMode.h" />
+    <ClInclude Include="DarkModeUtils.h" />
+    <ClInclude Include="IatHook.h" />
+    <ClInclude Include="UAHMenuBar.h" />
     <ClInclude Include="UserInterface\About.h" />
     <ClInclude Include="UserInterface\Debugger\CPULog.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />
