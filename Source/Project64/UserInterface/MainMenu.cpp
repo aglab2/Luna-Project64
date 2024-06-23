@@ -331,6 +331,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (state == SdCardMounter::VHD)
         {
             MessageBox(hWnd, L"SD Card is prepared for mounting. Please check Windows popup to access SD Card contents.", L"SDCard", MB_ICONEXCLAMATION);
+            wchar_t* AppdataPathW = NULL;
+            SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+            PathAppend(AppdataPathW, L"Luna-Project64");
+            ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
         }
         else
         {
