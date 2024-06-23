@@ -9,6 +9,7 @@
 #include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/SummerCart.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
@@ -217,6 +218,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 {
     try
     {
+        CSummerCart::MakeInitialImage();
         g_Notify = Notify;
         InitializeLog();
         WriteTrace(TraceAppInit, TraceDebug, "Starting (BaseDirectory: %s)", BaseDirectory ? BaseDirectory : "null");
@@ -290,6 +292,7 @@ void AppCleanup(void)
     if (g_Plugins) { delete g_Plugins; g_Plugins = nullptr; }
     if (g_Settings) { delete g_Settings; g_Settings = nullptr; }
     if (g_Lang) { delete g_Lang; g_Lang = nullptr; }
+    if (g_SummerCart) { delete g_SummerCart; g_SummerCart = nullptr; }
 
     CMipsMemoryVM::FreeReservedMemory();
     TraceDone();

@@ -11,6 +11,7 @@
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/N64System/N64Rom.h>
+#include <Project64-core/N64System/SummerCart.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>
@@ -550,6 +551,7 @@ bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDis
 void CN64System::RunLoadedImage(void)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
+    g_SummerCart = new CSummerCart();
     g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(nullptr), false, false);
     if (g_BaseSystem)
     {
@@ -575,6 +577,8 @@ void CN64System::CloseSystem()
         g_BaseSystem->CloseCpu();
         delete g_BaseSystem;
         g_BaseSystem = nullptr;
+        delete g_SummerCart;
+        g_SummerCart = nullptr;
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }

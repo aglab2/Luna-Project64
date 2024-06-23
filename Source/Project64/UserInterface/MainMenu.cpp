@@ -5,6 +5,7 @@
 #include "DiscordRPC.h"
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64\UserInterface\About.h>
+#include "SdCardMounter.h"
 #include <windows.h>
 #include <commdlg.h>
 
@@ -993,7 +994,8 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     Item.Reset(ID_FILE_OPEN_ROM, MENU_OPEN, m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM, RunningState));
     FileMenu.push_back(Item);
     Item.Reset(ID_FILE_OPEN_COMBO, MENU_OPEN_COMBO, m_ShortCuts.ShortCutString(ID_FILE_OPEN_COMBO, RunningState));
-    FileMenu.push_back(Item); if (g_Settings->LoadBool(File_SDCardMounted))
+    FileMenu.push_back(Item);
+    if (SdCardMounter::State::VHD == SdCardMounter::getState())
     {
         FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_UNMOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
     }

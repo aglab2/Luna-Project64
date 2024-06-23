@@ -145,6 +145,8 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             g_BaseSystem->CloseCpu();
             delete g_BaseSystem;
             g_BaseSystem = nullptr;
+            delete g_SummerCart;
+            g_SummerCart = nullptr;
         }
         WriteTrace(TraceUserInterface, TraceDebug, "System closed");
     }

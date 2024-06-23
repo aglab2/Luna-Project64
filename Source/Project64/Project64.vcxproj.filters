@@ -255,6 +255,9 @@
     <ClCompile Include="UserInterface\RomBrowser.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="SdCardMounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -493,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\CheatUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SdCardMounter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

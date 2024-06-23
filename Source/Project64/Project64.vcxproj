@@ -58,6 +58,8 @@
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bcrypt.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bcrypt.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
     </Link>
     <Manifest Condition="'$(PlatformToolset)'!='v90'">
       <EnableDPIAwareness>true</EnableDPIAwareness>
@@ -81,6 +83,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SdCardMounter.cpp" />
     <ClCompile Include="UserInterface\About.cpp" />
     <ClCompile Include="UserInterface\Debugger\CPULog.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-CPULogView.cpp" />
@@ -154,6 +157,7 @@
     <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SdCardMounter.h" />
     <ClInclude Include="UserInterface\About.h" />
     <ClInclude Include="UserInterface\Debugger\CPULog.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />

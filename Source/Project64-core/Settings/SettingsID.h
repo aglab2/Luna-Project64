@@ -186,9 +186,6 @@ enum SettingID
     GameRunning_ScreenHertz,
     GameRunning_InReset,
 
-    // SD Card
-    File_SDCardMounted,
-
     // User interface
     UserInterface_BasicMode,
     UserInterface_ShowCPUPer,
