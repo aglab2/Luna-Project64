@@ -189,11 +189,13 @@ static inline std::string getLastErrorMessage() {
 }
 
 static void logWarn(const std::string& message) {
-	std::cerr << "Warning: " << message << std::endl;
+	MessageBoxA(nullptr, message.c_str(), "Warning", MB_ICONWARNING);
+	throw std::runtime_error(message);
 }
 
 static void logError(const std::string& message) {
-	std::cerr << "Error: " << message << std::endl;
+	MessageBoxA(nullptr, message.c_str(), "Error", MB_ICONERROR);
+	throw std::runtime_error(message);
 }
 
 static bool removeVhdFooter(const fs::path& filePath, const SdCardInfo& info, bool rename) {
@@ -537,7 +539,8 @@ namespace SdCardMounter
 				cfgFile.write((char*)&info, sizeof(info));
 			}
 		}
-		else {
+		else
+		{
 			SdCardInfo info;
 			{
 				std::fstream cfgFile(cfgPath, std::ios::in | std::ios::binary);

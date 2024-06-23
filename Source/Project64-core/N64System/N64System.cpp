@@ -577,8 +577,6 @@ void CN64System::CloseSystem()
         g_BaseSystem->CloseCpu();
         delete g_BaseSystem;
         g_BaseSystem = nullptr;
-        delete g_SummerCart;
-        g_SummerCart = nullptr;
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }

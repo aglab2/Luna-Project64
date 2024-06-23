@@ -4,8 +4,10 @@
 #include "Debugger/ScriptSystem.h"
 #include "DiscordRPC.h"
 #include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/N64System/Summercart.h>
 #include <Project64\UserInterface\About.h>
 #include "SdCardMounter.h"
+#include <comutil.h>
 #include <windows.h>
 #include <commdlg.h>
 
@@ -301,12 +303,68 @@ void CMainMenu::OnSupportProject64(HWND hWnd)
     CSupportWindow(m_Gui->Support()).Show(hWnd, false);
 }
 
+static void invokeDefaultOpenAction(const TCHAR* path)
+{    
+    ShellExecute(NULL, NULL, path, NULL, NULL, SW_SHOWNORMAL);
+}
+
+static void DebugOutput(const std::wstring& message) {
+    OutputDebugString(message.c_str());
+}
+
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
 {
     switch (MenuID)
     {
     case ID_FILE_OPEN_ROM: OnOpenRom(hWnd); break;
     case ID_FILE_OPEN_COMBO: OnOpenCombo(hWnd); break;
+    case ID_FILE_MOUNT_SDCARD: 
+    try
+    {
+        SdCardMounter::switchStates();
+        auto state = SdCardMounter::getState();
+        if (state == SdCardMounter::State::VHD)
+        {
+            invokeDefaultOpenAction(CSummerCart::VhdPath().c_str());
+        }
+
+        if (state == SdCardMounter::VHD)
+        {
+            MessageBox(hWnd, L"SD Card is prepared for mounting. Please check Windows popup to access SD Card contents.", L"SDCard", MB_ICONEXCLAMATION);
+        }
+        else
+        {
+            MessageBox(hWnd, L"SD Card is unmounted and can be accessed in emulator", L"SDCard", MB_OK);
+        }
+        {
+            MENUITEMINFO MenuInfo = { 0 };
+            wchar_t String[256];
+            MenuInfo.cbSize = sizeof(MENUITEMINFO);
+            MenuInfo.fMask = MIIM_TYPE;
+            MenuInfo.fType = MFT_STRING;
+            MenuInfo.fState = MFS_ENABLED;
+            MenuInfo.dwTypeData = String;
+            MenuInfo.cch = 256;
+
+            GetMenuItemInfo(m_MenuHandle, ID_FILE_MOUNT_SDCARD, false /*lookup by identifier*/, &MenuInfo);
+            // TOD: translate this appropriately
+            wcscpy(String, state ? L"Unmount SD Card" : L"Mount SD Card");
+            SetMenuItemInfo(m_MenuHandle, ID_FILE_MOUNT_SDCARD, false /*lookup by identifier*/, &MenuInfo);
+        }
+    }
+    catch (...)
+    {
+        auto state = SdCardMounter::getState();
+        if (state == SdCardMounter::State::VHD)
+		{
+            MessageBox(hWnd, L"Failed to unmount SD Card.\nMake sure SDCard is ejected in Windows. Right click on disk \"SDCARD0\" in Explorer and click Eject.", L"Error", MB_ICONERROR);
+		}
+        else
+        {
+            MessageBox(hWnd, L"Failed to mount SD Card", L"Error", MB_ICONERROR);
+        }
+    }
+    break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();

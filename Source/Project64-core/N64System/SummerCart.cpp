@@ -46,7 +46,15 @@ uint32_t CSummerCart::Init()
 	}
 
     m_SdFile = _wfopen(s_SdPath.c_str(), L"r+b");
-    if (!m_SdFile) return 0x40000000;
+    if (!m_SdFile)
+    {
+        if (!m_WarnedFailedToOpen)
+        {
+            m_WarnedFailedToOpen = true;
+			MessageBox(NULL, L"Failed to open SD card image", L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+        }
+        return 0x40000000;
+    }
     fseek(m_SdFile, 0, SEEK_END);
     m_SdSize = ftell(m_SdFile);
     return 0;

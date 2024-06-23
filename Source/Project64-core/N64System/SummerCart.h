@@ -35,6 +35,7 @@ private:
     char m_SdByteswap;
     char m_Unlock;
     char m_LockSeq;
+    bool m_WarnedFailedToOpen = false;
 
     uint32_t Init();
     uint32_t Read();
