@@ -30,5 +30,5 @@ private:
     void(CALL *AiUpdate) (int32_t Wait);
     void(CALL *AiDacrateChanged)(SYSTEM_TYPE Type);
 
-    static void AudioThread(CAudioPlugin * _this);
+    static void CALLBACK AudioThread(CAudioPlugin * _this);
 };

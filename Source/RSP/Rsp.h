@@ -117,18 +117,18 @@ typedef struct {
 	void (*Enter_Memory_Window)( void );
 } DEBUG_INFO;
 
-EXPORT void CloseDLL(void);
-EXPORT void DllAbout(void * hParent);
-EXPORT uint32_t DoRspCycles(uint32_t Cycles);
-EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo);
-EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
-EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount);
-EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
-EXPORT void RomOpen(void);
-EXPORT void RomClosed(void);
-EXPORT void DllConfig(void * hWnd);
-EXPORT void EnableDebugging(int Enabled);
-EXPORT void PluginLoaded(void);
+EXPORT void CALL CloseDLL(void);
+EXPORT void CALL DllAbout(void * hParent);
+EXPORT uint32_t CALL DoRspCycles(uint32_t Cycles);
+EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo);
+EXPORT void CALL GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
+EXPORT void CALL InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount);
+EXPORT void CALL InitiateRSPDebugger(DEBUG_INFO Debug_Info);
+EXPORT void CALL RomOpen(void);
+EXPORT void CALL RomClosed(void);
+EXPORT void CALL DllConfig(void * hWnd);
+EXPORT void CALL EnableDebugging(int Enabled);
+EXPORT void CALL PluginLoaded(void);
 
 uint32_t AsciiToHex(char * HexValue);
 void DisplayError(char * Message, ...);

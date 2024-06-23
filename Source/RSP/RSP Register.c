@@ -12,7 +12,7 @@
 
 #define IDC_TAB_CONTROL			1000
 
-void Create_RSP_Register_Window ( int );
+void CALLBACK Create_RSP_Register_Window ( int );
 void HideRSP_RegisterPanel    ( int );
 void PaintRSP_HiddenPanel     ( HWND );
 void PaintRSP_CP0Panel        ( HWND );
@@ -48,7 +48,7 @@ char * GPR_Strings[32] = {
 	"T8", "T9", "K0", "K1", "GP", "SP", "S8", "RA"
 };
 
-void Create_RSP_Register_Window ( int Child ) {
+void CALLBACK Create_RSP_Register_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
 		InRSPRegisterWindow = TRUE;

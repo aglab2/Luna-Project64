@@ -3,6 +3,12 @@
 #include <Project64-core/Settings.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
+#if defined(_WIN32)
+#define CALL        __cdecl
+#else
+#define CALL
+#endif
+
 #ifndef PLUGIN_INFO_STRUCT
 #define PLUGIN_INFO_STRUCT
 
@@ -41,40 +47,40 @@ typedef struct
     int32_t    NoDefault;
     int32_t    DefaultLocation;
     void * handle;
-    uint32_t(*GetSetting)      (void * handle, int32_t ID);
-    const char * (*GetSettingSz)    (void * handle, int32_t ID, char * Buffer, int32_t BufferLen);
-    void(*SetSetting)      (void * handle, int32_t ID, uint32_t Value);
-    void(*SetSettingSz)    (void * handle, int32_t ID, const char * Value);
-    void(*RegisterSetting) (void * handle, int32_t ID, int32_t DefaultID, SettingDataType Type,
+    uint32_t(CALL *GetSetting)      (void * handle, int32_t ID);
+    const char * (CALL *GetSettingSz)    (void * handle, int32_t ID, char * Buffer, int32_t BufferLen);
+    void(CALL *SetSetting)      (void * handle, int32_t ID, uint32_t Value);
+    void(CALL *SetSettingSz)    (void * handle, int32_t ID, const char * Value);
+    void(CALL *RegisterSetting) (void * handle, int32_t ID, int32_t DefaultID, SettingDataType Type,
         SettingType Location, const char * Category, const char * DefaultStr, uint32_t Value);
-    void(*UseUnregisteredSetting) (int32_t ID);
+    void(CALL *UseUnregisteredSetting) (int32_t ID);
 } PLUGIN_SETTINGS;
 
 typedef struct
 {
-    uint32_t(*FindSystemSettingId) (void * handle, const char * Name);
+    uint32_t(CALL *FindSystemSettingId) (void * handle, const char * Name);
 } PLUGIN_SETTINGS2;
 
 typedef struct
 {
-    void(*FlushSettings) (void * handle);
+    void(CALL *FlushSettings) (void * handle);
 } PLUGIN_SETTINGS3;
 
 typedef struct
 {
-    typedef void(*SettingChangedFunc)(void *);
+    typedef void(CALL *SettingChangedFunc)(void *);
 
-    void(*RegisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
-    void(*UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
+    void(CALL *RegisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
+    void(CALL *UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
 } PLUGIN_SETTINGS_NOTIFICATION;
 
 typedef struct
 {
-    void(*DisplayError)(const char * Message);
-    void(*FatalError)(const char * Message);
-    void(*DisplayMessage)(int DisplayTime, const char * Message);
-    void(*DisplayMessage2)(const char * Message);
-    void(*BreakPoint)(const char * FileName, int32_t LineNumber);
+    void(CALL *DisplayError)(const char * Message);
+    void(CALL *FatalError)(const char * Message);
+    void(CALL *DisplayMessage)(int DisplayTime, const char * Message);
+    void(CALL *DisplayMessage2)(const char * Message);
+    void(CALL *BreakPoint)(const char * FileName, int32_t LineNumber);
 } PLUGIN_NOTIFICATION;
 
 enum PLUGIN_TYPE
@@ -173,5 +179,5 @@ private:
 };
 
 // Dummy Functions
-void DummyCheckInterrupts(void);
-void DummyFunction(void);
+void CALL DummyCheckInterrupts(void);
+void CALL DummyFunction(void);

@@ -1,5 +1,13 @@
 #pragma once
 
+#ifndef CALL
+#ifdef _WIN32
+#define CALL __cdecl
+#else
+#define CALL
+#endif
+#endif
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -42,9 +50,9 @@ extern "C" {
     void FlushSettings(void);
 
     // This must be implemented to be notified when a setting is used but has not been set up
-    void UseUnregisteredSetting(int SettingID);
+    void CALL UseUnregisteredSetting(int SettingID);
 
-    typedef void(*SettingChangedFunc)(void *);
+    typedef void(CALL *SettingChangedFunc)(void *);
     void SettingsRegisterChange(bool SystemSetting, int Type, void * Data, SettingChangedFunc Func);
     void SettingsUnregisterChange(bool SystemSetting, int Type, void * Data, SettingChangedFunc Func);
 

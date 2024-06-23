@@ -56,7 +56,7 @@ bool CThread::Start(void * lpThreadParameter)
     return true;
 }
 
-void * CThread::ThreadWrapper (CThread * _this)
+void * CALLBACK CThread::ThreadWrapper (CThread * _this)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
     _this->m_threadID = CThread::GetCurrentThreadId();

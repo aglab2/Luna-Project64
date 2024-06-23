@@ -6,7 +6,6 @@
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
-
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     char currentPath[MAX_PATH_LENGTH];
