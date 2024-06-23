@@ -378,6 +378,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(DIR_SELECT_TEXTURE, "Select texture pack directory");
 
     // Options (general) tab
+    DEF_STR(OPTION_DARKTHEME, "Dark theme (Requires emu restart)");
     DEF_STR(OPTION_AUTO_SLEEP, "Pause emulation when window is not active");
     DEF_STR(OPTION_MINIMIZED_SLEEP, "Pause emulation when window is minimized");
     DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");

@@ -11,6 +11,7 @@ m_SettingsConfig(SettingsConfig)
     }
 
     // Set the text for all GUI items
+    SetDlgItemText(IDC_DARKTHEME, wGS(OPTION_DARKTHEME).c_str());
     SetDlgItemText(IDC_AUTOSLEEP, wGS(OPTION_AUTO_SLEEP).c_str());
     SetDlgItemText(IDC_MINIMIZEDSLEEP, wGS(OPTION_MINIMIZED_SLEEP).c_str());
     SetDlgItemText(IDC_LOAD_FULLSCREEN, wGS(OPTION_AUTO_FULLSCREEN).c_str());
@@ -24,6 +25,7 @@ m_SettingsConfig(SettingsConfig)
     SetDlgItemText(IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
     SetDlgItemText(IDC_INPUTDELAY_TXT, wGS(OPTION_INPUTDELAY).c_str());
 
+    AddModCheckBox(GetDlgItem(IDC_DARKTHEME), (SettingID)Setting_DarkTheme);
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_MINIMIZEDSLEEP), (SettingID)Setting_MinimizedSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), (SettingID)Setting_AutoFullscreen);

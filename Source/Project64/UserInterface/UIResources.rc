@@ -151,24 +151,25 @@ EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "Pause emulation when window is not active?",IDC_AUTOSLEEP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,9,206,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,25,206,10
     CONTROL         "On loading a ROM go to full screen",IDC_LOAD_FULLSCREEN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,39,206,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,55,206,10
     CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,54,206,10
-    CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,69,206,10
-    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,84,206,10
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,99,208,1
-    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,107,145,10
-    EDITTEXT        IDC_REMEMBER,148,105,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,108,31,10
-    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,6,122,145,10
-    EDITTEXT        IDC_REMEMBERDIR,148,120,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,124,34,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,70,206,10
+    CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,85,206,10
+    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,100,206,10
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,0,114,208,1
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,122,145,10
+    EDITTEXT        IDC_REMEMBER,148,120,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,123,31,10
+    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,6,137,145,10
+    EDITTEXT        IDC_REMEMBERDIR,148,135,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,139,34,10
     CONTROL         "Pause emulation when window is minimized",IDC_MINIMIZEDSLEEP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,206,10
-    LTEXT           "Input delay in milliseconds:",IDC_INPUTDELAY_TXT,4,151,100,10
-    EDITTEXT        IDC_INPUTDELAY,99,149,41,12,ES_AUTOHSCROLL | ES_NUMBER
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,40,206,10
+    LTEXT           "Input delay in milliseconds:",IDC_INPUTDELAY_TXT,6,158,100,10
+    EDITTEXT        IDC_INPUTDELAY,99,157,41,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Dark theme (Requires emu restart)",IDC_DARKTHEME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,10,206,10
 END
 
 IDD_Rom_Information DIALOGEX 0, 0, 239, 207
@@ -1461,8 +1462,8 @@ BEGIN
 
     IDD_Settings_General, DIALOG
     BEGIN
-        LEFTMARGIN, 4
         RIGHTMARGIN, 230
+        VERTGUIDE, 6
         TOPMARGIN, 4
         BOTTOMMARGIN, 204
     END

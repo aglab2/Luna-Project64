@@ -274,6 +274,7 @@
 #define IDC_CONT_NAME                   1100
 #define IDC_COUNTPERBYTE                1100
 #define ID_SUPPORT_PJ64                 1100
+#define IDC_AUTOSLEEP2                  1100
 #define IDC_DIR_FRAME1                  1101
 #define IDC_ROM_FASTSP                  1101
 #define IDC_INFO                        1101
@@ -885,6 +886,7 @@
 #define IDC_RADIO_PJ64_VIDEO            1729
 #define IDC_GFX_PLUGIN                  1731
 #define IDC_INPUT_PLUGIN                1732
+#define IDC_DARKTHEME                   1732
 #define VERSION_BUILD                   5672
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -959,7 +961,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        226
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1732
+#define _APS_NEXT_CONTROL_VALUE         1733
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

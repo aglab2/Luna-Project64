@@ -4,6 +4,7 @@ int  CGuiSettings::m_RefCount = 0;
 bool CGuiSettings::m_bCPURunning;
 bool CGuiSettings::m_bAutoSleep;
 bool CGuiSettings::m_bMinimizedSleep;
+bool CGuiSettings::m_bDarkTheme;
 
 CGuiSettings::CGuiSettings()
 {
@@ -13,6 +14,7 @@ CGuiSettings::CGuiSettings()
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running,nullptr,RefreshSettings);
         g_Settings->RegisterChangeCB((SettingID)Setting_AutoSleep,nullptr,RefreshSettings);
         g_Settings->RegisterChangeCB((SettingID)Setting_MinimizedSleep, nullptr, RefreshSettings);
+        g_Settings->RegisterChangeCB((SettingID)Setting_DarkTheme, nullptr, RefreshSettings);
         RefreshSettings(nullptr);
     }
 }
@@ -25,6 +27,7 @@ CGuiSettings::~CGuiSettings()
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Running,nullptr,RefreshSettings);
         g_Settings->UnregisterChangeCB((SettingID)Setting_AutoSleep,nullptr,RefreshSettings);
         g_Settings->UnregisterChangeCB((SettingID)Setting_MinimizedSleep, nullptr, RefreshSettings);
+        g_Settings->UnregisterChangeCB((SettingID)Setting_DarkTheme, nullptr, RefreshSettings);
     }
 }
 
@@ -33,4 +36,5 @@ void CGuiSettings::RefreshSettings(void *)
     m_bCPURunning = g_Settings->LoadBool(GameRunning_CPU_Running);
     m_bAutoSleep = g_Settings->LoadBool((SettingID)Setting_AutoSleep);
     m_bMinimizedSleep = g_Settings->LoadBool((SettingID)Setting_MinimizedSleep);
+    m_bMinimizedSleep = g_Settings->LoadBool((SettingID)Setting_DarkTheme);
 }

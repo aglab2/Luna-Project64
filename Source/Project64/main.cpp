@@ -8,8 +8,6 @@ extern bool DarkModeEnter(DWORD reason);
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
-    DarkModeEnter(DLL_PROCESS_ATTACH);
-
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     char currentPath[MAX_PATH_LENGTH];
@@ -65,6 +63,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     {
         CoInitialize(nullptr);
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
+
+        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+            DarkModeEnter(DLL_PROCESS_ATTACH);
+        }
 
         // Create the main window with menu
 		

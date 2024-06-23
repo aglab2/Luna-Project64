@@ -19,6 +19,7 @@ enum UISettingID
 	Setting_EnableDiscordRPC,
     Setting_AutoSleep,
     Setting_MinimizedSleep,
+    Setting_DarkTheme,
     Setting_AutoFullscreen,
     Setting_InputDelay,
 
