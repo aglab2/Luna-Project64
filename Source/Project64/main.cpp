@@ -4,8 +4,12 @@
 #include "Settings/UISettings.h"
 #define MAX_PATH_LENGTH 1024
 
+extern bool DarkModeEnter(DWORD reason);
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
+    DarkModeEnter(DLL_PROCESS_ATTACH);
+
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     char currentPath[MAX_PATH_LENGTH];
@@ -153,6 +157,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         MessageBox(nullptr, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str(), L"Exception", MB_OK);
     }
     AppCleanup();
+    DarkModeEnter(DLL_PROCESS_DETACH);
     CoUninitialize();
     return true;
 }

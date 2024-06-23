@@ -396,6 +396,8 @@ void CMainGui::CreateStatusBar(void)
 {
     m_hStatusWnd = (HWND)CreateStatusWindow(WS_CHILD | WS_VISIBLE, L"", m_hMainWindow, StatusBarID);
     SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
+    TCHAR name[100];
+    GetClassName(m_hStatusWnd, name, sizeof(name));
     ShowWindow(m_hStatusWnd, g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar) ? SW_SHOW : SW_HIDE);
 }
 
