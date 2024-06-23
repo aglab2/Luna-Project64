@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/Notification.h>
+#include <Project64-core/N64System/SummerCart.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 #include <Common/Util.h>
 
 void  CN64System::StartEmulationThead()
@@ -76,4 +78,7 @@ void CN64System::CloseCpu()
     WriteTrace(TraceN64System, TraceDebug, "Deleting thread object");
     delete hThread;
     WriteTrace(TraceN64System, TraceDebug, "Done");
+
+    delete g_SummerCart;
+    g_SummerCart = nullptr;
 }

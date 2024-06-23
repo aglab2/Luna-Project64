@@ -10,7 +10,8 @@ bool CGameSettings::m_bSMM_ValidFunc;
 bool CGameSettings::m_bSMM_PIDMA;
 bool CGameSettings::m_bSMM_TLB;
 bool CGameSettings::m_bUseTlb;
-uint32_t CGameSettings::m_CountPerOp = 2;
+bool CGameSettings::m_CounterFactorZero = false;
+uint32_t CGameSettings::m_CountPerOp = 1;
 uint32_t CGameSettings::m_ViRefreshRate = 1500;
 uint32_t CGameSettings::m_AiCountPerBytes = 500;
 bool CGameSettings::m_DelayDP = false;
@@ -65,7 +66,12 @@ void CGameSettings::RefreshGameSettings()
     m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
     if (m_CountPerOp == 0)
     {
-        m_CountPerOp = 2;
+        m_CountPerOp = 1;
+        m_CounterFactorZero = true;
+    }
+    else
+    {
+        m_CounterFactorZero = false;
     }
 	if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }

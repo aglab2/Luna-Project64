@@ -9,6 +9,7 @@
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/SummerCart.h>
 
 CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
     m_FlashRam(FlashRam),
@@ -132,6 +133,37 @@ void CDMA::PI_DMA_READ()
         }
 
         ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
+
+        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        g_Reg->MI_INTR_REG |= MI_INTR_PI;
+        g_Reg->CheckInterrupts();
+        return;
+    }
+
+    if (g_Reg->PI_CART_ADDR_REG >= 0x1ffe0000 && g_Reg->PI_CART_ADDR_REG < 0x1fff0000)
+    {
+        DWORD length = (PI_RD_LEN_REG & 0xFFFFFF) + 1;
+        DWORD i = (g_Reg->PI_CART_ADDR_REG - 0x1ffe0000);
+
+        length = (i + length) > 8192 ? (8192 - i) : length;
+        length = (g_Reg->PI_DRAM_ADDR_REG + length) > 0x7FFFFF ?
+            (0x7FFFFF - g_Reg->PI_DRAM_ADDR_REG) : length;
+
+        if (i > 8192 || g_Reg->PI_DRAM_ADDR_REG > 0x7FFFFF || !g_SummerCart->Unlocked())
+        {
+            g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+            g_Reg->MI_INTR_REG |= MI_INTR_PI;
+            g_Reg->CheckInterrupts();
+            return;
+        }
+
+        DWORD dram_address = g_Reg->PI_DRAM_ADDR_REG;
+        DWORD rom_address = (g_Reg->PI_CART_ADDR_REG - 0x1ffe0000);
+        BYTE* dram = g_MMU->Rdram();
+        BYTE* rom = g_SummerCart->Buffer();
+
+        for (i = 0; i < length; ++i)
+            rom[(rom_address + i) ^ 3] = dram[(dram_address + i) ^ 3];
 
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -336,7 +368,7 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
-    if (PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FFFFFFF)
+    if (PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG < 0x1FFE0000)
     {
         uint32_t i;
 
@@ -463,6 +495,39 @@ void CDMA::PI_DMA_WRITE()
         }
         //ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9) + 50);
         //ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9));
+        return;
+    }
+
+    if (PI_CART_ADDR_REG >= 0x1FFE0000 && PI_CART_ADDR_REG < 0x1FFF0000)
+    {
+        /* SC64 BUFFER */
+        uint32_t length = (PI_WR_LEN_REG & 0xFFFFFE) + 2;
+        uint32_t i = (PI_CART_ADDR_REG - 0x1ffe0000);
+        length = (i + length) > 8192 ? (8192 - i) : length;
+        length = (g_Reg->PI_DRAM_ADDR_REG + length) > 0x7FFFFF ?
+            (0x7FFFFF - g_Reg->PI_DRAM_ADDR_REG) : length;
+
+        if (i > 8192 || g_Reg->PI_DRAM_ADDR_REG > 0x7FFFFF || !g_SummerCart->Unlocked())
+        {
+            g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+            g_Reg->MI_INTR_REG |= MI_INTR_PI;
+            g_Reg->CheckInterrupts();
+            return;
+        }
+
+        uint32_t dram_address = g_Reg->PI_DRAM_ADDR_REG;
+        uint32_t rom_address = (PI_CART_ADDR_REG - 0x1ffe0000);
+        uint8_t* dram = g_MMU->Rdram();
+        uint8_t* rom = g_SummerCart->Buffer();
+
+        for (i = 0; i < length; ++i)
+            dram[(dram_address + i) ^ 3] = rom[(rom_address + i) ^ 3];
+
+        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        g_Reg->MI_INTR_REG |= MI_INTR_PI;
+        g_Reg->CheckInterrupts();
+        // This function is gone from the 3.x version and I have no clue what did they mean by this...
+        // g_SystemTimer->UpdateTimers();
         return;
     }
 

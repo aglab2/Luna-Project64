@@ -319,7 +319,18 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.UnMap_AllFPRs();
     }*/
 
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    bool updateCycleCount = true;
+    if (g_System->CounterFactorZero())
+    {
+        if (0 == m_RegWorkingSet.GetBlockCycleCount())
+            updateCycleCount = true;
+        else
+            updateCycleCount = false;
+    }
+
+    if (updateCycleCount)
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
     m_RegWorkingSet.ResetX86Protection();
 }
 

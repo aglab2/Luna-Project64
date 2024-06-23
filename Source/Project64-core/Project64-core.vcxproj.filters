@@ -354,6 +354,9 @@
     <ClCompile Include="Settings\SettingType\SettingsType-AppdataPath.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\SummerCart.cpp">
+      <Filter>Header Files\N64 System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -673,6 +676,9 @@
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-AppdataPath.h">
       <Filter>Header Files\Settings\SettingType</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\SummerCart.h">
+      <Filter>Header Files\N64 System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
+        ComboBox->AddItem(wGS(NUMBER_0).c_str(), 0);
         ComboBox->AddItem(wGS(NUMBER_1).c_str(), 1);
         ComboBox->AddItem(wGS(NUMBER_2).c_str(), 2);
         ComboBox->AddItem(wGS(NUMBER_3).c_str(), 3);

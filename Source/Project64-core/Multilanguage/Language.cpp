@@ -31,6 +31,8 @@ void CLanguage::LoadDefaultStrings(void)
     // File menu
     DEF_STR(MENU_FILE, "&File");
     DEF_STR(MENU_OPEN, "&Open ROM");
+    DEF_STR(MENU_MOUNT_SDCARD, "Mount SD Card");
+    DEF_STR(MENU_UNMOUNT_SDCARD, "Unmount SD Card");
     DEF_STR(MENU_ROM_INFO, "ROM &Info...");
     DEF_STR(MENU_START, "Start Emulation");
     DEF_STR(MENU_END, "&End Emulation");
@@ -377,6 +379,7 @@ void CLanguage::LoadDefaultStrings(void)
 
     // Options (general) tab
     DEF_STR(OPTION_AUTO_SLEEP, "Pause emulation when window is not active");
+    DEF_STR(OPTION_MINIMIZED_SLEEP, "Pause emulation when window is minimized");
     DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");
     DEF_STR(OPTION_BASIC_MODE, "Hide advanced settings");
     DEF_STR(OPTION_REMEMBER_CHEAT, "Remember selected cheats");
@@ -393,6 +396,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_SHOW_STATUS_BAR, "Show status bar");
     DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit fullscreen on lose focus");
     DEF_STR(OPTION_DISCORD_RPC, "Enable Discord Rich Presence");
+    DEF_STR(OPTION_INPUTDELAY, "Input delay in milliseconds:");
 
     // ROM browser tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");

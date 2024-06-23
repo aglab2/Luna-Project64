@@ -15,6 +15,7 @@ public:
     inline static FUNC_LOOKUP_METHOD LookUpMode(void) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
     inline static bool bUseTlb(void) { return m_bUseTlb; }
     inline static uint32_t CountPerOp(void) { return m_CountPerOp; }
+    inline static bool CounterFactorZero(void) { return m_CounterFactorZero; }
     inline static uint32_t ViRefreshRate(void) { return m_ViRefreshRate; }
     inline static uint32_t AiCountPerBytes(void) { return m_AiCountPerBytes; }
     inline static bool bDelayDP(void) { return m_DelayDP; }
@@ -51,6 +52,7 @@ private:
     static bool m_bLinkBlocks;
     static uint32_t m_LookUpMode; //FUNC_LOOKUP_METHOD
     static bool m_bUseTlb;
+    static bool m_CounterFactorZero;
     static uint32_t m_CountPerOp;
     static uint32_t m_ViRefreshRate;
     static uint32_t m_AiCountPerBytes;

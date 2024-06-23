@@ -24,5 +24,6 @@ uint8_t ** g_RecompPos = nullptr;
 CMempak * g_Mempak = nullptr;
 CRandom * g_Random = nullptr;
 CEnhancements * g_Enhancements = nullptr;
+CSummerCart * g_SummerCart = nullptr;
 
 int * g_NextTimer;

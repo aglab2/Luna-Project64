@@ -43,6 +43,8 @@ enum LanguageStringID
     // File menu
     MENU_FILE = 100,
     MENU_OPEN = 101,
+    MENU_MOUNT_SDCARD = 111,
+    MENU_UNMOUNT_SDCARD = 112,
     MENU_ROM_INFO = 102,
     MENU_START = 103,
     MENU_END = 104,
@@ -447,6 +449,7 @@ enum LanguageStringID
     OPTION_SHOW_STATUS_BAR = 474,
     OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS = 475,
     OPTION_DISCORD_RPC = 476,
+    OPTION_INPUTDELAY = 477,
 
     // ROM browser tab
     RB_MAX_ROMS = 480,
