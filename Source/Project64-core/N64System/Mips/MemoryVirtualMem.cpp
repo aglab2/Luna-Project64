@@ -7,6 +7,8 @@
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Mips/Disk.h>
+#include <Project64-core/N64System/SummerCart.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/ExceptionHandler.h>
 
 #include <stdio.h>
@@ -703,7 +705,7 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x06000000: Load32CartridgeDomain1Address1(); break;
         case 0x08000000: Load32CartridgeDomain2Address2(); break;
         case 0x1FC00000: Load32PifRam(); break;
-        case 0x1FF00000: Load32CartridgeDomain1Address3(); break;
+        case 0x1FF00000: Load32CartridgeDomain1Address3(); return 0 == g_SummerCart->ReadRegs(PAddr, Value); break;
         default:
             m_MemLookupValue.UW[0] = PAddr & 0xFFFF;
             m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
@@ -866,6 +868,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x05000000: Write32CartridgeDomain2Address1(); break;
     case 0x08000000: Write32CartridgeDomain2Address2(); break;
     case 0x1FC00000: Write32PifRam(); break;
+    case 0x1FF00000: g_SummerCart->WriteRegs(PAddr, Value, ~0); break;
     default:
         return false;
         break;

@@ -59,3 +59,6 @@ extern CRandom * g_Random;
 
 class CEnhancements;
 extern CEnhancements * g_Enhancements;
+
+class CSummerCart;
+extern CSummerCart * g_SummerCart;
