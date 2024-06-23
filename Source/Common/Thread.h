@@ -1,5 +1,8 @@
 #pragma once
 #include <stdint.h>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 class CThread 
 {
@@ -25,7 +28,7 @@ private:
     CThread(const CThread&);
     CThread& operator=(const CThread&);
 
-    static void * ThreadWrapper (CThread * _this);
+    static void * CALLBACK ThreadWrapper (CThread * _this);
 
     CTHREAD_START_ROUTINE m_StartAddress;
     void * m_lpThreadParameter;

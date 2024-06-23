@@ -10205,9 +10205,15 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
         MoveConstToVariable(TestTimer, &R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer");
     }
 
+#ifndef USE_FASTCALL
     PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
+#else
+    MoveConstToX86reg((uint32_t)g_System->CountPerOp(), kFastCallArg0);
+#endif
     Call_Direct((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
+#ifndef USE_FASTCALL
     AddConstToX86Reg(x86_ESP, 4);
+#endif
 
     if (g_System->bFastSP() && g_Recompiler)
     {

@@ -13,6 +13,13 @@ enum sseRegValues {
 	x86_XMM4 = 4, x86_XMM5 = 5, x86_XMM6 = 6, x86_XMM7 = 7
 };
 
+#define USE_FASTCALL 1
+
+#ifdef USE_FASTCALL
+#define kFastCallReg0 x86_ECX
+#define kFastCallReg1 x86_EDX
+#endif
+
 void AdcX86RegToX86Reg				( int Destination, int Source );
 void AdcX86regToVariable			( int x86reg, void * Variable, char * VariableName );
 void AdcX86regHalfToVariable		( int x86reg, void * Variable, char * VariableName );

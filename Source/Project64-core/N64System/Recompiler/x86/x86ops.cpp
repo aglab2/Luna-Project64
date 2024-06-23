@@ -193,8 +193,13 @@ void CX86Ops::X86HardBreakPoint()
 void CX86Ops::X86BreakPoint(const char * FileName, int LineNumber)
 {
     Pushad();
+#ifdef USE_FASTCALL
+    MoveConstToX86reg((uint32_t)g_System, kFastCallArg0);
+    MoveConstToX86reg((uint32_t)FileName, kFastCallArg1);
+#else
     PushImm32(stdstr_f("%d", LineNumber).c_str(), LineNumber);
     PushImm32(FileName, (uint32_t)FileName);
+#endif
     Call_Direct((void *)BreakPointNotification, "BreakPointNotification");
     AddConstToX86Reg(x86_ESP, 8);
     Popad();

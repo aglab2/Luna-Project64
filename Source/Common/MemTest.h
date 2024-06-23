@@ -1,7 +1,7 @@
 #pragma once 
 
 #if (defined(_MSC_VER) && _DEBUG)
-#define MEM_LEAK_TEST
+// #define MEM_LEAK_TEST
 #endif
 
 #ifdef MEM_LEAK_TEST

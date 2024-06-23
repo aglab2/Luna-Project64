@@ -795,11 +795,17 @@ void CompilerRSPBlock(void)
 		RSP_LW_IMEM(CompilePC, &RSPOpC.Hex);
 
 		if (LogRDP && NextInstruction != DELAY_SLOT_DONE){
+#ifndef USE_FASTCALL
 			char str[40];
 			sprintf(str,"%X",CompilePC);
 			PushImm32(str,CompilePC);
+#else
+			MoveConstToX86reg(CompilePC, kFastCallReg0);
+#endif
 			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
+#ifndef USE_FASTCALL
 			AddConstToX86Reg(x86_ESP, 4);
+#endif
 		}
 
 		if (RSPOpC.Hex == 0xFFFFFFFF) {

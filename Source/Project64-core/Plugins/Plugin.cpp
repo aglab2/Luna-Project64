@@ -430,11 +430,11 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
     }
 }
 
-void DummyCheckInterrupts(void)
+void CALL DummyCheckInterrupts(void)
 {
 }
 
-void DummyFunction(void)
+void CALL DummyFunction(void)
 {
 }
 

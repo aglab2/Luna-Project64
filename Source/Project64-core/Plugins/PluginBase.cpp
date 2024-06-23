@@ -79,8 +79,8 @@ bool CPlugin::Load(const char * FileName)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingNotificationInfo");
         PLUGIN_SETTINGS_NOTIFICATION info;
-        info.RegisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sRegisterChangeCB;
-        info.UnregisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sUnregisterChangeCB;
+        info.RegisterChangeCB = (void(CALL *)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sRegisterChangeCB;
+        info.UnregisterChangeCB = (void(CALL *)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sUnregisterChangeCB;
         SetSettingNotificationInfo(&info);
     }
 
@@ -89,7 +89,7 @@ bool CPlugin::Load(const char * FileName)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingInfo3");
         PLUGIN_SETTINGS3 info;
-        info.FlushSettings = (void(*)(void * handle))CSettings::FlushSettings;
+        info.FlushSettings = (void(CALL *)(void * handle))CSettings::FlushSettings;
         SetSettingInfo3(&info);
     }
 
@@ -98,7 +98,7 @@ bool CPlugin::Load(const char * FileName)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingInfo2");
         PLUGIN_SETTINGS2 info;
-        info.FindSystemSettingId = (uint32_t(*)(void * handle, const char *))CSettings::FindSetting;
+        info.FindSystemSettingId = (uint32_t(CALL *)(void * handle, const char *))CSettings::FindSetting;
         SetSettingInfo2(&info);
     }
 
@@ -114,11 +114,11 @@ bool CPlugin::Load(const char * FileName)
         info.NoDefault = Default_None;
         info.DefaultLocation = g_Settings->LoadDword(Setting_UseFromRegistry) ? SettingType_Registry : SettingType_CfgFile;
         info.handle = g_Settings;
-        info.RegisterSetting = (void(*)(void *, int, int, SettingDataType, SettingType, const char *, const char *, uint32_t))&CSettings::RegisterSetting;
-        info.GetSetting = (uint32_t(*)(void *, int))&CSettings::GetSetting;
-        info.GetSettingSz = (const char * (*)(void *, int, char *, int))&CSettings::GetSettingSz;
-        info.SetSetting = (void(*)(void *, int, uint32_t))&CSettings::SetSetting;
-        info.SetSettingSz = (void(*)(void *, int, const char *))&CSettings::SetSettingSz;
+        info.RegisterSetting = (void(CALL *)(void *, int, int, SettingDataType, SettingType, const char *, const char *, uint32_t))&CSettings::RegisterSetting;
+        info.GetSetting = (uint32_t(CALL *)(void *, int))&CSettings::GetSetting;
+        info.GetSettingSz = (const char * (CALL *)(void *, int, char *, int))&CSettings::GetSettingSz;
+        info.SetSetting = (void(CALL *)(void *, int, uint32_t))&CSettings::SetSetting;
+        info.SetSettingSz = (void(CALL *)(void *, int, const char *))&CSettings::SetSettingSz;
         info.UseUnregisteredSetting = nullptr;
 
         SetSettingInfo(&info);

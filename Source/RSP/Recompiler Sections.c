@@ -746,11 +746,17 @@ void Compile_Section_000(void) {
 	CPU_Message("Compiling: %X to ..., RSP optimization $000", CompilePC);
 	CPU_Message("  %X %s",CompilePC+0x00,RSPOpcodeName(vmudn.Hex,CompilePC + 0x00));
 	if (LogRDP){
+#ifndef USE_FASTCALL
 		char str[40];
-		sprintf(str,"%X",CompilePC);
+		sprintf(str, "%X", CompilePC);
 		PushImm32(str,CompilePC);
+#else
+		MoveConstToX86reg(CompilePC, kFastCallReg0);
+#endif
 		Call_Direct(RDP_LogLoc,"RDP_LogLoc");
+#ifndef USE_FASTCALL
 		AddConstToX86Reg(x86_ESP, 4);
+#endif
 	}
 
 	for (i = 0; i < Section_000_VMADN; i++) {
@@ -758,11 +764,17 @@ void Compile_Section_000(void) {
 		CPU_Message("  %X %s",CompilePC+0x04+(i*4),RSPOpcodeName(vmadn.Hex,CompilePC+0x04+(i*4)));
 
 		if (LogRDP){
+#ifndef USE_FASTCALL
 			char str[40];
-			sprintf(str,"%X",CompilePC+0x04+(i*4));
+			sprintf(str, "%X", CompilePC + 0x04 + (i * 4));
 			PushImm32(str,CompilePC+0x04+(i*4));
+#else
+			MoveConstToX86reg(CompilePC + 0x04 + (i * 4), kFastCallReg0);
+#endif
 			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
+#ifndef USE_FASTCALL
 			AddConstToX86Reg(x86_ESP, 4);
+#endif
 		}
 		
 	}
@@ -950,11 +962,17 @@ void Compile_Section_002 ( void ) {
 		RSP_LW_IMEM(CompilePC + (Count * 0x04), &op[Count].Hex);
 		CPU_Message("  %X %s",CompilePC+(Count*0x04),RSPOpcodeName(op[Count].Hex,CompilePC + (Count*0x04)));
 		if (LogRDP){
+#ifndef USE_FASTCALL
 			char str[40];
-			sprintf(str,"%X",CompilePC+(Count*0x04));
+			sprintf(str, "%X", CompilePC + (Count * 0x04));
 			PushImm32(str,CompilePC+(Count*0x04));
+#else
+			MoveConstToX86reg(CompilePC + (Count * 0x04), kFastCallReg0);
+#endif
 			Call_Direct(RDP_LogLoc,"RDP_LogLoc");
+#ifndef USE_FASTCALL
 			AddConstToX86Reg(x86_ESP, 4);
+#endif
 		}
 	}
 

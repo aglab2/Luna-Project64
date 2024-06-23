@@ -43,7 +43,7 @@ private:
 	void    InputGetKeys           ( void );
 	void    CheckResetEnable       ( void );
 
-	static void stInputGetKeys (COptionsShortCutsPage * _this )
+	static void CALLBACK stInputGetKeys (COptionsShortCutsPage * _this )
 	{
 		_this->InputGetKeys();
 	}
