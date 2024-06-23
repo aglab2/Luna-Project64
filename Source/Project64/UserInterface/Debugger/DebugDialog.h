@@ -12,7 +12,7 @@ protected:
     UISettingID   m_UISettingID;
     bool          m_bInitialized;
 
-    static DWORD CreateDebuggerWindow(CDebugDialog<T> * pThis)
+    static DWORD CALLBACK CreateDebuggerWindow(CDebugDialog<T> * pThis)
     {
         pThis->DoModal(nullptr);
         pThis->WindowCreated();

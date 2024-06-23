@@ -148,7 +148,7 @@ Input: None
 Output: None
 */
 
-EXPORT void CloseDLL(void)
+EXPORT void CALL CloseDLL(void)
 {
 	FreeMemory();
 }
@@ -161,7 +161,7 @@ Input: A handle to the window that calls this function
 Output: None
 */
 
-EXPORT void DllAbout(void * hParent)
+EXPORT void CALL DllAbout(void * hParent)
 {
 #ifdef _WIN32
     MessageBoxA((HWND)hParent, AboutMsg(), "About", MB_OK | MB_ICONINFORMATION);
@@ -207,7 +207,7 @@ filled by the function. (see def above)
 Output: None
 */
 
-EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
+EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
 	PluginInfo->Version = 0x0103;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
@@ -230,7 +230,7 @@ filled by the function. (see def above)
 Output: None
 */
 
-EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
+EXPORT void CALL GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 {
 #ifdef _WIN32
 	if (hRSPMenu == NULL)
@@ -332,7 +332,7 @@ needs five arguments, not two.  Also, GCC lacks SEH.
 	}
 }
 
-EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
+EXPORT void CALL InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
@@ -358,7 +358,7 @@ above.
 Output: None
 */
 
-EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
+EXPORT void CALL InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 {
 	DebugInfo = Debug_Info;
 }
@@ -533,7 +533,7 @@ Input: None
 Output: None
 */
 
-EXPORT void RomOpen(void)
+EXPORT void CALL RomOpen(void)
 {
 	ClearAllx86Code();
 	if (DebuggingEnabled)
@@ -552,7 +552,7 @@ Input: None
 Output: None
 */
 
-EXPORT void RomClosed(void)
+EXPORT void CALL RomClosed(void)
 {
 	if (Profiling)
 	{
@@ -705,7 +705,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-EXPORT void EnableDebugging(Boolean Enabled)
+EXPORT void CALL EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
@@ -745,7 +745,7 @@ EXPORT void EnableDebugging(Boolean Enabled)
 	}
 }
 
-EXPORT void PluginLoaded(void)
+EXPORT void CALL PluginLoaded(void)
 {
 	BreakOnStart   = false;
 #ifndef _M_X64
@@ -808,7 +808,7 @@ EXPORT void PluginLoaded(void)
 }
 
 #ifdef _WIN32
-void UseUnregisteredSetting(int /*SettingID*/)
+void CALL UseUnregisteredSetting(int /*SettingID*/)
 {
     DebugBreak();
 }

@@ -256,6 +256,10 @@
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
     <ClCompile Include="SdCardMounter.cpp">
+    <ClCompile Include="DarkMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DarkModeUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -498,6 +502,16 @@
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="SdCardMounter.h">
+    <ClInclude Include="DarkMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IatHook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UAHMenuBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkModeUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,12 +5,6 @@
 #include <Project64-core/Plugins/Plugin.h>
 #include <Common/DynamicLibrary.h>
 
-#if defined(_WIN32)
-#define CALL        __cdecl
-#else
-#define CALL
-#endif
-
 class CPlugin :
     private CDebugSettings
 {
@@ -69,9 +63,9 @@ protected:
 #define _LoadFunction(functionName,function) _LoadFunctionVoid(functionName, (void **)&function)
 
 private:
-    static void DisplayError(const char * Message);
-    static void FatalError(const char * Message);
-    static void DisplayMessage(int DisplayTime, const char * Message);
-    static void DisplayMessage2(const char * Message);
-    static void BreakPoint(const char * FileName, int32_t LineNumber);
+    static void CALL DisplayError(const char * Message);
+    static void CALL FatalError(const char * Message);
+    static void CALL DisplayMessage(int DisplayTime, const char * Message);
+    static void CALL DisplayMessage2(const char * Message);
+    static void CALL BreakPoint(const char * FileName, int32_t LineNumber);
 };

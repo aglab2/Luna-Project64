@@ -195,12 +195,18 @@ void Compile_JAL ( void ) {
 		// Before we branch quickly update our stats
 		if (Profiling && IndvidualBlock)
 		{
-			char Str[40];
-			sprintf(Str,"%03X",(RSPOpC.target << 2) & 0xFFC);
 			Push(x86_EAX);
-			PushImm32(Str,*PrgCount);
+#ifndef USE_FASTCALL
+			char Str[40];
+			sprintf(Str, "%03X", (RSPOpC.target << 2) & 0xFFC);
+			PushImm32(Str, *PrgCount);
+#else
+			MoveConstToX86reg(*PrgCount, kFastCallReg0);
+#endif
 			Call_Direct(StartTimer, "StartTimer");
+#ifndef USE_FASTCALL
 			AddConstToX86Reg(x86_ESP, 4);
+#endif
 			Pop(x86_EAX);
 		}
 		JmpLabel32 ( "BranchToJump", 0 );
@@ -1200,9 +1206,15 @@ void Compile_Special_JR (void) {
 		if (Profiling && IndvidualBlock)
 		{
 			Push(x86_EAX);
+#ifdef USE_FASTCALL
+			MoveX86RegToX86Reg(x86_EAX, kFastCallReg0);
+#else
 			Push(x86_EAX);
+#endif
 			Call_Direct(StartTimer, "StartTimer");
+#ifndef USE_FASTCALL
 			AddConstToX86Reg(x86_ESP, 4);
+#endif
 			Pop(x86_EAX);
 		}
 		AddVariableToX86reg(x86_EAX, &JumpTable, "JumpTable");
@@ -1677,15 +1689,28 @@ void Compile_RegImm_BGEZAL(void)
 void Compile_Cop0_MF ( void ) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 	if (LogRDP)
-	{		
+	{
+#ifndef USE_FASTCALL
 		char str[40];
+#endif
 
-		sprintf(str,"%d",RSPOpC.rd);
+#ifndef USE_FASTCALL
+		sprintf(str, "%d", RSPOpC.rd);
 		PushImm32(str,RSPOpC.rd);
-		sprintf(str,"%X",CompilePC);
+#else
+		MoveConstToX86reg(RSPOpC.rd, kFastCallReg1);
+#endif
+
+#ifndef USE_FASTCALL
+		sprintf(str, "%X", CompilePC);
 		PushImm32(str,CompilePC);
+#else
+		MoveConstToX86reg(CompilePC, kFastCallReg0);
+#endif
 		Call_Direct(RDP_LogMF0,"RDP_LogMF0");
+#ifndef USE_FASTCALL
 		AddConstToX86Reg(x86_ESP, 8);
+#endif
 	}
 
 #ifndef Compile_Cop0
@@ -1797,17 +1822,32 @@ void Compile_Cop0_MT ( void )
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
 	if (LogRDP)
-	{	
+	{
+#ifndef USE_FASTCALL
 		char str[40];
+#endif
 
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
 		Push(x86_EAX);
-		sprintf(str,"%d",RSPOpC.rd);
+
+#ifndef USE_FASTCALL
+		sprintf(str, "%d", RSPOpC.rd);
 		PushImm32(str,RSPOpC.rd);
-		sprintf(str,"%X",CompilePC);
+#else
+		MoveConstToX86reg(RSPOpC.rd, kFastCallReg1);
+#endif
+
+#ifndef USE_FASTCALL
+		sprintf(str, "%X", CompilePC);
 		PushImm32(str,CompilePC);
+#else
+		MoveConstToX86reg(CompilePC, kFastCallReg0);
+#endif
+
 		Call_Direct(RDP_LogMT0,"RDP_LogMT0");
+#ifndef USE_FASTCALL
 		AddConstToX86Reg(x86_ESP, 12);
+#endif
 	}
 
 #ifndef Compile_Cop0
@@ -1867,16 +1907,25 @@ void Compile_Cop0_MT ( void )
 		{
 			if (Profiling)
 			{
+#ifndef USE_FASTCALL
 				PushImm32("Timer_RDP_Running",(DWORD)Timer_RDP_Running);
+#else
+				MoveConstToX86reg((DWORD)Timer_RDP_Running, kFastCallReg0);
+#endif
 				Call_Direct(StartTimer,"StartTimer");
+#ifndef USE_FASTCALL
 				AddConstToX86Reg(x86_ESP, 4);
+#endif
 				Push(x86_EAX);
 			}
 			Call_Direct(RSPInfo.ProcessRdpList, "ProcessRdpList");
 			if (Profiling)
 			{
+				// TODO: This seems like a crash to me?
 				Call_Direct(StartTimer,"StartTimer");
+#ifndef USE_FASTCALL
 				AddConstToX86Reg(x86_ESP, 4);
+#endif
 			}
 		}
 

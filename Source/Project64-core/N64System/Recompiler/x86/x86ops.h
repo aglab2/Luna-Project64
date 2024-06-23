@@ -1,5 +1,7 @@
 #pragma once
 
+#define USE_FASTCALL 1
+
 #if defined(__i386__) || defined(_M_IX86)
 class CX86Ops
 {
@@ -21,6 +23,9 @@ public:
         x86_AL = 0, x86_BL = 3, x86_CL = 1, x86_DL = 2,
         x86_AH = 4, x86_BH = 7, x86_CH = 5, x86_DH = 6
     };
+
+    static const x86Reg kFastCallArg0 = x86_ECX;
+    static const x86Reg kFastCallArg1 = x86_EDX;
 
     enum x86FpuValues
     {
