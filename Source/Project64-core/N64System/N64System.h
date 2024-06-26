@@ -76,8 +76,8 @@ public:
 
     bool   DmaUsed() const { return m_DMAUsed; }
     void   SetDmaUsed(bool DMAUsed) { m_DMAUsed = DMAUsed; }
-    uint32_t  GetButtons(int32_t Control) const { return m_Buttons[Control]; }
     CPlugins * GetPlugins() { return m_Plugins; }
+    int InputDelay(void) { return bInputDelay(); }
 
     // Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING
@@ -145,7 +145,6 @@ private:
     bool            m_bCleanFrameBox;
     bool            m_RspBroke;
     bool            m_DMAUsed;
-    uint32_t        m_Buttons[4];
     bool            m_TestTimer;
     uint32_t        m_NextInstruction;
     uint32_t        m_JumpToLocation;

@@ -62,3 +62,8 @@ extern CEnhancements * g_Enhancements;
 
 class CSummerCart;
 extern CSummerCart * g_SummerCart;
+
+class InputDelayer;
+extern InputDelayer * g_InputDelayer;
+
+extern bool g_InputDelayerIncompatibleSettingsNotified;

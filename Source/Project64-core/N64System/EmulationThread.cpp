@@ -81,4 +81,6 @@ void CN64System::CloseCpu()
 
     delete g_SummerCart;
     g_SummerCart = nullptr;
+    delete g_InputDelayer;
+    g_InputDelayer = nullptr;
 }
