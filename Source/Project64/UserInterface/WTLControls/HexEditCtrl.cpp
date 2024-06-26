@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HexEditCtrl.h"
 #include <unordered_map> 
+#include "DarkModeUtils.h"
 
 CHexEditCtrl::CHexEditCtrl(void) :
     m_BaseAddress(0x80000000),
@@ -283,7 +284,7 @@ void CHexEditCtrl::Draw(void)
         
         if (IsSelected(address))
         {
-            // Override owner-provided colors if selected
+        // Override owner-provided colors if selected
             if (newByte->bkColor != BKCOLOR_DEFAULT)
             {
                 // Blend owner color with selection color if bkcolor isn't default
@@ -299,7 +300,12 @@ void CHexEditCtrl::Draw(void)
 
         if (address == m_HotAddress && m_bShowHotAddress && !m_bMouseDragging)
         {
-            newByte->bkColor = BlendColor(BKCOLOR_HOT, newByte->bkColor);
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                newByte->bkColor = load_config()->menubaritem_bgcolor_hot;
+            }
+            else {
+                newByte->bkColor = BlendColor(BKCOLOR_HOT, newByte->bkColor);
+            }
         }
 
         // Redraw cell if value or colors have changed
@@ -325,8 +331,15 @@ void CHexEditCtrl::Draw(void)
             else if (newByte->bHidden)
             {
                 HXRECTPAIR rectPair;
-                Text(rcHex.left, rcHex.top, "  ", BKCOLOR_DEFAULT, BKCOLOR_DEFAULT, &rectPair.rcHex);
-                Text(rcAscii.left, rcAscii.top, " ", BKCOLOR_DEFAULT, BKCOLOR_DEFAULT, &rectPair.rcAscii);
+
+                if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                    Text(rcHex.left, rcHex.top, "  ", load_config()->menubar_bgcolor, load_config()->menubar_bgcolor, &rectPair.rcHex);
+                    Text(rcAscii.left, rcAscii.top, " ", load_config()->menubar_bgcolor, load_config()->menubar_bgcolor, &rectPair.rcAscii);
+                }
+                else {
+                    Text(rcHex.left, rcHex.top, "  ", BKCOLOR_DEFAULT, BKCOLOR_DEFAULT, &rectPair.rcHex);
+                    Text(rcAscii.left, rcAscii.top, " ", BKCOLOR_DEFAULT, BKCOLOR_DEFAULT, &rectPair.rcAscii);
+                }
                 drawnByteRects[*newByte] = rectPair;
             }
             else
@@ -340,13 +353,25 @@ void CHexEditCtrl::Draw(void)
                 {
                     if (m_FocusedColumn == HX_COL_ASCII)
                     {
-                        hexBkColor = BKCOLOR_SEL_UNFOCUSED;
-                        hexColor = COLOR_SEL_UNFOCUSED;
+                        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                            hexBkColor = load_config()->menubaritem_bgcolor_selected;
+                            hexColor = load_config()->menubar_textcolor;
+                        }
+                        else {
+                            hexBkColor = BKCOLOR_SEL_UNFOCUSED;
+                            hexColor = COLOR_SEL_UNFOCUSED;
+                        }
                     }
                     else
                     {
-                        asciiBkColor = BKCOLOR_SEL_UNFOCUSED;
-                        asciiColor = COLOR_SEL_UNFOCUSED;
+                        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                            asciiBkColor = load_config()->menubaritem_bgcolor_selected;
+                            asciiColor = load_config()->menubar_textcolor;
+                        }
+                        else {
+                            asciiBkColor = BKCOLOR_SEL_UNFOCUSED;
+                            asciiColor = COLOR_SEL_UNFOCUSED;
+                        }
                     }
                 }
 
@@ -586,12 +611,23 @@ void CHexEditCtrl::DrawAddressColumn()
 
         if (rowAddress >= m_BaseAddress)
         {
-            Text(0, y, stdstr_f(" %08X ", rowAddress).c_str(), BKCOLOR_ADDR, COLOR_ADDR, &rcAddress);
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                Text(0, y, stdstr_f(" %08X ", rowAddress).c_str(), load_config()->menubaritem_bgcolor_hot, load_config()->menubar_textcolor, &rcAddress);
+            }
+            else {
+                Text(0, y, stdstr_f(" %08X ", rowAddress).c_str(), BKCOLOR_ADDR, COLOR_ADDR, &rcAddress);
+            }
         }
         else
         {
-            // Wrapped
-            Text(0, y, "          ", BKCOLOR_ADDR, COLOR_ADDR, &rcAddress);
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                // Wrapped
+                Text(0, y, "          ", load_config()->menubaritem_bgcolor_hot, load_config()->menubar_textcolor, &rcAddress);
+            }
+            else {
+                // Wrapped
+                Text(0, y, "          ", BKCOLOR_ADDR, COLOR_ADDR, &rcAddress);
+            }
         }
     }
 }
@@ -601,7 +637,11 @@ void CHexEditCtrl::DrawHeader()
     CRect rcClient;
     GetClientRect(&rcClient);
     CRect rcHeader = { 0, 0, rcClient.Width(), m_CharHeight };
-    HBRUSH br = CreateSolidBrush(BKCOLOR_ADDR);
+
+    auto color_bg = g_Settings->LoadBool((SettingID)Setting_DarkTheme) ? load_config()->menubaritem_bgcolor_hot : BKCOLOR_ADDR;
+    auto color_fg = g_Settings->LoadBool((SettingID)Setting_DarkTheme) ? load_config()->menubar_textcolor : BKCOLOR_ADDR;
+
+    HBRUSH br = CreateSolidBrush(color_bg);
     FillRect(m_BackDC, &rcHeader, br);
     DeleteObject(br);
 
@@ -612,7 +652,7 @@ void CHexEditCtrl::DrawHeader()
         int groupX = m_HexDataColumnRect.left + nGroup * groupWidth;
         int offs = nGroup * m_NumBytesPerGroup;
         CRect dummy;
-        Text(groupX, 0, stdstr_f("%02X", offs).c_str(), BKCOLOR_ADDR, COLOR_ADDR, &dummy);
+        Text(groupX, 0, stdstr_f("%02X", offs).c_str(), color_bg, color_fg, &dummy);
     }
 
     InvalidateRect(&rcHeader, false);
@@ -1691,7 +1731,7 @@ void CHexEditCtrl::OnWindowPosChanged(LPWINDOWPOS /*lpWndPos*/)
         DeleteObject(hOldBMP);
 
         CRect clrRc(0, 0, rc.Width(), rc.Height());
-        HBRUSH hbrush = CreateSolidBrush(BKCOLOR_DEFAULT);
+        HBRUSH hbrush = CreateSolidBrush(g_Settings->LoadBool((SettingID)Setting_DarkTheme) ? load_config()->menubar_bgcolor : BKCOLOR_DEFAULT);
         FillRect(m_BackDC, clrRc, hbrush);
         DeleteObject(hbrush);
 
@@ -1712,7 +1752,7 @@ void CHexEditCtrl::SetByteGroupSize(int nBytes)
     CRect rc;
     GetClientRect(&rc);
     CRect clrRc(0, 0, rc.Width(), rc.Height());
-    HBRUSH hbrush = CreateSolidBrush(BKCOLOR_DEFAULT);
+    HBRUSH hbrush = CreateSolidBrush(g_Settings->LoadBool((SettingID)Setting_DarkTheme) ? load_config()->menubar_bgcolor : BKCOLOR_DEFAULT);
     FillRect(m_BackDC, clrRc, hbrush);
     DeleteObject(hbrush);
 

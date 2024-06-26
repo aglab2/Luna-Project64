@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DebuggerUI.h"
+#include "DarkModeUtils.h"
 #include "ScriptHook.h"
 
 #include "CPULog.h"
@@ -689,12 +690,22 @@ void CDebuggerUI::FrameDrawn()
 
     CRect rt;
 
-    GetClientRect(hMainWnd, &rt);
-    SetBkColor(hdc, RGB(0, 0, 0));
+    if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+        GetClientRect(hMainWnd, &rt);
+        SetBkColor(hdc, load_config()->menubar_bgcolor);
 
-    SelectObject(hdc, monoFont);
-    SetTextColor(hdc, RGB(255, 255, 255));
-    SetBkColor(hdc, RGB(0, 0, 0));
+        SelectObject(hdc, monoFont);
+        SetTextColor(hdc, load_config()->menubar_textcolor);
+        SetBkColor(hdc, load_config()->menubar_bgcolor);
+    }
+    else {
+        GetClientRect(hMainWnd, &rt);
+        SetBkColor(hdc, RGB(0, 0, 0));
+
+        SelectObject(hdc, monoFont);
+        SetTextColor(hdc, RGB(255, 255, 255));
+        SetBkColor(hdc, RGB(0, 0, 0));
+    }
 
     m_ScriptSystem->SetScreenDC(hdc);
     m_ScriptSystem->HookFrameDrawn()->InvokeAll();

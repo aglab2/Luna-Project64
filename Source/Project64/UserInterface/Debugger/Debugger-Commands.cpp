@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DebuggerUI.h"
+#include "DarkModeUtils.h"
 
 #include "Symbols.h"
 #include "Breakpoints.h"
@@ -741,51 +742,117 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
         COLORREF fg;
     } colors;
 
-    if (!bAddrOkay)
-    {
-        colors = { 0xFFFFFF, 0xFF0000 };
-    }
-    else if (address == pc && isStepping())
-    {
-        colors = { 0xFFFFAA, 0x222200 };
-    }
-    else if (IsOpEdited(address))
-    {
-        colors = { 0xFFEEFF, 0xFF00FF };
-    }
-    else if (OpInfo.IsStackAlloc())
-    {
-        colors = { 0xCCDDFF, 0x001144 };
-    }
-    else if (OpInfo.IsStackFree())
-    {
-        colors = { 0xFFDDDD, 0x440000 };
-    }
-    else if (OpInfo.IsNOP())
-    {
-        colors = { 0xFFFFFF, 0x888888 };
-    }
-    else if (OpInfo.IsJump())
-    {
-        colors = { 0xEEFFEE, 0x006600 };
-    }
-    else if (OpInfo.IsBranch())
-    {
-        colors = { 0xFFFFFF, 0x337700 };
-    }
-    else
-    {
-        colors = { 0xFFFFFF, 0x0000000 };
-    }
+    // Color register usage
+    // TODO: localize to temporary register context (don't look before/after jumps and frame shifts)
+    COLORREF clrUsedRegister;
+    COLORREF clrAffectedRegister;
 
-    // Gray annotations
-    if (nSubItem == CCommandList::COL_SYMBOL)
-    {
-        if (m_bvAnnotatedLines[nItem])
+    if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+        if (!bAddrOkay)
         {
-            colors.fg = 0x666666;
+            colors = { 0x2D2D2D, 0xFF0000 };
         }
+        else if (address == pc && isStepping())
+        {
+            colors = { 0xFFFFAA, 0xC3C3A0 };
+        }
+        else if (IsOpEdited(address))
+        {
+            colors = { 0x3C2D3C, 0x2D002D };
+        }
+        else if (OpInfo.IsStackAlloc())
+        {
+            colors = { 0x2D3C4B, 0xA0B1D4 };
+        }
+        else if (OpInfo.IsStackFree())
+        {
+            colors = { 0x3C2D2D, 0xFFA0A0 };
+        }
+        else if (OpInfo.IsNOP())
+        {
+            colors = { 0x2D2D2D, 0xA0A0A0 };
+        }
+        else if (OpInfo.IsJump())
+        {
+            colors = { 0x2D3C2D, 0xA0FFA0 };
+        }
+        else if (OpInfo.IsBranch())
+        {
+            colors = { 0x2D2D2D, 0xC3FFA0 };
+        }
+        else
+        {
+            colors = { 0x2D2D2D, 0xD5D5D5 };
+        }
+
+        // Gray annotations
+        if (nSubItem == CCommandList::COL_SYMBOL)
+        {
+            if (m_bvAnnotatedLines[nItem])
+            {
+                colors.fg = 0x999999;
+            }
+        }
+
+
+        // Color register usage
+        // TODO: localize to temporary register context (don't look before/after jumps and frame shifts)
+        clrUsedRegister = RGB(0x6F, 0x56, 0xA2); // Dark purple
+        clrAffectedRegister = RGB(0xA9, 0x60, 0xA9); // Dark pink
     }
+    else {
+        if (!bAddrOkay)
+        {
+            colors = { 0xFFFFFF, 0xFF0000 };
+        }
+        else if (address == pc && isStepping())
+        {
+            colors = { 0xFFFFAA, 0x222200 };
+        }
+        else if (IsOpEdited(address))
+        {
+            colors = { 0xFFEEFF, 0xFF00FF };
+        }
+        else if (OpInfo.IsStackAlloc())
+        {
+            colors = { 0xCCDDFF, 0x001144 };
+        }
+        else if (OpInfo.IsStackFree())
+        {
+            colors = { 0xFFDDDD, 0x440000 };
+        }
+        else if (OpInfo.IsNOP())
+        {
+            colors = { 0xFFFFFF, 0x888888 };
+        }
+        else if (OpInfo.IsJump())
+        {
+            colors = { 0xEEFFEE, 0x006600 };
+        }
+        else if (OpInfo.IsBranch())
+        {
+            colors = { 0xFFFFFF, 0x337700 };
+        }
+        else
+        {
+            colors = { 0xFFFFFF, 0x0000000 };
+        }
+
+        // Gray annotations
+        if (nSubItem == CCommandList::COL_SYMBOL)
+        {
+            if (m_bvAnnotatedLines[nItem])
+            {
+                colors.fg = 0x666666;
+            }
+        }
+
+        // Color register usage
+        // TODO: localize to temporary register context (don't look before/after jumps and frame shifts)
+        clrUsedRegister = RGB(0xF5, 0xF0, 0xFF); // Light purple
+        clrAffectedRegister = RGB(0xFF, 0xF0, 0xFF); // Light pink
+    }
+    
 
     pLVCD->clrTextBk = _byteswap_ulong(colors.bg) >> 8;
     pLVCD->clrText = _byteswap_ulong(colors.fg) >> 8;
@@ -794,11 +861,6 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     {
         return CDRF_DODEFAULT;
     }
-
-    // Color register usage
-    // TODO: localize to temporary register context (don't look before/after jumps and frame shifts)
-    COLORREF clrUsedRegister = RGB(0xF5, 0xF0, 0xFF); // Light purple
-    COLORREF clrAffectedRegister = RGB(0xFF, 0xF0, 0xFF); // Light pink
 
     int pcUsedRegA = 0, pcUsedRegB = 0, pcChangedReg = 0;
     int curUsedRegA = 0, curUsedRegB = 0, curChangedReg = 0;
@@ -899,7 +961,7 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
     paneRect.right = colWidth;
     paneRect.bottom = listRect.bottom;
 
-    COLORREF bgColor = RGB(30, 30, 30);
+    COLORREF bgColor = g_Settings->LoadBool((SettingID)Setting_DarkTheme) ? load_config()->menubar_bgcolor : RGB(30, 30, 30);
     CBrush hBrushBg(CreateSolidBrush(bgColor));
     FillRect(listDC, &paneRect, hBrushBg);
 

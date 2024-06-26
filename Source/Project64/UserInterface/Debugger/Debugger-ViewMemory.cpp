@@ -5,6 +5,7 @@
 #include <UserInterface/WTLControls/HexEditCtrl.h>
 
 #include "DebuggerUI.h"
+#include "DarkModeUtils.h"
 #include "Symbols.h"
 #include "DMALog.h"
 
@@ -769,9 +770,14 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
         uint32_t paddress = address;
         HXBYTEINFO* oldByte = &nmgbi->oldBytes[i];
         HXBYTEINFO* newByte = &nmgbi->newBytes[i];
-
-        newByte->bkColor = BKCOLOR_DEFAULT;
-        newByte->color = COLOR_DEFAULT;
+        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+            newByte->bkColor = load_config()->menubar_bgcolor;
+            newByte->color = load_config()->menubar_textcolor;
+        }
+        else {
+            newByte->bkColor = BKCOLOR_DEFAULT;
+            newByte->color = COLOR_DEFAULT;
+        }
 
         if (m_bVirtualMemory && (g_MMU == nullptr || !g_MMU->TranslateVaddr(address, paddress)))
         {
@@ -810,48 +816,96 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
         bool bReadBP = m_Breakpoints->ReadBPExists8(vaddress) == CBreakpoints::BP_SET;
         bool bWriteBP = m_Breakpoints->WriteBPExists8(vaddress) == CBreakpoints::BP_SET;
 
-        if (bLocked)
-        {
-            newByte->bkColor = BKCOLOR_LOCKED;
-            newByte->color = COLOR_BP;
+        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+            if (bLocked)
+            {
+                newByte->bkColor = RGB(200, 200, 100);
+                newByte->color = RGB(45, 45, 45);
+            }
+            else if (bReadBP && bWriteBP)
+            {
+                newByte->bkColor = RGB(200, 100, 200);
+                newByte->color = RGB(45, 45, 45);
+            }
+            else if (bReadBP)
+            {
+                newByte->bkColor = RGB(100, 100, 200);
+                newByte->color = RGB(45, 45, 45);
+            }
+            else if (bWriteBP)
+            {
+                newByte->bkColor = RGB(200, 100, 100);
+                newByte->color = RGB(45, 45, 45);
+            }
+            else if (m_ReadTargetColorStride > 0)
+            {
+                newByte->bkColor = RGB(60, 60, 75);
+            }
+            else if (m_WriteTargetColorStride > 0)
+            {
+                newByte->bkColor = RGB(60, 60, 75);
+            }
+            else if (m_SymbolColorStride > 0)
+            {
+                newByte->bkColor = m_SymbolColorPhase ? RGB(50, 80, 50) : RGB(45, 60, 45);
+            }
+
+            if (g_Rom != nullptr && paddress >= 0x10000000 && paddress < 0x10000000 + g_Rom->GetRomSize())
+            {
+                newByte->color = RGB(100, 200, 100);
+            }
+
+            if (!nmgbi->bIgnoreDiff && oldByte->value != newByte->value)
+            {
+                newByte->color = RGB(255, 0, 0);
+            }
         }
-        else if (bReadBP && bWriteBP)
-        {
-            newByte->bkColor = BKCOLOR_RWBP;
-            newByte->color = COLOR_BP;
-        }
-        else if (bReadBP)
-        {
-            newByte->bkColor = BKCOLOR_RBP;
-            newByte->color = COLOR_BP;
-        }
-        else if (bWriteBP)
-        {
-            newByte->bkColor = BKCOLOR_WBP;
-            newByte->color = COLOR_BP;
-        }
-        else if (m_ReadTargetColorStride > 0)
-        {
-            newByte->bkColor = BKCOLOR_CPUREAD;
-        }
-        else if (m_WriteTargetColorStride > 0)
-        {
-            newByte->bkColor = BKCOLOR_CPUWRITE;
-        }
-        else if (m_SymbolColorStride > 0)
-        {
-            newByte->bkColor = m_SymbolColorPhase ? BKCOLOR_SYMBOL0 : BKCOLOR_SYMBOL1;
+        else {
+            if (bLocked)
+            {
+                newByte->bkColor = BKCOLOR_LOCKED;
+                newByte->color = COLOR_BP;
+            }
+            else if (bReadBP && bWriteBP)
+            {
+                newByte->bkColor = BKCOLOR_RWBP;
+                newByte->color = COLOR_BP;
+            }
+            else if (bReadBP)
+            {
+                newByte->bkColor = BKCOLOR_RBP;
+                newByte->color = COLOR_BP;
+            }
+            else if (bWriteBP)
+            {
+                newByte->bkColor = BKCOLOR_WBP;
+                newByte->color = COLOR_BP;
+            }
+            else if (m_ReadTargetColorStride > 0)
+            {
+                newByte->bkColor = BKCOLOR_CPUREAD;
+            }
+            else if (m_WriteTargetColorStride > 0)
+            {
+                newByte->bkColor = BKCOLOR_CPUWRITE;
+            }
+            else if (m_SymbolColorStride > 0)
+            {
+                newByte->bkColor = m_SymbolColorPhase ? BKCOLOR_SYMBOL0 : BKCOLOR_SYMBOL1;
+            }
+
+            if (g_Rom != nullptr && paddress >= 0x10000000 && paddress < 0x10000000 + g_Rom->GetRomSize())
+            {
+                newByte->color = COLOR_READONLY;
+            }
+
+            if (!nmgbi->bIgnoreDiff && oldByte->value != newByte->value)
+            {
+                newByte->color = COLOR_CHANGED;
+            }
         }
 
-        if (g_Rom != nullptr && paddress >= 0x10000000 && paddress < 0x10000000 + g_Rom->GetRomSize())
-        {
-            newByte->color = COLOR_READONLY;
-        }
-
-        if (!nmgbi->bIgnoreDiff && oldByte->value != newByte->value)
-        {
-            newByte->color = COLOR_CHANGED;
-        }
+        
 
         if (m_SymbolColorStride > 0)
         {
@@ -873,8 +927,14 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
         {
             newByte->bValid = true;
             newByte->value = safeEditValue;
-            newByte->bkColor = RGB(0xFF, 0xCC, 0xFF);
-            newByte->color = RGB(0xFF, 0x00, 0xFF);
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                newByte->bkColor = RGB(75, 60, 75);
+                newByte->color = RGB(75, 45, 75);
+            }
+            else {
+                newByte->bkColor = RGB(0xFF, 0xCC, 0xFF);
+                newByte->color = RGB(0xFF, 0x00, 0xFF);
+            }
         }
 
         newByte->bHidden = false;

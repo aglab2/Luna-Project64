@@ -169,6 +169,11 @@ protected:
             EditBox->Attach(hWnd);
 
             m_TxtBoxList.insert(TextBoxList::value_type(Type, EditBox));
+
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                SetWindowTheme(hWnd, L" ", L"");
+            }
+
             return EditBox;
         }
         return nullptr;
@@ -187,6 +192,10 @@ protected:
             Button->Attach(hWnd);
 
             m_ButtonList.insert(ButtonList::value_type(Type, Button));
+            
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                SetWindowTheme(hWnd, L" ", L"");
+            }
         }
     }
 
@@ -205,6 +214,11 @@ protected:
         }
         ComboBox->Attach(hWnd);
         m_ComboBoxList.insert(ComboBoxList::value_type(Type, ComboBox));
+
+        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+            SetWindowTheme(hWnd, L" ", L"");
+        }
+
         return ComboBox;
     }
 

@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Settings/UISettings.h"
+#include "DarkModeUtils.h"
 
 BOOL CPartialGroupBox::Attach(HWND hWnd)
 {
@@ -26,7 +28,7 @@ BOOL CPartialGroupBox::AttachToDlgItem(HWND parent, UINT dlgID)
 	return Attach(::GetDlgItem(parent, dlgID));
 }
 
-void CPartialGroupBox::Draw3dLine(CPaintDC & dc, LPCRECT lpRect, COLORREF clrTopLeft, COLORREF /*clrBottomRight*/)
+void CPartialGroupBox::Draw3dLine(CPaintDC& dc, LPCRECT lpRect, COLORREF clrTopLeft, COLORREF /*clrBottomRight*/)
 {
 	int x = lpRect->left;
 	int y = lpRect->top;
@@ -52,10 +54,18 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 
 	dc.SelectFont(font);
 	dc.SetMapMode(MM_TEXT);
-	dc.SelectBrush(GetSysColorBrush(COLOR_BTNFACE));
+	if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+		dc.SelectBrush(load_config()->menubaritem_bgbrush);
+	}
+	else {
+		dc.SelectBrush(GetSysColorBrush(COLOR_BTNFACE));
+	}
 
-    stdstr grptext = GetCWindowText(m_hWnd);
+	stdstr grptext = GetCWindowText(m_hWnd);
 	CRect fontsizerect(0, 0, 0, 0);
+	if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+		dc.SetTextColor(load_config()->menubar_textcolor);
+	}
 	dc.DrawText(grptext.ToUTF16().c_str(), -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);
 
 	CRect framerect(controlrect);
@@ -64,9 +74,16 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 
 	if ((Style & 0xF000) == BS_FLAT)
 	{
-		dc.Draw3dRect(framerect, RGB(0, 0, 0), RGB(0, 0, 0));
-		framerect.DeflateRect(1, 1);
-		dc.Draw3dRect(framerect, RGB(255, 255, 255), RGB(255, 255, 255));
+		if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+			dc.Draw3dRect(framerect, load_config()->menubar_textcolor, load_config()->menubar_textcolor);
+			framerect.DeflateRect(1, 1);
+			dc.Draw3dRect(framerect, load_config()->menubar_bgcolor, load_config()->menubar_bgcolor);
+		}
+		else {
+			dc.Draw3dRect(framerect, RGB(0, 0, 0), RGB(0, 0, 0));
+			framerect.DeflateRect(1, 1);
+			dc.Draw3dRect(framerect, RGB(255, 255, 255), RGB(255, 255, 255));
+		}
 	}
 	else
 	{
@@ -97,13 +114,24 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 		}
 
 		fontrect.InflateRect(2, 0);
-		dc.FillRect(fontrect, GetSysColor(COLOR_BTNFACE));
+		if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+			dc.FillRect(fontrect, load_config()->menubaritem_bgcolor);
+		}
+		else {
+		    dc.FillRect(fontrect, GetSysColor(COLOR_BTNFACE));
+		}
 		fontrect.DeflateRect(2, 0);
 
 		// Draw caption
 		dc.SetBkMode(OPAQUE);
-		dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
 
+		if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+			dc.SetTextColor(load_config()->menubar_textcolor);
+			dc.SetBkColor(load_config()->menubar_bgcolor);
+		}
+		else {
+			dc.SetBkColor(GetSysColor(COLOR_BTNFACE));
+		}
 		dc.DrawText(grptext.ToUTF16().c_str(), -1, fontrect, DT_SINGLELINE | DT_LEFT);
 	}
 }

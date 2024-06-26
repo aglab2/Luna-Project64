@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "DebuggerUI.h"
+#include "DarkModeUtils.h"
 
 CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger),
@@ -74,8 +75,14 @@ LRESULT CDebugScripts::OnCtlColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM lPa
 
     if (ctrlId == IDC_CONSOLE_EDIT)
     {
-        SetBkColor(hDC, RGB(255, 255, 255));
-        SetDCBrushColor(hDC, RGB(255, 255, 255));
+        if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+            SetBkColor(hDC, load_config()->menubar_bgcolor);
+            SetDCBrushColor(hDC, load_config()->menubar_bgcolor);
+        }
+        else {
+            SetBkColor(hDC, RGB(255, 255, 255));
+            SetDCBrushColor(hDC, RGB(255, 255, 255));
+        }
         return (LRESULT)GetStockObject(DC_BRUSH);
     }
 
