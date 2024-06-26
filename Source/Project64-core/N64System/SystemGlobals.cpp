@@ -25,5 +25,7 @@ CMempak * g_Mempak = nullptr;
 CRandom * g_Random = nullptr;
 CEnhancements * g_Enhancements = nullptr;
 CSummerCart * g_SummerCart = nullptr;
+InputDelayer * g_InputDelayer = nullptr;
+bool g_InputDelayerIncompatibleSettingsNotified = false;
 
 int * g_NextTimer;

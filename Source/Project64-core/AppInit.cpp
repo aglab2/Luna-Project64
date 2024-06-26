@@ -4,6 +4,7 @@
 #include <Common/Trace.h>
 #include <Common/Util.h>
 
+#include <Project64-core/InputDelayer.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/Plugin.h>
@@ -293,6 +294,7 @@ void AppCleanup(void)
     if (g_Settings) { delete g_Settings; g_Settings = nullptr; }
     if (g_Lang) { delete g_Lang; g_Lang = nullptr; }
     if (g_SummerCart) { delete g_SummerCart; g_SummerCart = nullptr; }
+    if (g_InputDelayer) { delete g_InputDelayer; g_InputDelayer = nullptr; }
 
     CMipsMemoryVM::FreeReservedMemory();
     TraceDone();

@@ -317,6 +317,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(GameRunning_LimitFPS, new CSettingTypeTempBool(true, "Limit FPS"));
     AddHandler(GameRunning_ScreenHertz, new CSettingTypeTempNumber(60));
     AddHandler(GameRunning_InReset, new CSettingTypeTempBool(false));
+    AddHandler(GameRunning_InputDelay, new CSettingTypeApplication("Settings", "Input Delay", (uint32_t) 0));
 
     AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("Settings", "Basic Mode", (uint32_t)false));
     AddHandler(File_DiskIPLPath, new CSettingTypeApplicationPath("Settings", "Disk IPL ROM Path", Default_None));

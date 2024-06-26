@@ -185,6 +185,7 @@ enum SettingID
     GameRunning_LimitFPS,
     GameRunning_ScreenHertz,
     GameRunning_InReset,
+    GameRunning_InputDelay,
 
     // User interface
     UserInterface_BasicMode,

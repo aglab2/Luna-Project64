@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "N64SYstem.h"
 #include <Project64-core/3rdParty/zip.h>
+#include <Project64-core/InputDelayer.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Mempak.h>
@@ -553,6 +554,10 @@ void CN64System::RunLoadedImage(void)
     WriteTrace(TraceN64System, TraceDebug, "Start");
     g_SummerCart = new CSummerCart();
     g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(nullptr), false, false);
+    g_InputDelayerIncompatibleSettingsNotified = false;
+    if (0 != g_BaseSystem->InputDelay())
+        g_InputDelayer = new InputDelayer();
+
     if (g_BaseSystem)
     {
         if (g_Settings->LoadBool(Setting_AutoStart) != 0)
@@ -2360,17 +2365,6 @@ void CN64System::RefreshScreen()
     if (bFixedAudio())
     {
         g_Audio->SetViIntr(VI_INTR_TIME);
-    }
-    if (g_Plugins->Control()->GetKeys)
-    {
-        BUTTONS Keys;
-        memset(&Keys, 0, sizeof(Keys));
-
-        for (int Control = 0; Control < 4; Control++)
-        {
-            g_Plugins->Control()->GetKeys(Control, &Keys);
-            m_Buttons[Control] = Keys.Value;
-        }
     }
 
     if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_UpdateScreen); }

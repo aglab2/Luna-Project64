@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 
+#include <Project64-core/InputDelayer.h>
 #include <Project64-core/N64System/Mips/PifRam.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
@@ -11,6 +12,29 @@
 #include <Project64-core/N64System/Mips/Rumblepak.h>
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Logging.h>
+
+static void checkInputDelayedIncompatibleOptions()
+{
+    if (g_InputDelayerIncompatibleSettingsNotified)
+    {
+        return;
+    }
+
+    bool hasDelayer = g_InputDelayer != nullptr;
+    bool wantsDelayed = g_System->InputDelay();
+    if (hasDelayer && !wantsDelayed)
+	{
+		g_Notify->DisplayWarning("Input Delayer is enabled but Input Delay is set to 0. Please restart emulation to apply settings.");
+		g_InputDelayerIncompatibleSettingsNotified = true;
+	}
+
+    if (!hasDelayer && wantsDelayed)
+	{
+		g_Notify->DisplayWarning("Input Delayer is disabled but Input Delay is set. Please restart emulation to apply settings.");
+		g_InputDelayerIncompatibleSettingsNotified = true;
+	}
+}
+
 
 CPifRam::CPifRam(bool SavesReadOnly) :
     CEeprom(SavesReadOnly)
@@ -90,7 +114,8 @@ void CPifRam::PifRamRead()
             {
                 if (Channel < 4)
                 {
-                    if (Controllers[Channel].Present && Controllers[Channel].RawData)
+                    checkInputDelayedIncompatibleOptions();
+                    if (Controllers[Channel].Present && Controllers[Channel].RawData && !g_System->InputDelay())
                     {
                         if (g_Plugins->Control()->ReadController)
                         {
@@ -200,7 +225,8 @@ void CPifRam::PifRamWrite()
             {
                 if (Channel < 4)
                 {
-                    if (Controllers[Channel].Present && Controllers[Channel].RawData)
+                    checkInputDelayedIncompatibleOptions();
+                    if (Controllers[Channel].Present && Controllers[Channel].RawData && !g_System->InputDelay())
                     {
                         if (g_Plugins->Control()->ControllerCommand)
                         {
@@ -587,7 +613,24 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
                 if (Command[0] != 1 || Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this controller command?"); }
             }
 
-            const uint32_t buttons = g_BaseSystem->GetButtons(Control);
+            BUTTONS Keys{};
+            if (!g_InputDelayer)
+            {
+                if (g_Plugins->Control()->GetKeys)
+                {
+                    memset(&Keys, 0, sizeof(Keys));
+
+                    for (int Control = 0; Control < 4; Control++)
+                    {
+                        g_Plugins->Control()->GetKeys(Control, &Keys);
+                    }
+                }
+            }
+            else
+            {
+                Keys.Value = g_InputDelayer->getDelayedKeys();
+            }
+            const uint32_t buttons = Keys.Value;
             memcpy(&Command[3], &buttons, sizeof(uint32_t));
         }
         break;
