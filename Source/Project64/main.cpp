@@ -65,7 +65,12 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
 
         if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
-            DarkModeEnter(DLL_PROCESS_ATTACH);
+            try {
+                DarkModeEnter(DLL_PROCESS_ATTACH);
+            }
+            catch (...) {
+                MessageBox(NULL, L"Dark mode isn't supported.", L"Dark theme error", MB_OK);
+            }
         }
 
         // Create the main window with menu
