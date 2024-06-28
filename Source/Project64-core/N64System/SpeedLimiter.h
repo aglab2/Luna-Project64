@@ -21,6 +21,15 @@ public:
     void SetSpeed(int Speed);
     int GetSpeed(void) const;
     int GetBaseSpeed(void) const;
+    void AdjustTime(HighResTimeStamp);
+    void Reset();
+
+    static HighResTimeStamp Now(void)
+    {
+        HighResTimeStamp CurrentTime;
+		CurrentTime.SetToNow();
+		return CurrentTime;
+    }
 
 private:
     CSpeedLimiter(const CSpeedLimiter&);
