@@ -65,7 +65,7 @@
     </Link>
     <Manifest Condition="'$(PlatformToolset)'!='v90'">
       <EnableDPIAwareness>true</EnableDPIAwareness>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/out:"C:\Users\Shuri\project64\build\Release\Project64\Project64.exe.embed.manifest" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/out:"$(SolutionDir)Source\Project64\Project64.exe.manifest" %(AdditionalOptions)</AdditionalOptions>
     </Manifest>
     <PreBuildEvent>
       <Command>
