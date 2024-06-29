@@ -3,6 +3,57 @@
 
 #include <Common/Util.h>
 
+#ifdef _WIN32
+#pragma comment(lib, "winmm.lib")
+
+#include <timeapi.h>
+
+typedef LONG(NTAPI* pSetTimerResolution)(ULONG RequestedResolution, BOOLEAN Set, PULONG ActualResolution);
+typedef LONG(NTAPI* pQueryTimerResolution)(PULONG MinimumResolution, PULONG MaximumResolution, PULONG CurrentResolution);
+
+static void setAccurateTimerResolution()
+{
+    timeBeginPeriod(1);
+
+    LONG status;
+    pSetTimerResolution setFunction;
+    pQueryTimerResolution queryFunction;
+    ULONG minResolution, maxResolution, actualResolution;
+    const HINSTANCE hLibrary = LoadLibrary(L"NTDLL.dll");
+    if (hLibrary == NULL)
+    {
+        return;
+    }
+
+    queryFunction = (pQueryTimerResolution)GetProcAddress(hLibrary, "NtQueryTimerResolution");
+    if (queryFunction == NULL)
+    {
+        return;
+    }
+
+    queryFunction(&minResolution, &maxResolution, &actualResolution);
+    {
+        wchar_t line[256];
+        wsprintf(line, L"Win32 Timer Resolution:\n\tMinimum Value:\t%u\n\tMaximum Value:\t%u\n\tActual Value:\t%u\n\n", minResolution, maxResolution, actualResolution);
+        OutputDebugString(line);
+    }
+
+    setFunction = (pSetTimerResolution)GetProcAddress(hLibrary, "NtSetTimerResolution");
+    if (setFunction == NULL)
+    {
+        return;
+    }
+
+    status = setFunction(maxResolution, TRUE, &actualResolution);
+    OutputDebugString(status == 0 ? L"Timer Resolution Set\n" : L"Timer Resolution Not Set\n");
+}
+
+static void unsetAccurateTimerResolution()
+{
+	timeEndPeriod(1);
+}
+#endif
+
 const uint32_t CSpeedLimiter::m_DefaultSpeed = 60;
 
 CSpeedLimiter::CSpeedLimiter() :
@@ -10,10 +61,20 @@ m_Frames(0),
 m_Speed(m_DefaultSpeed),
 m_BaseSpeed(m_DefaultSpeed)
 {
+#ifdef _WIN32
+    setAccurateTimerResolution();
+    m_Timer = CreateWaitableTimerExW(nullptr, nullptr, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
+    if (!m_Timer)
+        m_Timer = CreateWaitableTimer(nullptr, FALSE, nullptr);
+#endif
 }
 
 CSpeedLimiter::~CSpeedLimiter()
 {
+#ifdef _WIN32
+    CloseHandle(m_Timer);
+    unsetAccurateTimerResolution();
+#endif
 }
 
 void CSpeedLimiter::SetHertz(uint32_t Hertz)
@@ -78,7 +139,15 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
         int32_t time = (int)(CalculatedTime - CurrentTimeValue);
         if (time > 0)
         {
+#ifdef _WIN32
+            LARGE_INTEGER left;
+            // TODO: This is slightly inaccurate, use 100ns instead of us
+            left.QuadPart = -10 * time;
+            SetWaitableTimer(m_Timer, &left, 0, nullptr, nullptr, false);
+            WaitForSingleObject(m_Timer, INFINITE);
+#else
             pjutil::Sleep((time / 1000) + 1);
+#endif
         }
         // Refresh current time
         CurrentTime.SetToNow();
