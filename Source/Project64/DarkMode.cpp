@@ -141,13 +141,46 @@ HRESULT enableImmersiveDarkMode(HWND hwnd) {
 
 }
 
-static std::wstring getClass(HWND hwnd) {
-    TCHAR buf[512];
-    GetClassName(hwnd, buf, 512);
-    return buf;
-}
+#if 1
+struct StackString
+{
+    TCHAR buf[64];
 
-static bool isProject64(std::wstring className)
+    bool operator==(const TCHAR* str) const
+    {
+        return 0 == _tcscmp(buf, str);
+    }
+
+    bool operator!=(const TCHAR* str) const
+    {
+        return 0 != _tcscmp(buf, str);
+    }
+
+    int find(const TCHAR* str) const
+    {
+        const TCHAR* pos = _tcsstr(buf, str);
+        if (pos == nullptr)
+           return std::string::npos;
+        else
+           return pos - buf;
+    }
+};
+
+static StackString getClass(HWND hwnd) {
+    StackString str;
+    GetClassName(hwnd, str.buf, sizeof(str.buf) / sizeof(*str.buf));
+    return str;
+}
+#else
+using StackString = std::wstring;
+static std::wstring getClass(HWND hwnd) {
+	TCHAR buf[256];
+	GetClassName(hwnd, buf, sizeof(buf) / sizeof(*buf));
+	return buf;
+}
+#endif
+
+static bool isProject64(const StackString& className)
 {
     return className.find(L"Project64") != std::string::npos || className == L"msctls_statusbar32";
 }
@@ -617,7 +650,6 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 bool DarkModeEnter(DWORD reason)
 {
-    OutputDebugString(L"DllMain");
     static int cnt = 0;
     switch (reason)
     {
@@ -626,7 +658,6 @@ bool DarkModeEnter(DWORD reason)
         //while (!IsDebuggerPresent()) {
         //    Sleep(100);
         //}
-        OutputDebugString(L"DLL_PROCESS_ATTACH\n");
         cnt++;
         ASSERT(cnt == 1);
 
@@ -656,13 +687,10 @@ bool DarkModeEnter(DWORD reason)
         break;
     }
     case DLL_THREAD_ATTACH:
-        OutputDebugString(L"DLL_THREAD_ATTACH\n");
         break;
     case DLL_THREAD_DETACH:
-        OutputDebugString(L"DLL_THREAD_DETACH\n");
         break;
     case DLL_PROCESS_DETACH:
-        OutputDebugString(L"DLL_PROCESS_DETACH\n");
 
         if (hook_) {
             UnhookWindowsHookEx(hook_);
