@@ -1684,6 +1684,8 @@ bool CN64System::SaveState()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
+    HighResTimeStamp Start = m_Limiter.Now();
+
     //    if (!m_SystemTimer.SaveAllowed()) { return false; }
     if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0)
     {
@@ -1868,6 +1870,10 @@ bool CN64System::SaveState()
     }
     g_Notify->DisplayMessage(3, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
+
+    HighResTimeStamp End = m_Limiter.Now();
+    m_Limiter.AdjustTime(End - Start);
+
     return true;
 }
 
@@ -1944,6 +1950,8 @@ bool CN64System::LoadState()
 bool CN64System::LoadState(const char * FileName)
 {
     WriteTrace(TraceN64System, TraceDebug, "(%s): Start", FileName);
+
+    HighResTimeStamp Start = m_Limiter.Now();
 
     uint32_t Value, SaveRDRAMSize, NextVITimer = 0, old_status, old_width, old_dacrate;
     bool LoadedZipFile = false, AudioResetOnLoad;
@@ -2230,6 +2238,11 @@ bool CN64System::LoadState(const char * FileName)
     std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
     g_Notify->DisplayMessage(3, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
+
+    HighResTimeStamp End = m_Limiter.Now();
+    m_Limiter.Reset();
+    m_Limiter.AdjustTime(End - Start);
+
     return true;
 }
 
