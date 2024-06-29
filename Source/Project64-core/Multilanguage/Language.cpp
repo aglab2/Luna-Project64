@@ -697,6 +697,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_TOOL_IPL_REQUIRED, "Nintendo 64DD development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the settings.");
     DEF_STR(MSG_CHEAT_INVALID_MSG, "Failed to update cheat, it is invalid");
     DEF_STR(MSG_CHEAT_INVALID_TITLE, "Invalid Cheat");
+    DEF_STR(MSG_ENABLE_DEBUGGER_MSG, "Debugger features are disabled by default to improve performance.\nIt is recommended that you only enable this if you need to use them.\nWould you like to enable debugger features? You can disable them in this menu at any time.");
 }
 
 CLanguage::CLanguage() :

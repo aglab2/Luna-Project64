@@ -747,6 +747,17 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/discord", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_HELP_ABOUT: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/project64-301n", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
+    case ID_DEBUGGER_ENABLE:
+        if (g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_ENABLE_DEBUGGER_MSG).c_str()))
+        {
+            g_Settings->SaveBool(Debugger_Enabled, 1);
+            ResetMenu();
+        }
+        break;
+    case ID_DEBUGGER_DISABLE:
+        g_Settings->SaveBool(Debugger_Enabled, 0);
+        ResetMenu();
+        break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
@@ -1799,6 +1810,14 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
             Item.SetItemTicked(true);
         }
         DebugMenu.push_back(Item);
+        DebugMenu.push_back(MENU_ITEM(SPLITER));
+        Item.Reset(ID_DEBUGGER_DISABLE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Disable Debugger");
+        DebugMenu.push_back(Item);
+
+    }
+    else {
+        Item.Reset(ID_DEBUGGER_ENABLE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Enable Debugger");
+        DebugMenu.push_back(Item);
     }
 
     // Help menu
@@ -1826,12 +1845,9 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MainTitleMenu.push_back(Item);
     if (!inBasicMode)
     {
-        if (HaveDebugger())
-        {
-            Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
-            if (RomLoading) { Item.SetItemEnabled(false); }
-            MainTitleMenu.push_back(Item);
-        }
+        Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
+        if (RomLoading) { Item.SetItemEnabled(false); }
+        MainTitleMenu.push_back(Item);
     }
     Item.Reset(SUB_MENU, MENU_HELP, EMPTY_STDSTR, &HelpMenu);
     if (RomLoading) { Item.SetItemEnabled(false); }

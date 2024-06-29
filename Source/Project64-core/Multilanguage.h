@@ -755,6 +755,7 @@ enum LanguageStringID
     MSG_TOOL_IPL_REQUIRED = 2062,
     MSG_CHEAT_INVALID_MSG = 2063,
     MSG_CHEAT_INVALID_TITLE = 2064,
+    MSG_ENABLE_DEBUGGER_MSG = 2065,
 };
 
 #include "Multilanguage/Language.h"
