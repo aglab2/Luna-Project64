@@ -4,6 +4,10 @@
 
 #include <Common/HighResTimeStamp.h>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 class CSpeedLimiter :
     private CGameSettings
 {
@@ -33,4 +37,8 @@ private:
     uint32_t m_Speed, m_BaseSpeed, m_Frames, m_MicroSecondsPerFrame;
 
 	static const uint32_t m_DefaultSpeed;
+
+#ifdef _WIN32
+    HANDLE m_Timer;
+#endif
 };
