@@ -616,14 +616,9 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
             BUTTONS Keys{};
             if (!g_InputDelayer)
             {
-                if (g_Plugins->Control()->GetKeys)
+                if (auto keysFn = g_Plugins->Control()->GetKeys)
                 {
-                    memset(&Keys, 0, sizeof(Keys));
-
-                    for (int Control = 0; Control < 4; Control++)
-                    {
-                        g_Plugins->Control()->GetKeys(Control, &Keys);
-                    }
+                    keysFn(Control, &Keys);
                 }
             }
             else
