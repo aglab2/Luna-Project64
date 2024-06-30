@@ -16,7 +16,8 @@
 
 UDWORD EleSpec[32], Indx[32];
 OPCODE RSPOpC;
-uint32_t *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
+uint32_t *PrgCount, RSP_Running, RSP_MfStatusCount;
+DWORD NextInstruction;
 
 p_func RSP_Opcode[64];
 p_func RSP_RegImm[32];
@@ -167,8 +168,9 @@ DWORD RunRecompilerCPU (DWORD Cycles);
 
 #define MI_INTR_SP				0x01		/* Bit 0: SP intr */
 
-__declspec(dllexport) DWORD CALL DoRspCycles ( DWORD Cycles )
+__declspec(dllexport) uint32_t CALL DoRspCycles ( uint32_t _Cycles )
 {
+	DWORD Cycles = _Cycles;
     extern Boolean AudioHle, GraphicsHle;
 	DWORD TaskType = *(DWORD*)(RSPInfo.DMEM + 0xFC0);
 		
@@ -194,7 +196,7 @@ __declspec(dllexport) DWORD CALL DoRspCycles ( DWORD Cycles )
 		}
 
 		*RSPInfo.DPC_STATUS_REG &= ~0x0002;
-		return Cycles;
+		return (uint32_t) Cycles;
 	}
 	else if (TaskType == 2 && AudioHle)
 	{
@@ -208,7 +210,7 @@ __declspec(dllexport) DWORD CALL DoRspCycles ( DWORD Cycles )
 			*RSPInfo.MI_INTR_REG |= R4300i_SP_Intr;
 			RSPInfo.CheckInterrupts();
 		}
-		return Cycles;
+		return (uint32_t) Cycles;
 	}
 	else if (TaskType == 7)
 	{

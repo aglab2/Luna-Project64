@@ -4,10 +4,13 @@
 #include "CPU.h"
 #include "breakpoint.h"
 
+BPOINT BPoint[MaxBPoints];
+int	NoOfBpoints;
+
 #define IDC_LOCATION_EDIT		105
 HWND BPoint_Win_hDlg, hRSPLocation = NULL;
 
-void Add_BPoint ( void )
+void CALL Add_BPoint ( void )
 {
 	char Title[10];
 
@@ -18,7 +21,7 @@ void Add_BPoint ( void )
 	}
 }
 
-int AddRSP_BPoint( DWORD Location, int Confirm )
+int CALL AddRSP_BPoint( DWORD Location, int Confirm )
 {
 	int count;
 
@@ -59,7 +62,7 @@ int AddRSP_BPoint( DWORD Location, int Confirm )
 	return TRUE;
 }
 
-int CheckForRSPBPoint ( DWORD Location )
+int CALL CheckForRSPBPoint ( DWORD Location )
 {
 	int count;
 	
@@ -73,7 +76,7 @@ int CheckForRSPBPoint ( DWORD Location )
 	return FALSE;
 }
 
-void CreateBPPanel ( void * hDlg, rectangle rcBox )
+void CALL CreateBPPanel ( void * hDlg, rectangle rcBox )
 {
 	if (hRSPLocation != NULL) { return; }
 
@@ -93,23 +96,23 @@ void CreateBPPanel ( void * hDlg, rectangle rcBox )
 	}
 }
 
-void HideBPPanel ( void )
+void CALL HideBPPanel ( void )
 {
 	ShowWindow(hRSPLocation,FALSE);
 }
 
-void PaintBPPanel ( window_paint ps )
+void CALL PaintBPPanel ( window_paint ps )
 {
 	TextOut( ps.hdc, 29,60,"Break when the program counter equals",37);
 	TextOut( ps.hdc, 59,85,"0x",2);
 }
 
-void ShowBPPanel ( void )
+void CALL ShowBPPanel ( void )
 {
 	ShowWindow(hRSPLocation,TRUE);
 }
 
-void RefreshBpoints ( void * hList )
+void CALL RefreshBpoints ( void * hList )
 {
 	char Message[100];
 	LRESULT location;
@@ -127,13 +130,14 @@ void RefreshBpoints ( void * hList )
 	}
 }
 
-void RemoveAllBpoint ( void )
+void CALL RemoveAllBpoint ( void )
 {
 	NoOfBpoints = 0;
 }
 
-void RemoveBpoint ( HWND hList, int index )
+void CALL RemoveBpoint (void* _hList, int index )
 {
+	HWND hList = (HWND)_hList;
 	LRESULT response;
 	uint32_t location;
 
@@ -149,7 +153,7 @@ void RemoveBpoint ( HWND hList, int index )
 	RemoveRSPBreakPoint(location);
 }
 
-void RemoveRSPBreakPoint (DWORD Location)
+void CALL RemoveRSPBreakPoint (DWORD Location)
 {
 	int count, location = -1;
 	

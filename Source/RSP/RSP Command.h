@@ -4,7 +4,7 @@ void DumpRSPCode (void);
 void DumpRSPData (void);
 void Disable_RSP_Commands_Window ( void );
 void Enable_RSP_Commands_Window ( void );
-void Enter_RSP_Commands_Window ( void );
+void CALL Enter_RSP_Commands_Window ( void );
 void RefreshRSPCommands ( void );
 void SetRSPCommandToRunning ( void );
 void SetRSPCommandToStepping ( void );

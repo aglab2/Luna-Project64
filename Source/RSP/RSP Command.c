@@ -399,7 +399,7 @@ void Enable_RSP_Commands_Window ( void )
 	}
 }
 
-void Enter_RSP_Commands_Window ( void )
+void CALL Enter_RSP_Commands_Window ( void )
 {
     Create_RSP_Commands_Window ( FALSE );
 }
