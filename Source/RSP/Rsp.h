@@ -65,11 +65,11 @@ typedef struct {
     uint32_t * DPC_PIPEBUSY_REG;
     uint32_t * DPC_TMEM_REG;
 
-	void (*CheckInterrupts)( void );
-	void (*ProcessDList)( void );
-	void (*ProcessAList)( void );
-	void (*ProcessRdpList)( void );
-	void (*ShowCFB)( void );
+	void (CALL *CheckInterrupts)( void );
+	void (CALL *ProcessDList)( void );
+	void (CALL *ProcessAList)( void );
+	void (CALL *ProcessRdpList)( void );
+	void (CALL *ShowCFB)( void );
 } RSP_INFO;
 
 typedef struct {
@@ -93,28 +93,28 @@ typedef struct {
 	// Breakpoints
     int UseBPoints;
 	char BPPanelName[20];
-	void (*Add_BPoint)      ( void );
-    void (*CreateBPPanel) (void * hDlg, rectangle rcBox);
-	void (*HideBPPanel)     ( void );
-    void (*PaintBPPanel)  (window_paint ps);
-	void (*ShowBPPanel)     ( void );
-    void (*RefreshBpoints)(void * hList);
-    void (*RemoveBpoint)  (void * hList, int index);
-	void (*RemoveAllBpoint) ( void );
+	void (CALL *Add_BPoint)      ( void );
+    void (CALL *CreateBPPanel) (void * hDlg, rectangle rcBox);
+	void (CALL *HideBPPanel)     ( void );
+    void (CALL *PaintBPPanel)  (window_paint ps);
+	void (CALL *ShowBPPanel)     ( void );
+    void (CALL *RefreshBpoints)(void * hList);
+    void (CALL *RemoveBpoint)  (void * hList, int index);
+	void (CALL *RemoveAllBpoint) ( void );
 	
 	// RSP command window
-	void (*Enter_RSP_Commands_Window) ( void );
+	void (CALL *Enter_RSP_Commands_Window) ( void );
 } RSPDEBUG_INFO;
 
 typedef struct {
-	void (*UpdateBreakPoints)( void );
-	void (*UpdateMemory)( void );
-	void (*UpdateR4300iRegisters)( void );
-	void (*Enter_BPoint_Window)( void );
-	void (*Enter_R4300i_Commands_Window)( void );
-	void (*Enter_R4300i_Register_Window)( void );
-	void (*Enter_RSP_Commands_Window) ( void );
-	void (*Enter_Memory_Window)( void );
+	void (CALL *UpdateBreakPoints)( void );
+	void (CALL *UpdateMemory)( void );
+	void (CALL *UpdateR4300iRegisters)( void );
+	void (CALL *Enter_BPoint_Window)( void );
+	void (CALL *Enter_R4300i_Commands_Window)( void );
+	void (CALL *Enter_R4300i_Register_Window)( void );
+	void (CALL *Enter_RSP_Commands_Window) ( void );
+	void (CALL *Enter_Memory_Window)( void );
 } DEBUG_INFO;
 
 EXPORT void CALL CloseDLL(void);

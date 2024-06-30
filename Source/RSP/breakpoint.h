@@ -6,18 +6,18 @@ typedef struct {
    unsigned int Location;
 } BPOINT;
 
-BPOINT BPoint[MaxBPoints];
-int	NoOfBpoints;
+extern BPOINT BPoint[MaxBPoints];
+extern int	NoOfBpoints;
 
-void Add_BPoint ( void );
-void CreateBPPanel ( void * hDlg, rectangle rcBox );
-void HideBPPanel ( void );
-void PaintBPPanel ( window_paint ps );
-void ShowBPPanel ( void );
-void RefreshBpoints ( void * hList );
-void RemoveBpoint ( void * hList, int index );
-void RemoveAllBpoint ( void );
+void CALL Add_BPoint ( void );
+void CALL CreateBPPanel ( void * hDlg, rectangle rcBox );
+void CALL HideBPPanel ( void );
+void CALL PaintBPPanel ( window_paint ps );
+void CALL ShowBPPanel ( void );
+void CALL RefreshBpoints ( void * hList );
+void CALL RemoveBpoint ( void * hList, int index );
+void CALL RemoveAllBpoint ( void );
 
-int  AddRSP_BPoint ( DWORD Location, int Confirm );
-int  CheckForRSPBPoint ( DWORD Location );
-void RemoveRSPBreakPoint (DWORD Location);
+int  CALL AddRSP_BPoint ( DWORD Location, int Confirm );
+int  CALL CheckForRSPBPoint ( DWORD Location );
+void CALL RemoveRSPBreakPoint (DWORD Location);
