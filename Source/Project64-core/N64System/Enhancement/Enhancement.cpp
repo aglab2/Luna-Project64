@@ -21,7 +21,7 @@ static std::string GenerateKeyName(const char * Name, const char * Ident, const 
     return stdstr_f("%s_%s_%s", Ident, KeyName.c_str(), PostIdent);
 }
 
-class CSettingEnhancementActive :
+class COREAPI CSettingEnhancementActive :
     public CSettingTypeGame
 {
 public:

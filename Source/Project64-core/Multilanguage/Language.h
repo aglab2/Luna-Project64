@@ -6,6 +6,8 @@
 #include <list>
 #include <stdint.h>
 
+#include <Project64-core/CoreApi.h>
+
 typedef std::map<int32_t, std::string, std::less<int32_t> > LANG_STRINGS;
 typedef LANG_STRINGS::value_type LANG_STR;
 
@@ -17,7 +19,7 @@ struct LanguageFile
 
 typedef std::list<LanguageFile> LanguageList;
 
-class CLanguage
+class COREAPI CLanguage
 {
 public:
     CLanguage();
@@ -54,7 +56,7 @@ private:
     bool m_LanguageLoaded;
 };
 
-extern CLanguage * g_Lang;
+extern COREAPI CLanguage * g_Lang;
 
 inline const char * GS(LanguageStringID StringID)
 {
@@ -62,5 +64,5 @@ inline const char * GS(LanguageStringID StringID)
 }
 
 #ifdef _WIN32
-const std::wstring wGS(LanguageStringID StringID);
+COREAPI const std::wstring wGS(LanguageStringID StringID);
 #endif

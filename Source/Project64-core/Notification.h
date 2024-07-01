@@ -6,7 +6,7 @@
 #define __interface struct
 #endif
 
-__interface CNotification
+__interface COREAPI CNotification
 {
 public:
     // Error messages
@@ -34,4 +34,4 @@ public:
     virtual void ChangeFullScreen(void) const = 0;
 };
 
-extern CNotification * g_Notify;
+extern COREAPI CNotification * g_Notify;

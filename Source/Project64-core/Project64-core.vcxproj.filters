@@ -689,6 +689,9 @@
     <ClInclude Include="CircularBuffer.h">
       <Filter>Header Files\N64 System</Filter>
     </ClInclude>
+    <ClInclude Include="CoreApi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Version.h.in">

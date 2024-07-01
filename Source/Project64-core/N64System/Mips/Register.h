@@ -536,7 +536,7 @@ enum
     DD_BM_CTL_MECHA_RST  =	0x01000000
 };
 
-class CRegName
+class COREAPI CRegName
 {
 public:
     static const char *GPR[32];
@@ -566,7 +566,7 @@ protected:
 class CN64System;
 class CSystemEvents;
 
-class CRegisters :
+class COREAPI CRegisters :
     public CLogging,
     private CDebugSettings,
     private CGameSettings,

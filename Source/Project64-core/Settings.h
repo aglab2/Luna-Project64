@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Project64-core/CoreApi.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 #include <Project64-core/Settings/SettingsID.h>
 #include <map>
@@ -23,7 +24,7 @@ enum SettingDataType
     Data_SaveChip = 6
 };
 
-class CSettings
+class COREAPI CSettings
 {
 public:
     typedef void(*SettingChangedFunc)(void *);
@@ -125,4 +126,4 @@ private:
     uint32_t m_NextAutoSettingId;
 };
 
-extern CSettings * g_Settings;
+extern COREAPI CSettings * g_Settings;

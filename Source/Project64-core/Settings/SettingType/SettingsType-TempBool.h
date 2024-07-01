@@ -2,7 +2,7 @@
 
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
-class CSettingTypeTempBool :
+class COREAPI CSettingTypeTempBool :
     public CSettingType
 {
 public:

@@ -3,7 +3,7 @@
 #include <Project64-core/N64System/N64Types.h>
 #include <stdint.h>
 
-class CN64Disk
+class COREAPI CN64Disk
 {
 public:
     CN64Disk();

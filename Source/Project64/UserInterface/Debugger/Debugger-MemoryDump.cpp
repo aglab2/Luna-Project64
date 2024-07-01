@@ -159,7 +159,8 @@ bool CDumpMemory::DumpMemory(LPCTSTR FileName, DumpFormat Format, DWORD StartPC,
 
             char* cmdName = strtok((char*)command, "\t");
             char* cmdArgs = strtok(nullptr, "\t");
-            cmdArgs = cmdArgs ? cmdArgs : "";
+            char emptyArg[] = {0};
+            cmdArgs = cmdArgs ? cmdArgs : emptyArg;
 
             LogFile.LogF("%X: %-15s%s\r\n", DumpPC, cmdName, cmdArgs);
         }

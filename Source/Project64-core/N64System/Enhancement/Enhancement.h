@@ -2,8 +2,9 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <Project64-core/CoreApi.h>
 
-class CEnhancement
+class COREAPI CEnhancement
 {
 public:
     static const char * CheatIdent;

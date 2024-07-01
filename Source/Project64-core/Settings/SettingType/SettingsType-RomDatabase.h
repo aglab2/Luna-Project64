@@ -3,7 +3,7 @@
 #include <Common/IniFile.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
-class CSettingTypeRomDatabase :
+class COREAPI CSettingTypeRomDatabase :
     public CSettingType
 {
 public:

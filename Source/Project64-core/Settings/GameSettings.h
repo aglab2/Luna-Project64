@@ -3,7 +3,7 @@
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
-class CGameSettings
+class COREAPI CGameSettings
 {
 public:
     void RefreshGameSettings(void);

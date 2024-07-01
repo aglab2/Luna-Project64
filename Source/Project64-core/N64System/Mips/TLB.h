@@ -15,7 +15,7 @@ __interface CTLB_CB
 #pragma warning(push)
 #pragma warning(disable : 4201) // warning C4201: nonstandard extension used : nameless struct/union
 
-class CTLB :
+class COREAPI CTLB :
     protected CSystemRegisters
 {
 public:

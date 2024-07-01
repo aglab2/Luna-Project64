@@ -1,10 +1,11 @@
 #pragma once
 
+#include <Project64-core/CoreApi.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Multilanguage.h>
 
-class CN64Rom :
+class COREAPI CN64Rom :
     protected CDebugSettings
 {
 public:

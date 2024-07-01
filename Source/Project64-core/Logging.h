@@ -2,7 +2,9 @@
 #include <Project64-core/Settings/LoggingSettings.h>
 #include <Common/File.h>
 
-class CLogging :
+#include <Project64-core/CoreApi.h>
+
+class COREAPI CLogging :
     public CLogSettings
 {
 public:

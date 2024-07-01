@@ -1,6 +1,8 @@
 #pragma once
 
-class CAudio
+#include <Project64-core/CoreApi.h>
+
+class COREAPI CAudio
 {
     enum
     {

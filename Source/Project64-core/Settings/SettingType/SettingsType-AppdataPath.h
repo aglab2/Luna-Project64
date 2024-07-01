@@ -3,7 +3,7 @@
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 #include <shlobj.h>
 
-class CSettingTypeAppdataPath :
+class COREAPI CSettingTypeAppdataPath :
     public CSettingType
 {
 public:

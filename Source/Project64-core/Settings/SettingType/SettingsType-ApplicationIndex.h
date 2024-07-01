@@ -1,6 +1,6 @@
 #pragma once
 
-class CSettingTypeApplicationIndex :
+class COREAPI CSettingTypeApplicationIndex :
     public CSettingTypeApplication
 {
 public:

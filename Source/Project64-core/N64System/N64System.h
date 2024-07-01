@@ -29,7 +29,7 @@ class CRecompiler;
 
 //#define TEST_SP_TRACKING  // Track the SP to make sure all ops pick it up fine
 
-class CN64System :
+class COREAPI CN64System :
     public CLogging,
     public CTLB_CB,
     private CSystemEvents,

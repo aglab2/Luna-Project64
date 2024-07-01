@@ -500,7 +500,7 @@ static const char * R4300iCop1Name(uint32_t OpCode, uint32_t PC)
     return CommandName;
 }
 
-const char * R4300iOpcodeName(uint32_t OpCode, uint32_t PC)
+COREAPI const char * R4300iOpcodeName(uint32_t OpCode, uint32_t PC)
 {
     OPCODE command;
     command.Hex = OpCode;

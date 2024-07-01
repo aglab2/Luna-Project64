@@ -1,4 +1,5 @@
 #pragma once
+#include <Project64-core/CoreApi.h>
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 #include <Project64-core/N64System/Enhancement/EnhancementList.h>
 #include <Common/Thread.h>
@@ -9,7 +10,7 @@
 class CMipsMemoryVM;
 class CPlugins;
 
-class CEnhancements
+class COREAPI CEnhancements
 {
     enum
     {

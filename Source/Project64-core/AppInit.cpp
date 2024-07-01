@@ -215,7 +215,7 @@ static bool ParseCommand(int32_t argc, char **argv)
     return false;
 }
 
-bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char **argv)
+COREAPI bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char **argv)
 {
     try
     {
@@ -281,7 +281,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
     }
 }
 
-void AppCleanup(void)
+COREAPI void AppCleanup(void)
 {
     WriteTrace(TraceAppCleanup, TraceDebug, "Cleaning up global objects");
     CleanupTrace();

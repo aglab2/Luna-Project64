@@ -3,7 +3,9 @@
 
 #include <string>
 
-class CSummerCart
+#include <Project64-core/CoreApi.h>
+
+class COREAPI CSummerCart
 {
 public:
     static void MakeInitialImage();

@@ -5,8 +5,9 @@
 #include <Common/md5.h>
 #include <Common/Thread.h>
 #include <Project64-core/N64System/N64Types.h>
+#include <Project64-core/CoreApi.h>
 
-class CRomList
+class COREAPI CRomList
 {
 public:
     enum FILE_FORMAT

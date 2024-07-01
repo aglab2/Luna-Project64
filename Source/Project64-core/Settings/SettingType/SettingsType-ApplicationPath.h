@@ -1,6 +1,8 @@
 #pragma once
 
-class CSettingTypeApplicationPath :
+#include <Project64-core/CoreApi.h>
+
+class COREAPI CSettingTypeApplicationPath :
     public CSettingTypeApplication
 {
 public:

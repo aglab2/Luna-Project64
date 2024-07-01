@@ -1,6 +1,8 @@
 #pragma once
 
-class CLogSettings
+#include <Project64-core/CoreApi.h>
+
+class COREAPI CLogSettings
 {
 public:
     CLogSettings();

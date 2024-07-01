@@ -1,7 +1,7 @@
 #pragma once
 #include <Project64-core/Plugins/PluginBase.h>
 
-class CRSP_Plugin : public CPlugin
+class COREAPI CRSP_Plugin : public CPlugin
 {
     typedef struct {
         // Menu

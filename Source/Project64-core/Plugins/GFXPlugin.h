@@ -1,7 +1,8 @@
 #pragma once
+#include <Project64-core/CoreApi.h>
 #include <Project64-core/Plugins/PluginBase.h>
 
-class CGfxPlugin : public CPlugin
+class COREAPI CGfxPlugin : public CPlugin
 {
     typedef struct
     {

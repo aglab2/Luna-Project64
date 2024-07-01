@@ -5,7 +5,7 @@
 #include <Project64-core/Plugins/Plugin.h>
 #include <Common/DynamicLibrary.h>
 
-class CPlugin :
+class COREAPI CPlugin :
     private CDebugSettings
 {
 public:

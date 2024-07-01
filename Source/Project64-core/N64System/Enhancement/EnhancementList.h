@@ -11,7 +11,7 @@ struct EnhancementItemList_compare
     }
 };
 
-class CEnhancementList :
+class COREAPI CEnhancementList :
     public std::map<std::string, CEnhancement, EnhancementItemList_compare>
 {
 public:

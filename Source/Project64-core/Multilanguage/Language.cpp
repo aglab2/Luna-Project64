@@ -956,7 +956,7 @@ void CLanguage::ResetStrings(void)
 }
 
 #ifdef _WIN32
-const std::wstring wGS(LanguageStringID StringID)
+COREAPI const std::wstring wGS(LanguageStringID StringID)
 {
     return stdstr(g_Lang->GetString(StringID)).ToUTF16();
 }

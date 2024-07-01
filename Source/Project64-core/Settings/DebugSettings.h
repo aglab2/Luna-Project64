@@ -1,8 +1,9 @@
 #pragma once
 
+#include <Project64-core/CoreApi.h>
 #include <Project64-core/N64System/N64Types.h>
 
-class CDebugSettings
+class COREAPI CDebugSettings
 {
 public:
     CDebugSettings();

@@ -1,6 +1,8 @@
 #pragma once
 
-class CSram
+#include <Project64-core/CoreApi.h>
+
+class COREAPI CSram
 {
 public:
     CSram(bool ReadOnly);

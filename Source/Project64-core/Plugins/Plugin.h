@@ -117,7 +117,7 @@ __interface RenderWindow
 #endif
 };
 
-class CPlugins :
+class COREAPI CPlugins :
     private CDebugSettings
 {
 public:
