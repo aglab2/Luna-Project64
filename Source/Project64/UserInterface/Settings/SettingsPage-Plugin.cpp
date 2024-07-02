@@ -36,6 +36,11 @@ COptionPluginPage::COptionPluginPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Plugin_UseHleGfx);
     AddModCheckBox(GetDlgItem(IDC_HLE_AUDIO), Plugin_UseHleAudio);
 
+    if (g_Settings->LoadBool((SettingID)Plugin_UseHleAudio)) {
+        g_Settings->SaveBool((SettingID)Plugin_UseHleAudio, 0);
+        MessageBox(wGS(MSG_AUDIO_HLE_UNSUPPORTED_DEFAULT).c_str(), wGS(MSG_DEPRECATED_SETTING_TITLE).c_str(), MB_OK);
+    }
+
     UpdatePageSettings();
 }
 

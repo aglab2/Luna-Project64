@@ -698,6 +698,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_CHEAT_INVALID_MSG, "Failed to update cheat, it is invalid");
     DEF_STR(MSG_CHEAT_INVALID_TITLE, "Invalid Cheat");
     DEF_STR(MSG_ENABLE_DEBUGGER_MSG, "Debugger features are disabled by default to improve performance.\nIt is recommended that you only enable this if you need to use them.\nWould you like to enable debugger features? You can disable them in this menu at any time.");
+    DEF_STR(MSG_AUDIO_HLE_UNSUPPORTED_DEFAULT, "The setting \"Use Audio HLE\", which was enabled for all games, is no longer supported and has been disabled.");
+    DEF_STR(MSG_AUDIO_HLE_UNSUPPORTED_GAME, "The setting \"Use Audio HLE\", which was enabled for the currently opened game, is no longer supported and has been disabled.");
+    DEF_STR(MSG_DEPRECATED_SETTING_TITLE, "Deprecated setting");
 }
 
 CLanguage::CLanguage() :

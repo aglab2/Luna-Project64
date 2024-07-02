@@ -38,6 +38,11 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_HLE_AUDIO), Game_UseHleAudio);
 
     UpdatePageSettings();
+
+    if (g_Settings->LoadBool((SettingID)Game_UseHleAudio)) {
+        g_Settings->SaveBool((SettingID)Game_UseHleAudio, 0);
+        MessageBox(wGS(MSG_AUDIO_HLE_UNSUPPORTED_GAME).c_str(), wGS(MSG_DEPRECATED_SETTING_TITLE).c_str(), MB_OK);
+    }
 }
 
 void CGamePluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE PluginType)
