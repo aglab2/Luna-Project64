@@ -178,7 +178,8 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
             }
             break;
         default:
-            g_Notify->DisplayError(stdstr_f("Writing %X to flash RAM command register\nm_FlashFlag: %d", FlashRAM_Command, m_FlashFlag).c_str());
+            if (HaveDebugger())
+                g_Notify->DisplayError(stdstr_f("Writing %X to flash RAM command register\nm_FlashFlag: %d", FlashRAM_Command, m_FlashFlag).c_str());
         }
         m_FlashFlag = FLASHRAM_MODE_NOPES;
         break;

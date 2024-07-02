@@ -52,7 +52,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4005;4006;4100;4127;4131;4189;4244;4701;4703;4996</DisableSpecificWarnings>
       <!-- Fix for later VC versions on XP: 45KB + 436 -->
-      <PreprocessorDefinitions>Z_BUFSIZE=46516;$(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>X86_FEATURES;X86_SSE2;X86_SSSE3;X86_SSE42;X86_AVX2;X86_AVX512;X86_AVX512VNNI;X86_PCLMULQDQ_CRC;X86_VPCLMULQDQ_CRC;HAVE_ZLIB;WITH_GZFILEOP;$(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FastCall</CallingConvention>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FastCall</CallingConvention>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FastCall</CallingConvention>
@@ -75,43 +75,130 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="adler32.c" />
+    <ClCompile Include="arch\generic\adler32_c.c" />
+    <ClCompile Include="arch\generic\adler32_fold_c.c" />
+    <ClCompile Include="arch\generic\chunkset_c.c" />
+    <ClCompile Include="arch\generic\compare256_c.c" />
+    <ClCompile Include="arch\generic\crc32_braid_c.c" />
+    <ClCompile Include="arch\generic\crc32_fold_c.c" />
+    <ClCompile Include="arch\generic\slide_hash_c.c" />
+    <ClCompile Include="arch\x86\adler32_avx2.c" />
+    <ClCompile Include="arch\x86\adler32_avx512.c" />
+    <ClCompile Include="arch\x86\adler32_avx512_vnni.c" />
+    <ClCompile Include="arch\x86\adler32_sse42.c" />
+    <ClCompile Include="arch\x86\adler32_ssse3.c" />
+    <ClCompile Include="arch\x86\chunkset_avx2.c" />
+    <ClCompile Include="arch\x86\chunkset_sse2.c" />
+    <ClCompile Include="arch\x86\chunkset_ssse3.c" />
+    <ClCompile Include="arch\x86\compare256_avx2.c" />
+    <ClCompile Include="arch\x86\compare256_sse2.c" />
+    <ClCompile Include="arch\x86\crc32_pclmulqdq.c" />
+    <ClCompile Include="arch\x86\crc32_vpclmulqdq.c" />
+    <ClCompile Include="arch\x86\slide_hash_avx2.c" />
+    <ClCompile Include="arch\x86\slide_hash_sse2.c" />
+    <ClCompile Include="arch\x86\x86_features.c" />
     <ClCompile Include="compress.c" />
+    <ClCompile Include="cpu_features.c" />
     <ClCompile Include="crc32.c" />
+    <ClCompile Include="crc32_braid_comb.c" />
     <ClCompile Include="deflate.c" />
-    <ClCompile Include="gzclose.c" />
+    <ClCompile Include="deflate_fast.c" />
+    <ClCompile Include="deflate_huff.c" />
+    <ClCompile Include="deflate_medium.c" />
+    <ClCompile Include="deflate_quick.c" />
+    <ClCompile Include="deflate_rle.c" />
+    <ClCompile Include="deflate_slow.c" />
+    <ClCompile Include="deflate_stored.c" />
+    <ClCompile Include="functable.c" />
     <ClCompile Include="gzlib.c" />
     <ClCompile Include="gzread.c" />
     <ClCompile Include="gzwrite.c" />
     <ClCompile Include="infback.c" />
-    <ClCompile Include="inffast.c" />
     <ClCompile Include="inflate.c" />
     <ClCompile Include="inftrees.c" />
+    <ClCompile Include="insert_string.c" />
+    <ClCompile Include="insert_string_roll.c" />
+    <ClCompile Include="contrib\minizip\mz_compat.c" />
+    <ClCompile Include="contrib\minizip\mz_crypt.c" />
+    <ClCompile Include="contrib\minizip\mz_crypt_winvista.c" />
+    <ClCompile Include="contrib\minizip\mz_crypt_winxp.c" />
+    <ClCompile Include="contrib\minizip\mz_os.c" />
+    <ClCompile Include="contrib\minizip\mz_os_win32.c" />
+    <ClCompile Include="contrib\minizip\mz_strm.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_buf.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_mem.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_os_win32.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_pkcrypt.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_split.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_wzaes.c" />
+    <ClCompile Include="contrib\minizip\mz_strm_zlib.c" />
+    <ClCompile Include="contrib\minizip\mz_zip.c" />
+    <ClCompile Include="contrib\minizip\mz_zip_rw.c" />
     <ClCompile Include="trees.c" />
     <ClCompile Include="uncompr.c" />
     <ClCompile Include="zutil.c" />
-    <ClCompile Include="contrib\minizip\ioapi.c" />
-    <ClCompile Include="contrib\minizip\iowin32.c" />
-    <ClCompile Include="contrib\minizip\mztools.c" />
-    <ClCompile Include="contrib\minizip\unzip.c" />
-    <ClCompile Include="contrib\minizip\zip.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adler32_p.h" />
+    <ClInclude Include="arch\generic\chunk_permute_table.h" />
+    <ClInclude Include="arch\generic\generic_functions.h" />
+    <ClInclude Include="arch\x86\adler32_avx2_p.h" />
+    <ClInclude Include="arch\x86\adler32_avx512_p.h" />
+    <ClInclude Include="arch\x86\adler32_ssse3_p.h" />
+    <ClInclude Include="arch\x86\crc32_fold_pclmulqdq_tpl.h" />
+    <ClInclude Include="arch\x86\crc32_fold_vpclmulqdq_tpl.h" />
+    <ClInclude Include="arch\x86\crc32_pclmulqdq_tpl.h" />
+    <ClInclude Include="arch\x86\x86_features.h" />
+    <ClInclude Include="arch\x86\x86_functions.h" />
+    <ClInclude Include="arch\x86\x86_intrins.h" />
+    <ClInclude Include="arch_functions.h" />
+    <ClInclude Include="chunkset_tpl.h" />
+    <ClInclude Include="compare256_rle.h" />
+    <ClInclude Include="cpu_features.h" />
     <ClInclude Include="crc32.h" />
+    <ClInclude Include="crc32_braid_comb_p.h" />
+    <ClInclude Include="crc32_braid_p.h" />
+    <ClInclude Include="crc32_braid_tbl.h" />
     <ClInclude Include="deflate.h" />
+    <ClInclude Include="deflate_p.h" />
+    <ClInclude Include="fallback_builtins.h" />
+    <ClInclude Include="functable.h" />
     <ClInclude Include="gzguts.h" />
-    <ClInclude Include="inffast.h" />
-    <ClInclude Include="inffixed.h" />
+    <ClInclude Include="inffast_tpl.h" />
+    <ClInclude Include="inffixed_tbl.h" />
     <ClInclude Include="inflate.h" />
+    <ClInclude Include="inflate_p.h" />
     <ClInclude Include="inftrees.h" />
+    <ClInclude Include="insert_string_tpl.h" />
+    <ClInclude Include="match_tpl.h" />
+    <ClInclude Include="contrib\minizip\mz.h" />
+    <ClInclude Include="contrib\minizip\mz_compat.h" />
+    <ClInclude Include="contrib\minizip\mz_compat_shim.h" />
+    <ClInclude Include="contrib\minizip\mz_crypt.h" />
+    <ClInclude Include="contrib\minizip\mz_os.h" />
+    <ClInclude Include="contrib\minizip\mz_strm.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_buf.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_libcomp.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_lzma.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_mem.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_os.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_pkcrypt.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_split.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_wzaes.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_zlib.h" />
+    <ClInclude Include="contrib\minizip\mz_strm_zstd.h" />
+    <ClInclude Include="contrib\minizip\mz_zip.h" />
+    <ClInclude Include="contrib\minizip\mz_zip_rw.h" />
     <ClInclude Include="trees.h" />
-    <ClInclude Include="zconf.h" />
-    <ClInclude Include="zlib.h" />
+    <ClInclude Include="trees_emit.h" />
+    <ClInclude Include="trees_tbl.h" />
+    <ClInclude Include="zbuild.h" />
+    <ClInclude Include="zconf-ng.h" />
+    <ClInclude Include="zendian.h" />
+    <ClInclude Include="zlib-ng.h" />
+    <ClInclude Include="zlib_name_mangling-ng.h" />
+    <ClInclude Include="zlib_name_mangling.h" />
     <ClInclude Include="zutil.h" />
-    <ClInclude Include="contrib\minizip\crypt.h" />
-    <ClInclude Include="contrib\minizip\ioapi.h" />
-    <ClInclude Include="contrib\minizip\iowin32.h" />
-    <ClInclude Include="contrib\minizip\mztools.h" />
-    <ClInclude Include="contrib\minizip\unzip.h" />
-    <ClInclude Include="contrib\minizip\zip.h" />
+    <ClInclude Include="zutil_p.h" />
   </ItemGroup>
 </Project>
