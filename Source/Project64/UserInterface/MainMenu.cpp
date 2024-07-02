@@ -331,7 +331,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 
         if (state == SdCardMounter::VHD)
         {
-            MessageBox(hWnd, L"SD Card is prepared for mounting. Please check Windows popup to access SD Card contents.", L"SDCard", MB_ICONEXCLAMATION);
+
+            MessageBox(hWnd, wGS(MSG_SDCARD_PREPARED).c_str(), wGS(MSG_SDCARD_TITLE).c_str(), MB_ICONEXCLAMATION);
             wchar_t* AppdataPathW = NULL;
             SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
             PathAppend(AppdataPathW, L"Luna-Project64");
@@ -339,7 +340,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
         else
         {
-            MessageBox(hWnd, L"SD Card is unmounted and can be accessed in emulator", L"SDCard", MB_OK);
+            MessageBox(hWnd, wGS(MSG_SDCARD_UNMOUNTED).c_str(), wGS(MSG_SDCARD_TITLE).c_str(), MB_OK);
         }
         {
             MENUITEMINFO MenuInfo = { 0 };
@@ -352,8 +353,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             MenuInfo.cch = 256;
 
             GetMenuItemInfo(m_MenuHandle, ID_FILE_MOUNT_SDCARD, false /*lookup by identifier*/, &MenuInfo);
-            // TOD: translate this appropriately
-            wcscpy(String, state ? L"Unmount SD Card" : L"Mount SD Card");
+            wcscpy(String, state ? wGS(MENU_UNMOUNT_SDCARD).c_str() : wGS(MENU_MOUNT_SDCARD).c_str());
             SetMenuItemInfo(m_MenuHandle, ID_FILE_MOUNT_SDCARD, false /*lookup by identifier*/, &MenuInfo);
         }
     }
@@ -362,11 +362,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         auto state = SdCardMounter::getState();
         if (state == SdCardMounter::State::VHD)
 		{
-            MessageBox(hWnd, L"Failed to unmount SD Card.\nMake sure SDCard is ejected in Windows. Right click on disk \"SDCARD0\" in Explorer and click Eject.", L"Error", MB_ICONERROR);
+            MessageBox(hWnd, wGS(MSG_SDCARD_UNMOUNT_FAILED).c_str(), wGS(MSG_MSGBOX_ERROR_TITLE).c_str(), MB_ICONERROR);
 		}
         else
         {
-            MessageBox(hWnd, L"Failed to mount SD Card", L"Error", MB_ICONERROR);
+            MessageBox(hWnd, wGS(MSG_SDCARD_MOUNT_FAILED).c_str(), wGS(MSG_MSGBOX_ERROR_TITLE).c_str(), MB_ICONERROR);
         }
     }
     break;

@@ -701,6 +701,11 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_AUDIO_HLE_UNSUPPORTED_DEFAULT, "The setting \"Use Audio HLE\", which was enabled for all games, is no longer supported and has been disabled.");
     DEF_STR(MSG_AUDIO_HLE_UNSUPPORTED_GAME, "The setting \"Use Audio HLE\", which was enabled for the currently opened game, is no longer supported and has been disabled.");
     DEF_STR(MSG_DEPRECATED_SETTING_TITLE, "Deprecated setting");
+    DEF_STR(MSG_SDCARD_TITLE, "SD Card");
+    DEF_STR(MSG_SDCARD_PREPARED, "SD Card is prepared for mounting. Please check Windows popup to access SD Card contents.");
+    DEF_STR(MSG_SDCARD_UNMOUNTED, "SD Card is unmounted and can be accessed in emulator");
+    DEF_STR(MSG_SDCARD_UNMOUNT_FAILED, "Failed to unmount SD Card.\nMake sure SDCard is ejected in Windows. Right click on disk \"SDCARD0\" in Explorer and click Eject.");
+    DEF_STR(MSG_SDCARD_MOUNT_FAILED, "Failed to mount SD Card");
 }
 
 CLanguage::CLanguage() :
