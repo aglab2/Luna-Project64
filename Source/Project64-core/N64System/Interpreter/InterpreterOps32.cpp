@@ -1040,9 +1040,9 @@ void R4300iOp32::LWR()
     }
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         return;

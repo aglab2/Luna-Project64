@@ -896,7 +896,8 @@ void CCodeSection::AddParent(CCodeSection * Parent)
         }
         else
         {
-            g_Notify->DisplayError("How are these sections joined?");
+            if (HaveDebugger())
+                g_Notify->DisplayError("How are these sections joined?");
         }
     }
     else
