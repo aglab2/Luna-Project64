@@ -203,11 +203,9 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         break;
     case IDC_SCRIPTDIR_BTN:
         //g_Settings breaks here for some reason
-        wchar_t* AppdataPathW = NULL;
-        SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-        PathAppend(AppdataPathW, L"Luna-Project64");
-        char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
-        wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
+        char AppdataPath[1024];
+        SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
+        PathAppendA(AppdataPath, "Luna-Project64\\");
 
         CPath FullPath = (AppdataPath, "");
         FullPath.AppendDirectory("Scripts");
@@ -215,10 +213,8 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
             // Create scripts dir and properly open it, instantly 500x less confusing
             FullPath.DirectoryCreate();
         }
-        PathAppend(AppdataPathW, L"Scripts");
-        ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
-
-        delete[] AppdataPath;
+        PathAppendA(AppdataPath, "Scripts");
+        ShellExecuteA(NULL, "open", AppdataPath, NULL, NULL, SW_SHOWNORMAL);
         break;
     }
     return FALSE;
@@ -247,13 +243,11 @@ void CDebugScripts::RefreshStatus()
     stdstr statusText;
 
     // Consider making a wchar version of CPath or allow appending sth that isn't a dir, the workarounds I had to use for this are horrendous
-    wchar_t* AppdataPathW = NULL;
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-    PathAppend(AppdataPathW, L"Luna-Project64");
-    char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
-    wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
-    PathAppendA(AppdataPath, "Scripts\\");
-    AppdataPath = strcat(AppdataPath, m_SelectedScriptName.c_str());
+    char AppdataPath[1024];
+    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
+    PathAppendA(AppdataPath, "Luna-Project64\\Scripts\\");
+    PathAppendA(AppdataPath, m_SelectedScriptName.c_str());
+
     CPath(stdstr_f(AppdataPath)).GetFullyQualified(statusText);
     
     if (state == STATE_RUNNING)
@@ -271,8 +265,6 @@ void CDebugScripts::RefreshStatus()
     }
 
     m_StatusBar.SetText(0, statusText.ToUTF16().c_str());
-
-    delete[] AppdataPath;
 }
 
 LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
@@ -401,12 +393,9 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     int nIndex = m_ScriptList.GetSelectedIndex();
 
     // Consider making a wchar version of CPath or allow appending sth that isn't a dir, the workarounds I had to use for this are horrendous
-    wchar_t* AppdataPathW = NULL;
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-    PathAppend(AppdataPathW, L"Luna-Project64");
-    char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
-    wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
-    PathAppendA(AppdataPath, "Scripts");
+    char AppdataPath[1024];
+    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
+    PathAppendA(AppdataPath, "Luna-Project64\\Scripts\\");
 
     CPath FullPath(AppdataPath, "*");
 
@@ -452,7 +441,6 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         m_ScriptList.SelectItem(nIndex);
         RefreshStatus();
     }
-    delete[] AppdataPath;
     return FALSE;
 }
 
@@ -511,6 +499,7 @@ void CDebugScripts::EditSelected()
     SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
     PathAppend(AppdataPathW, L"Luna-Project64\\Scripts");
     ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, AppdataPathW, SW_SHOWNORMAL);
+    CoTaskMemFree(&AppdataPathW);
 }
 
 // Console input
