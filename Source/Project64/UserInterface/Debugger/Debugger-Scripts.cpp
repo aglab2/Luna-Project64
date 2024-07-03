@@ -202,7 +202,23 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         ConsoleCopy();
         break;
     case IDC_SCRIPTDIR_BTN:
-        ShellExecute(nullptr, L"open", L"Scripts", nullptr, nullptr, SW_SHOW);
+        //g_Settings breaks here for some reason
+        wchar_t* AppdataPathW = NULL;
+        SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+        PathAppend(AppdataPathW, L"Luna-Project64");
+        char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
+        wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
+
+        CPath FullPath = (AppdataPath, "");
+        FullPath.AppendDirectory("Scripts");
+        if (!FullPath.DirectoryExists()) {
+            // Create scripts dir and properly open it, instantly 500x less confusing
+            FullPath.DirectoryCreate();
+        }
+        PathAppend(AppdataPathW, L"Scripts");
+        ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
+
+        delete[] AppdataPath;
         break;
     }
     return FALSE;
@@ -229,7 +245,16 @@ void CDebugScripts::RefreshStatus()
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName.c_str());
 
     stdstr statusText;
-    CPath(stdstr_f("Scripts\\%s", m_SelectedScriptName.c_str())).GetFullyQualified(statusText);
+
+    // Consider making a wchar version of CPath or allow appending sth that isn't a dir, the workarounds I had to use for this are horrendous
+    wchar_t* AppdataPathW = NULL;
+    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+    PathAppend(AppdataPathW, L"Luna-Project64");
+    char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
+    wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
+    PathAppendA(AppdataPath, "Scripts\\");
+    AppdataPath = strcat(AppdataPath, m_SelectedScriptName.c_str());
+    CPath(stdstr_f(AppdataPath)).GetFullyQualified(statusText);
     
     if (state == STATE_RUNNING)
     {
@@ -246,6 +271,8 @@ void CDebugScripts::RefreshStatus()
     }
 
     m_StatusBar.SetText(0, statusText.ToUTF16().c_str());
+
+    delete[] AppdataPath;
 }
 
 LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
@@ -373,9 +400,17 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 {
     int nIndex = m_ScriptList.GetSelectedIndex();
 
-    CPath SearchPath("Scripts", "*");
+    // Consider making a wchar version of CPath or allow appending sth that isn't a dir, the workarounds I had to use for this are horrendous
+    wchar_t* AppdataPathW = NULL;
+    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+    PathAppend(AppdataPathW, L"Luna-Project64");
+    char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
+    wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
+    PathAppendA(AppdataPath, "Scripts");
 
-    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
+    CPath FullPath(AppdataPath, "*");
+
+    if (!FullPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
         return FALSE;
     }
@@ -387,7 +422,7 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     do
     {
-        stdstr scriptFileName = SearchPath.GetNameExtension();
+        stdstr scriptFileName = FullPath.GetNameExtension();
         INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(scriptFileName.c_str());
         const wchar_t *statusIcon = L"";
 
@@ -407,7 +442,7 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         m_ScriptList.AddItem(nItem, 0, statusIcon);
         m_ScriptList.SetItemText(nItem, 1, scriptFileName.ToUTF16().c_str());
         nItem++;
-    } while (SearchPath.FindNext());
+    } while (FullPath.FindNext());
 
     m_ScriptList.SetRedraw(true);
     m_ScriptList.Invalidate();
@@ -417,6 +452,7 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         m_ScriptList.SelectItem(nIndex);
         RefreshStatus();
     }
+    delete[] AppdataPath;
     return FALSE;
 }
 
@@ -471,7 +507,10 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    ShellExecute(nullptr, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), nullptr, L"Scripts", SW_SHOWNORMAL);
+    wchar_t* AppdataPathW = NULL;
+    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+    PathAppend(AppdataPathW, L"Luna-Project64\\Scripts");
+    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, AppdataPathW, SW_SHOWNORMAL);
 }
 
 // Console input
