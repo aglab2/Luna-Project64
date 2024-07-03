@@ -142,7 +142,14 @@ void CScriptInstance::StartScriptProc()
 
     if (m_TempPath)
     {
-        stdstr fullPath = stdstr_f("Scripts/%s", m_TempPath);
+        wchar_t* AppdataPathW = NULL;
+        SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+        PathAppend(AppdataPathW, L"Luna-Project64");
+        char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
+        wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
+        PathAppendA(AppdataPath, "Scripts\\");
+        PathAppendA(AppdataPath, m_TempPath);
+        stdstr fullPath = AppdataPath;
         duk_int_t scriptresult = duk_peval_file(ctx, fullPath.c_str());
         m_TempPath = nullptr;
 
