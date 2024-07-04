@@ -495,11 +495,11 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    wchar_t* AppdataPathW = NULL;
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-    PathAppend(AppdataPathW, L"Luna-Project64\\Scripts");
-    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, AppdataPathW, SW_SHOWNORMAL);
-    CoTaskMemFree(&AppdataPathW);
+    wchar_t* AppdataPathW[1024];
+    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, AppdataPathW);
+    PathAppend(*AppdataPathW, L"Luna-Project64\\Scripts");
+    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, *AppdataPathW, SW_SHOWNORMAL);
+    CoTaskMemFree(AppdataPathW);
 }
 
 // Console input
