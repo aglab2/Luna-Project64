@@ -12,6 +12,22 @@ I hope you have fun playing!
 
 CHANGELOG:
 
+-- v3.5.0 --
+	- Added dark theme.
+	- Added SD card emulation support.
+	- Added share cheat codes between games setting.
+	- Added counter factor 0.
+	- Added input delayer.
+	- Applied lots of small optimizations to emulator core.
+	- Removed Audio HLE.
+	- Disabled debugger by default.
+	- Added enable/disable debugger option to the debugger tab.
+	- Removed CIC Checksum error in old SM64 romhacks.
+	- Switched from zlib to zlib-ng.
+	- Moved JS scripts folder to %AppData%.
+	- Updated ANGLE GLideN64 (v4.3.8 --> v4.3.9.1).
+	- Updated ParaLLEl RSP (v0.1 --> v0.5).
+
 -- v3.4.1 --
 	- Fixed register caching crashing on certain decomp hacks (Thanks to aglab2).
 	- Register caching is now enabled by default, improving performance.
@@ -20,7 +36,7 @@ CHANGELOG:
 	- Real N64 Range is now properly disabled by default in NRage.
 	- Lock mouse keybind is now unmapped by default in NRage.
 	- Added libhidapi-0.dll, required for raphnetraw to work.
-	- Updated ParaLLel RSP (Unknown --> aglab2 v0.1).
+	- Updated ParaLLEl RSP (Unknown --> aglab2 v0.1).
 
 -- v3.4.0 --
 	- Added auto updater (Thanks to MarvJungs and aglab2).
