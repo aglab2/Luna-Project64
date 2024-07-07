@@ -1264,13 +1264,6 @@ void dbgMsg(HWND hWnd, UINT_PTR subclass, UINT message, WPARAM wParam, LPARAM lP
 		GetWindowText(hWnd, wtxt, 512);
 		GetClassName(hWnd, wcls, 512);
 
-		if (!wcscmp(wcls, L"REAPERwnd")) { // remove private data from debug output
-			PWCHAR pos = wcsstr(wtxt, L" - Registered");
-			if (pos) {
-				*pos = L'\0';
-			}
-		}
-
 		std::wstringstream str;
 		str << L" dbgMsg(" << tmp << L"," << subclass << L") '" << wcls << L"'(" << wtxt << L") " << get_message_name(message) << tmp2 << L"(" << message << L"), " \
 			<< wParam << L", " << lParam << _parent << tmp_style << std::endl;

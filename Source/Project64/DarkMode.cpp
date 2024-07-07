@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "UAHMenuBar.h"
+#include "DoubleBuffer.h"
 #include "DarkModeUtils.h"
 
 #include <dwmapi.h>
@@ -297,6 +298,130 @@ void paint_ODT_BUTTON(const DRAWITEMSTRUCT& dis) {
     DeleteObject(pen);
 }
 
+static DoubleBuffer gStatusBuffer;
+
+static HTHEME getStatusBarTheme(HWND hWnd)
+{
+    static HTHEME hTheme = nullptr;
+    if (!hTheme)
+	{
+        hTheme = OpenThemeData(hWnd, VSCLASS_STATUS);
+	}
+	return hTheme;
+}
+
+// Heavily adopted from https://github.com/notepad-plus-plus/notepad-plus-plus/blob/504e4ca5dfbb524ab09343a9ea24ab3e12846792/PowerEditor/src/WinControls/StatusBar/StatusBar.cpp
+static void renderStatusBar(HWND hWnd)
+{
+    PAINTSTRUCT ps{};
+    HDC hdc = gStatusBuffer.beginPaint(hWnd, &ps);
+
+#if 0
+    if (!NppDarkMode::isEnabled())
+    {
+        // Even if the standard status bar common control is used directly in non-dark mode,
+        // it suffers from flickering during updates, so let it paint into a back buffer
+        DefSubclassProc(hWnd, WM_ERASEBKGND, reinterpret_cast<WPARAM>(hdc), 0);
+        DefSubclassProc(hWnd, WM_PRINTCLIENT, reinterpret_cast<WPARAM>(hdc), PRF_NONCLIENT | PRF_CLIENT);
+        pStatusBarInfo->_dblBuf.endPaint(hWnd, &ps);
+        return 0;
+    }
+#endif
+
+    struct {
+        int horizontal = 0;
+        int vertical = 0;
+        int between = 0;
+    } borders{};
+
+    SendMessage(hWnd, SB_GETBORDERS, 0, (LPARAM)&borders);
+
+    const auto style = ::GetWindowLongPtr(hWnd, GWL_STYLE);
+    bool isSizeGrip = style & SBARS_SIZEGRIP;
+
+    FillRect(hdc, &ps.rcPaint, load_config()->menubar_bgbrush);
+
+    int nParts = static_cast<int>(SendMessage(hWnd, SB_GETPARTS, 0, 0));
+    std::wstring str;
+    for (int i = 0; i < nParts; ++i)
+    {
+        RECT rcPart{};
+        SendMessage(hWnd, SB_GETRECT, i, (LPARAM)&rcPart);
+        RECT rcIntersect{};
+        if (!IntersectRect(&rcIntersect, &rcPart, &ps.rcPaint))
+        {
+            continue;
+        }
+
+        if (nParts > 2) //to not apply on status bar in find dialog
+        {
+            POINT edges[] = {
+                {rcPart.right - 2, rcPart.top + 1},
+                {rcPart.right - 2, rcPart.bottom - 3}
+            };
+            Polyline(hdc, edges, _countof(edges));
+        }
+
+        RECT rcDivider = { rcPart.right - borders.vertical, rcPart.top, rcPart.right, rcPart.bottom };
+
+        DWORD cchText = 0;
+        cchText = LOWORD(SendMessage(hWnd, SB_GETTEXTLENGTH, i, 0));
+        str.resize(cchText + 1); // technically the std::wstring might not have an internal null character at the end of the buffer, so add one
+        LRESULT lr = SendMessage(hWnd, SB_GETTEXT, i, (LPARAM)&str[0]);
+        str.resize(cchText); // remove the extra NULL character
+        bool ownerDraw = false;
+        if (cchText == 0 && (lr & ~(SBT_NOBORDERS | SBT_POPOUT | SBT_RTLREADING)) != 0)
+        {
+            // this is a pointer to the text
+            ownerDraw = true;
+        }
+        SetBkMode(hdc, TRANSPARENT);
+        SetTextColor(hdc, load_config()->menubar_textcolor);
+
+        rcPart.left += borders.between;
+        rcPart.right -= borders.vertical;
+
+        if (ownerDraw)
+        {
+            UINT id = GetDlgCtrlID(hWnd);
+            DRAWITEMSTRUCT dis = {
+                0
+                , 0
+                , static_cast<UINT>(i)
+                , ODA_DRAWENTIRE
+                , id
+                , hWnd
+                , hdc
+                , rcPart
+                , static_cast<ULONG_PTR>(lr)
+            };
+
+            SendMessage(GetParent(hWnd), WM_DRAWITEM, id, (LPARAM)&dis);
+        }
+        else
+        {
+            DrawText(hdc, str.data(), static_cast<int>(str.size()), &rcPart, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+        }
+
+        if (!isSizeGrip && i < (nParts - 1))
+        {
+            FillRect(hdc, &rcDivider, load_config()->menubaritem_bgbrush_selected);
+        }
+    }
+
+    if (isSizeGrip)
+    {
+        SIZE gripSize{};
+        RECT rc = { 0, 0, gStatusBuffer.getWidth(), gStatusBuffer.getHeight() };
+        GetThemePartSize(getStatusBarTheme(hWnd), hdc, SP_GRIPPER, 0, &rc, TS_DRAW, &gripSize);
+        rc.left = rc.right - gripSize.cx;
+        rc.top = rc.bottom - gripSize.cy;
+        DrawThemeBackground(getStatusBarTheme(hWnd), hdc, SP_GRIPPER, 0, &rc, nullptr);
+    }
+
+    gStatusBuffer.endPaint(hWnd, &ps);
+}
+
 LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
@@ -505,6 +630,11 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
             ListView_SetBkColor(hWnd, load_config()->menubar_bgcolor);
             ListView_SetTextBkColor(hWnd, load_config()->menubar_bgcolor);
             ListView_SetTextColor(hWnd, load_config()->menubar_textcolor);
+        }
+        else if (name == L"msctls_statusbar32")
+        {
+            renderStatusBar(hWnd);
+            return 0;
         }
         break;
     }
