@@ -7,6 +7,8 @@
 #include <Project64-core/N64System/N64Disk.h>
 #include "DiscordRPC.h"
 
+#include "DarkModeUtils.h"
+
 void EnterLogOptions(HWND hwndOwner);
 
 #pragma comment(lib, "Comctl32.lib")
