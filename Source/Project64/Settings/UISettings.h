@@ -22,6 +22,7 @@ enum UISettingID
     Setting_DarkTheme,
     Setting_AutoFullscreen,
     Setting_InputDelay,
+    Setting_GlobalCheats,
 
     // RDB TLB settings
     Rdb_Status,

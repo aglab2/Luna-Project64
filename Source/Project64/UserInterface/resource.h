@@ -661,6 +661,8 @@
 #define IDC_LO_LBL                      1514
 #define IDC_NUM_RESULTS                 1515
 #define IDC_DISCORD_RPC                 1516
+#define IDC_DISCORD_RPC2                1517
+#define IDC_GLOBAL_CHEATS               1517
 #define IDC_SCRL_RESULTS                1518
 #define IDC_LST_WATCHLIST               1520
 #define IDC_CHK_PHYSICAL                1522

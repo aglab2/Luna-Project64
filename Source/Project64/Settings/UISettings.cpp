@@ -31,6 +31,7 @@ void RegisterUISettings (void)
     AddUISetting(Setting_MinimizedSleep, new CSettingTypeApplication("Settings", "Minimized Sleep", (uint32_t)false));
     AddUISetting(Setting_DarkTheme, new CSettingTypeApplication("Settings", "Dark Theme", (uint32_t)false));
     AddUISetting(Setting_AutoFullscreen, new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
+    AddUISetting(Setting_GlobalCheats, new CSettingTypeApplication("Settings", "Global Cheats", (uint32_t)false));
     AddUISetting(Setting_InputDelay, new CSettingTypeApplication("Settings", "Input Delay", (uint32_t)0));
 
     // RDB settings

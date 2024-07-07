@@ -11,6 +11,7 @@
 #include <Project64-core/Plugins/ControllerPlugin.h>
 #include <Common/path.h>
 #include <Common/Util.h>
+#include <Project64/Settings/UISettings.h>
 
 CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(const GAMESHARK_CODE&rhs)
 {
@@ -93,8 +94,16 @@ void CEnhancements::ApplyGSButton(CMipsMemoryVM & MMU, bool /*UpdateChanges*/)
 
 void CEnhancements::UpdateCheats(const CEnhancementList & Cheats)
 {
-    std::string GameName = g_Settings->LoadStringVal(Rdb_GoodName);
-    std::string SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    std::string GameName;
+    std::string SectionIdent;
+    if (g_Settings->LoadBool((SettingID)Setting_GlobalCheats)) {
+        GameName = "Global";
+        SectionIdent = "Global";
+    }
+    else {
+        GameName = g_Settings->LoadStringVal(Rdb_GoodName);
+        SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    }
     CPath OutFile(g_Settings->LoadStringVal(SupportFile_UserCheatDir), stdstr_f("%s.cht", GameName.c_str()).c_str());
 #ifdef _WIN32
     OutFile.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
@@ -139,8 +148,16 @@ void CEnhancements::UpdateCheats(void)
 
 void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
 {
-    std::string GameName = g_Settings->LoadStringVal(Rdb_GoodName);
-    std::string SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    std::string GameName;
+    std::string SectionIdent;
+    if (g_Settings->LoadBool((SettingID)Setting_GlobalCheats)) {
+        GameName = "Global";
+        SectionIdent = "Global";
+    }
+    else {
+        GameName = g_Settings->LoadStringVal(Rdb_GoodName);
+        SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    }
     CPath OutFile(g_Settings->LoadStringVal(SupportFile_UserEnhancementDir), stdstr_f("%s.enh", GameName.c_str()).c_str());
 #ifdef _WIN32
     OutFile.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
@@ -236,7 +253,13 @@ void CEnhancements::ResetCodes(CMipsMemoryVM * MMU)
 
 void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, std::unique_ptr<CEnhancmentFile> & File, CEnhancementList & EnhancementList)
 {
-    std::string SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    std::string SectionIdent;
+    if (g_Settings->LoadBool((SettingID)Setting_GlobalCheats)) {
+        SectionIdent = "Global";
+    }
+    else {
+        SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
+    }
     SectionFiles::const_iterator CheatFileItr = Files.find(SectionIdent);
     bool FoundFile = false;
     if (CheatFileItr != Files.end())

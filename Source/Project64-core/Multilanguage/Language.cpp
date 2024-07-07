@@ -398,6 +398,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_EXIT_FULLSCREEN_ON_LOSE_FOCUS, "Exit fullscreen on lose focus");
     DEF_STR(OPTION_DISCORD_RPC, "Enable Discord Rich Presence");
     DEF_STR(OPTION_INPUTDELAY, "Input delay in milliseconds:");
+    DEF_STR(OPTION_GLOBAL_CHEATS, "Share cheat codes between games");
 
     // ROM browser tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
