@@ -111,7 +111,6 @@ void allowDarkMode(HWND hWnd) {
         SetWindowTheme(hWnd, L"Explorer", NULL);
         //SetWindowTheme(hWnd, L"CFD", NULL);
         AllowDarkModeForWindow(hWnd, true);
-        SetWindowTheme(hWnd, L"DarkMode_Explorer", NULL);
     }
 }
 
