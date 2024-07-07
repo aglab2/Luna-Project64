@@ -481,6 +481,8 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
             colorRead = RGB(60, 60, 75);
             colorWrite = RGB(75, 60, 60);
             colorBoth = RGB(60, 45, 75);
+
+            SetTextColor(hdc, RGB(213, 213, 213));
         }
         else {
             colorBg = RGB(255, 255, 255);
@@ -492,6 +494,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 
         if (!m_bColorsEnabled || g_Reg == nullptr || g_MMU == nullptr)
         {
+            SetBkColor(hdc, colorBg);
             return FALSE;
         }
 
@@ -520,6 +523,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 
             if (nReg == -1)
             {
+                SetDCBrushColor(hdc, colorBg);
                 return (LRESULT)GetStockObject(DC_BRUSH);
             }
 
@@ -652,18 +656,22 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         COLORREF colorRead;
         COLORREF colorWrite;
         COLORREF colorBoth;
+        COLORREF colorNone;
 
         if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
 
             colorRead = RGB(60, 60, 75);
             colorWrite = RGB(75, 60, 60);
             colorBoth = RGB(60, 45, 75);
+            colorNone = RGB(45, 45, 45);
+            SetTextColor(hdc, RGB(213, 213, 213));
         }
         else {
 
             colorRead = RGB(200, 200, 255);
             colorWrite = RGB(255, 200, 200);
             colorBoth = RGB(220, 170, 255);
+            colorNone = RGB(45, 45, 45);
         }
 
         CBreakpoints* breakpoints = m_Debugger->Breakpoints();
@@ -707,9 +715,10 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
         else
         {
-            return FALSE;
+            SetBkColor(hdc, colorNone);
         }
 
+        SetDCBrushColor(hdc, colorNone);
         return (LRESULT)GetStockObject(DC_BRUSH);
     }
     

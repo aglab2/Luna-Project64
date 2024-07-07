@@ -78,6 +78,7 @@ LRESULT CDebugScripts::OnCtlColorStatic(UINT /*uMsg*/, WPARAM wParam, LPARAM lPa
         if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
             SetBkColor(hDC, load_config()->menubar_bgcolor);
             SetDCBrushColor(hDC, load_config()->menubar_bgcolor);
+            SetTextColor(hDC, load_config()->menubar_textcolor);
         }
         else {
             SetBkColor(hDC, RGB(255, 255, 255));

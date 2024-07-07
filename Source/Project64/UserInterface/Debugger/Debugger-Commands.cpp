@@ -724,8 +724,14 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
         else
         {
             // Default
-            pLVCD->clrTextBk = RGB(0xEE, 0xEE, 0xEE);
-            pLVCD->clrText = RGB(0x44, 0x44, 0x44);
+            if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
+                pLVCD->clrTextBk = RGB(0x55, 0x55, 0x55);
+                pLVCD->clrText = RGB(213, 213, 213);
+            }
+            else {
+                pLVCD->clrTextBk = RGB(0xEE, 0xEE, 0xEE);
+                pLVCD->clrText = RGB(0x44, 0x44, 0x44);
+            }
         }
         return CDRF_DODEFAULT;
     }
