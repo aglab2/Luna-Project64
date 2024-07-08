@@ -1,31 +1,16 @@
-﻿/*********************************************************************************
-* Meta Information                                                               *
-*********************************************************************************/
-//About DLL
-#1  #  "Français"		// LANGUAGE ID
-#2  #  "Benjamin Siskoo"			// Author
-#3  #  "2.2"			// Version
-#4  #  "2 Décembre 2015"		// Date
+﻿// Meta information
+#1  #  "Français"		// Language ID
+#2  #  "Benjamin Siskoo"        // Author
+#3  #  "3.5.0"			// Version
+#4  #  "July, 2024"		// Date
 
-//About DLL Dialog
-#5  #  "Langue actuelle"
-#6  #  "Auteur"
-#7  #  "Version"
-#8  #  "Date"
-#9  #  "Visiter le site web"
-#10 #  "Base de données des ROM (.rdb)"
-#11 #  "Fichier des cheats (.cht)"
-#12 #  "Infos sur les ROM étendues (.rdx)"
+/*** Menu ***/
 
-//About INI title
-#20 #  "À propos des fichiers de configuration"
-
-/*********************************************************************************
-* Menu                                                                           *
-*********************************************************************************/
-//File Menu
+// File menu
 #100#  "&Fichier"
 #101#  "&Ouvrir une ROM"
+#111#  "Mount SD Card"
+#112#  "Unmount SD Card"
 #102#  "&Infos sur la ROM…"
 #103#  "Démarrer l’émulation"
 #104#  "Arrêter l’émulation"
@@ -36,7 +21,7 @@
 #109#  "&Quitter"
 #110#  "Ouvrir &Combo"
 
-//System Menu
+// System menu
 #120#  "&Système"
 #121#  "&Redémarrer"
 #122#  "&Pause"
@@ -53,8 +38,9 @@
 #133#  "Redémarrage &logiciel"
 #134#  "Redémarrage &matériel"
 #135#  "Changer &disque"
+#136#  "&Enhancements..."
 
-//Options Menu
+// Options menu
 #140#  "&Options"
 #141#  "&Plein écran"
 #142#  "&Toujours visible"
@@ -65,97 +51,237 @@
 #147#  "Afficher l’utilisation du CPU"
 #148#  "&Paramètres…"
 
-//Debugger Menu
+// Debugger menu
 #160#  "&Débogueur"
 
-//Language Menu
+// Language menu
 #175#  "&Langage"
 
-//Help Menu
+// Help menu
 #180#  "&Aide"
-#181#  "À propos des fichiers de conf&iguration"
-#182#  "À &propos de Project64"
-#183#  "&Forum de support"
-#184#  "Site &web"
+#182#  "À &propos de Luna's Project64"
+#184#  "Site &web (Shuri's Library)"
+#185#  "Support Vanilla Project64"
+#187#  "Support Luna's Project64"
+#186#  "ShiN3's &Discord"
 
-//Current Save Slot menu
-#190#  "Défaut"
-#191#  "Emplacement 1"
-#192#  "Emplacement 2"
-#193#  "Emplacement 3"
-#194#  "Emplacement 4"
-#195#  "Emplacement 5"
-#196#  "Emplacement 6"
-#197#  "Emplacement 7"
-#198#  "Emplacement 8"
-#199#  "Emplacement 9"
-#200#  "Emplacement 10"
+// Current save slot menu
+#5000#  "Défaut"
+#5001#  "Emplacement 1"
+#5002#  "Emplacement 2"
+#5003#  "Emplacement 3"
+#5004#  "Emplacement 4"
+#5005#  "Emplacement 5"
+#5006#  "Emplacement 6"
+#5007#  "Emplacement 7"
+#5008#  "Emplacement 8"
+#5009#  "Emplacement 9"
+#5010#  "Emplacement 10"
+#5011#  "Emplacement 11"
+#5012#  "Emplacement 12"
+#5013#  "Emplacement 13"
+#5014#  "Emplacement 14"
+#5015#  "Emplacement 15"
+#5016#  "Emplacement 16"
+#5017#  "Emplacement 17"
+#5018#  "Emplacement 18"
+#5019#  "Emplacement 19"
+#5020#  "Emplacement 20"
+#5021#  "Emplacement 21"
+#5022#  "Emplacement 22"
+#5023#  "Emplacement 23"
+#5024#  "Emplacement 24"
+#5025#  "Emplacement 25"
+#5026#  "Emplacement 26"
+#5027#  "Emplacement 27"
+#5028#  "Emplacement 28"
+#5029#  "Emplacement 29"
+#5030#  "Emplacement 30"
+#5031#  "Emplacement 31"
+#5032#  "Emplacement 32"
+#5033#  "Emplacement 33"
+#5034#  "Emplacement 34"
+#5035#  "Emplacement 35"
+#5036#  "Emplacement 36"
+#5037#  "Emplacement 37"
+#5038#  "Emplacement 38"
+#5039#  "Emplacement 39"
+#5040#  "Emplacement 40"
+#5041#  "Emplacement 41"
+#5042#  "Emplacement 42"
+#5043#  "Emplacement 43"
+#5044#  "Emplacement 44"
+#5045#  "Emplacement 45"
+#5046#  "Emplacement 46"
+#5047#  "Emplacement 47"
+#5048#  "Emplacement 48"
+#5049#  "Emplacement 49"
+#5050#  "Emplacement 50"
+#5051#  "Emplacement 51"
+#5052#  "Emplacement 52"
+#5053#  "Emplacement 53"
+#5054#  "Emplacement 54"
+#5055#  "Emplacement 55"
+#5056#  "Emplacement 56"
+#5057#  "Emplacement 57"
+#5058#  "Emplacement 58"
+#5059#  "Emplacement 59"
+#5060#  "Emplacement 60"
+#5061#  "Emplacement 61"
+#5062#  "Emplacement 62"
+#5063#  "Emplacement 63"
+#5064#  "Emplacement 64"
+#5065#  "Emplacement 65"
+#5066#  "Emplacement 66"
+#5067#  "Emplacement 67"
+#5068#  "Emplacement 68"
+#5069#  "Emplacement 69"
+#5070#  "Emplacement 70"
+#5071#  "Emplacement 71"
+#5072#  "Emplacement 72"
+#5073#  "Emplacement 73"
+#5074#  "Emplacement 74"
+#5075#  "Emplacement 75"
+#5076#  "Emplacement 76"
+#5077#  "Emplacement 77"
+#5078#  "Emplacement 78"
+#5079#  "Emplacement 79"
+#5080#  "Emplacement 80"
+#5081#  "Emplacement 81"
+#5082#  "Emplacement 82"
+#5083#  "Emplacement 83"
+#5084#  "Emplacement 84"
+#5085#  "Emplacement 85"
+#5086#  "Emplacement 86"
+#5087#  "Emplacement 87"
+#5088#  "Emplacement 88"
+#5089#  "Emplacement 89"
+#5090#  "Emplacement 90"
+#5091#  "Emplacement 91"
+#5092#  "Emplacement 92"
+#5093#  "Emplacement 93"
+#5094#  "Emplacement 94"
+#5095#  "Emplacement 95"
+#5096#  "Emplacement 96"
+#5097#  "Emplacement 97"
+#5098#  "Emplacement 98"
+#5099#  "Emplacement 99"
 #201#  "Sélection de l’emplacement de sauvegarde (%ws)"
 
-//Pop up Menu
+// Pop-up menu
 #210#  "Lancer le jeu"
 #211#  "Informations sur la ROM"
 #212#  "Éditer les paramètres du jeu"
 #213#  "Éditer les cheats"
 #214#  "Plugin graphique"
 #215#  "Lancer le jeu avec un disque"
+#216#  "Pick Enhancements..."
 
-//Alternate Name to save Slot
-#220#  "Emplacement de sauvegarde - Défaut"
-#221#  "Emplacement de sauvegarde - 1"
-#222#  "Emplacement de sauvegarde - 2"
-#223#  "Emplacement de sauvegarde - 3"
-#224#  "Emplacement de sauvegarde - 4"
-#225#  "Emplacement de sauvegarde - 5"
-#226#  "Emplacement de sauvegarde - 6"
-#227#  "Emplacement de sauvegarde - 7"
-#228#  "Emplacement de sauvegarde - 8"
-#229#  "Emplacement de sauvegarde - 9"
-#230#  "Emplacement de sauvegarde - 10"
+// Alternate name to save slot
+#5100#  "Emplacement de sauvegarde - Défaut"
+#5101#  "Emplacement de sauvegarde - 1"
+#5102#  "Save Slot - 2"
+#5103#  "Save Slot - 3"
+#5104#  "Save Slot - 4"
+#5105#  "Save Slot - 5"
+#5106#  "Save Slot - 6"
+#5107#  "Save Slot - 7"
+#5108#  "Save Slot - 8"
+#5109#  "Save Slot - 9"
+#5110#  "Save Slot - 10"
+#5111#  "Save Slot - 11"
+#5112#  "Save Slot - 12"
+#5113#  "Save Slot - 13"
+#5114#  "Save Slot - 14"
+#5115#  "Save Slot - 15"
+#5116#  "Save Slot - 16"
+#5117#  "Save Slot - 17"
+#5118#  "Save Slot - 18"
+#5119#  "Save Slot - 19"
+#5120#  "Save Slot - 20"
+#5121#  "Save Slot - 21"
+#5122#  "Save Slot - 22"
+#5123#  "Save Slot - 23"
+#5124#  "Save Slot - 24"
+#5125#  "Save Slot - 25"
+#5126#  "Save Slot - 26"
+#5127#  "Save Slot - 27"
+#5128#  "Save Slot - 28"
+#5129#  "Save Slot - 29"
+#5130#  "Save Slot - 30"
+#5131#  "Save Slot - 31"
+#5132#  "Save Slot - 32"
+#5133#  "Save Slot - 33"
+#5134#  "Save Slot - 34"
+#5135#  "Save Slot - 35"
+#5136#  "Save Slot - 36"
+#5137#  "Save Slot - 37"
+#5138#  "Save Slot - 38"
+#5139#  "Save Slot - 39"
+#5140#  "Save Slot - 40"
+#5141#  "Save Slot - 41"
+#5142#  "Save Slot - 42"
+#5143#  "Save Slot - 43"
+#5144#  "Save Slot - 44"
+#5145#  "Save Slot - 45"
+#5146#  "Save Slot - 46"
+#5147#  "Save Slot - 47"
+#5148#  "Save Slot - 48"
+#5149#  "Save Slot - 49"
+#5150#  "Save Slot - 50"
+#5151#  "Save Slot - 51"
+#5152#  "Save Slot - 52"
+#5153#  "Save Slot - 53"
+#5154#  "Save Slot - 54"
+#5155#  "Save Slot - 55"
+#5156#  "Save Slot - 56"
+#5157#  "Save Slot - 57"
+#5158#  "Save Slot - 58"
+#5159#  "Save Slot - 59"
+#5160#  "Save Slot - 60"
+#5161#  "Save Slot - 61"
+#5162#  "Save Slot - 62"
+#5163#  "Save Slot - 63"
+#5164#  "Save Slot - 64"
+#5165#  "Save Slot - 65"
+#5166#  "Save Slot - 66"
+#5167#  "Save Slot - 67"
+#5168#  "Save Slot - 68"
+#5169#  "Save Slot - 69"
+#5170#  "Save Slot - 70"
+#5171#  "Save Slot - 71"
+#5172#  "Save Slot - 72"
+#5173#  "Save Slot - 73"
+#5174#  "Save Slot - 74"
+#5175#  "Save Slot - 75"
+#5176#  "Save Slot - 76"
+#5177#  "Save Slot - 77"
+#5178#  "Save Slot - 78"
+#5179#  "Save Slot - 79"
+#5180#  "Save Slot - 80"
+#5181#  "Save Slot - 81"
+#5182#  "Save Slot - 82"
+#5183#  "Save Slot - 83"
+#5184#  "Save Slot - 84"
+#5185#  "Save Slot - 85"
+#5186#  "Save Slot - 86"
+#5187#  "Save Slot - 87"
+#5188#  "Save Slot - 88"
+#5189#  "Save Slot - 89"
+#5190#  "Save Slot - 90"
+#5191#  "Save Slot - 91"
+#5192#  "Save Slot - 92"
+#5193#  "Save Slot - 93"
+#5194#  "Save Slot - 94"
+#5195#  "Save Slot - 95"
+#5196#  "Save Slot - 96"
+#5197#  "Save Slot - 97"
+#5198#  "Save Slot - 98"
+#5199#  "Save Slot - 99"
 
-// Menu Descriptions
-#250#  "Ouvrir une image ROM N64"
-#251#  "Afficher les informations concernant l’image chargée"
-#252#  "Lancer l’émulation de l’image ROM chargée"
-#253#  "Arrêter l’émulation de l’image ROM chargée"
-#254#  "Sélectionner le répertoire des ROM"
-#255#  "Rafraîchir la liste actuelle des ROM dans le navigateur de ROM"
-#256#  "Quitter l’application"
-#257#  "Redémarrer l’image ROM actuelle (recharger tous les changements de paramètres)"
-#258#  "Mettre en pause/reprendre l’émulation de la ROM lancée"
-#259#  "Générer une image bitmap de l’écran actuel"
-#260#  "Limiter les FPS à la bonne vitesse de la N64"
-#261#  "Sauvegarder l’état actuel du système"
-#262#  "Sauvegarder l’état actuel du système à l’emplacement du fichier sélectionné"
-#263#  "Charger la sauvegarde d’état"
-#264#  "Choisir un fichier de sauvegarde d’état à charger"
-#265#  "Activer/désactiver les cheats GameShark"
-#266#  "Le bouton GameShark est utilisé avec des cheats spécifiques."
-#267#  "Basculer l’émulation du mode fenêtré vers le mode plein écran."
-#268#  "Permet de mettre la fenêtre Project64 toujours au premier plan"
-#269#  "Configurer le plugin graphique"
-#270#  "Configurer le plugin audio"
-#271#  "Configurer le plugin contrôleur (ex : choisir les touches)"
-#272#  "Configurer le plugin RSP"
-#273#  "Afficher l’utilisation du CPU de l’émulateur répartie sur les différentes ressources"
-#274#  "Voir/changer les paramètres pour cette application"
-#275#  "Voir le manuel pour l’application"
-#276#  "Voir la FAQ pour l’application"
-#278#  "À propos de l’application et des auteurs"
-#277#  "À propos des auteurs sur les fichiers de support"
-#279#  "Ouvrir l’image ROM ouverte précédemment"
-#280#  "Choisir ce répertoire comme votre répertoire de jeu"
-#281#  "Changer l’application pour utiliser cette langue"
-#282#  "Choisir l’emplacement de sauvegarde pour l’état sauvegardé"
-#283#  "Jouer au jeu sélectionné"
-#284#  "Informations concernant le jeu sélectionné"
-#285#  "Éditer les paramètres pour le jeu sélectionné"
-#286#  "Éditer les cheats pour le jeu sélectionné"
+/*** ROM browser ***/
 
-/*********************************************************************************
-* ROM Browser                                                                    *
-*********************************************************************************/
-//ROM Browser Fields
+// ROM browser fields
 #300#  "Nom du fichier"
 #301#  "Nom interne"
 #302#  "Nom correct (GoodN64)"
@@ -178,34 +304,33 @@
 #319#  "Format de fichier"
 #321#  "Nom"
 
-//Select ROM
+// Select ROM
 #320#  "Sélectionner le répertoire de ROM actuel"
 
-//Messages
+// Messages
 #340#  "Mauvaise ROM ? Utilisez GoodN64 et vérifiez que le fichier RDB est à jour"
 
-/*********************************************************************************
-* Options                                                                        *
-*********************************************************************************/
-//Options Title
+/*** Options ***/
+
+// Options title
 #400#  "Paramètres"
 
-//Tabs
+// Tabs
 #401#  "Plugins"
 #402#  "Répertoires"
 #403#  "Options"
 #404#  "Navigateur de ROM"
 #405#  "Avancé"
 #406#  "Paramètres généraux"
-#407#  "Intégration au shell"
 #408#  "Notes"
 #409#  "Raccourcis clavier"
 #410#  "Statut"
 #411#  "Recompilateur"
 #412#  "Par Défaut"
 #413#  "64DD"
+#414#  "64DD"
 
-//Plugin Dialog
+// Plugin dialog
 #420#  "À propos"
 #421#  " Plugin RSP (Reality Signal Processor) : "
 #422#  " Plugin vidéo (graphique) : "
@@ -215,7 +340,7 @@
 #426#  "Audio HLE"
 #427#  "** Utiliser le plugin système **"
 
-//Directory Dialog
+// Directory dialog
 #440#  " Répertoire des plugins : "
 #441#  " Répertoire des ROM : "
 #442#  " Répertoire des sauvegardes N64 natives : "
@@ -230,28 +355,37 @@
 #451#  " Répertoire du pack de textures : "
 #452#  "Sélectionner le répertoire du pack de texture"
 
-//Options (general) Tab
+// Options (general) tab
+#479#  "Dark theme (Requires emu restart)"
 #460#  "Émulation en pause quand la fenêtre est inactive"
+#477#  "Pause emulation when window is minimized"
 #461#  "Passer en plein écran au chargement d’une ROM"
 #462#  "Cacher les paramètres avancés"
 #463#  "Retenir les cheats sélectionnés"
 #464#  "Désactiver l’écran de veille quand une ROM est lancée"
 #465#  "Afficher la vitesse"
-#466#  "Vitesse affichée :"
 #467#  "Vérifier si Project64 est déjà lancé"
 #468#  "Répertoire de sauvegarde unique"
+#466#  "Vitesse affichée :"
 #469#  "Chemin vers 64DD IPL ROM Japonais:"
 #470#  "Chemin vers 64DD IPL ROM Américain:"
 #471#  "Chemin vers 64DD IPL ROM Développement:"
 #472#  "Type de sauvegarde:"
+#473#  "Enable enhancements"
+#474#  "Show status bar"
+#475#  "Exit fullscreen on lose focus"
+#476#  "Enable Discord Rich Presence"
+#478#  "Input delay in milliseconds"
+#479#  "Share cheat codes between games"
 
-//ROM Browser Tab
+// ROM browser tab
 #480#  "Max de ROM à retenir (0-10) :"
 #481#  "ROM"
 #482#  "Max de répertoires ROM à retenir (0-10) :"
 #483#  "répertoires"
 #484#  "Utiliser le navigateur de ROM"
 #485#  "Utiliser également les sous-répertoires"
+#493#  "Show file extensions"
 #486#  "Champs disponibles :"
 #487#  "Champs dans l’ordre :"
 #488#  "Ajouter ->"
@@ -260,7 +394,7 @@
 #491#  "Bas"
 #492#  "Rafraîchir automatiquement le navigateur"
 
-//Advanced Options
+// Advanced options
 #500#  "La plupart de ces changements ne prendront pas effet avant qu’une nouvelle ROM soit ouverte ou que la ROM actuelle soit redémarrée."
 #501#  "Noyau par défaut"
 #502#  "Style de noyau CPU :"
@@ -276,8 +410,9 @@
 #512#  "Lancer si modifié"
 #513#  "Protéger la mémoire"
 #514#  "TLB unmapping"
+#515#  "Always use interpreter core"
 
-//ROM Options
+// ROM options
 #520#  "Style de noyau CPU :"
 #521#  "Taux de rafraîchissement VI :"
 #522#  "Taille de la mémoire :"
@@ -298,13 +433,20 @@
 #537#  "Compteur AI par octet"
 #538#  "Moteur 32 bits"
 #539#  "Retarder l’interruption DP"
+#5400# "Overclock modifier:"
+#5410# "Unaligned DMA"
+#5420# "Randomize SI/PI interrupts"
+#5440# "Disk seek timing:"
+#5441# "Turbo"
+#5442# "Slow"
 
-//Core Styles
+
+// Core styles
 #540#  "Interpréteur"
 #541#  "Recompilateur"
 #542#  "Synchroniser les noyaux"
 
-//Self Mod Methods
+// Self-mod methods
 #560#  "Aucun"
 #561#  "Cache"
 #562#  "Protéger la mémoire"
@@ -313,35 +455,32 @@
 #565#  "Vérifier la mémoire avancée"
 #566#  "Vider le code du cache"
 
-//Function Lookup method
+// Function lookup method
 #570#  "Table de recherche physique"
 #571#  "Table de recherche virtuelle"
 #572#  "Changer la mémoire"
 
-//RDRAM Size
+// RDRAM size
 #580#  "4 Mo"
 #581#  "8 Mo"
 
-//Advanced Block Linking
+// Advanced block linking
 #600#  "On"
 #601#  "Off"
 
-//Save Type
+// Save type
 #620#  "Par défaut"
 #621#  "4 kbit EEPROM"
 #622#  "16 kbit EEPROM"
 #623#  "SRAM"
 #624#  "Flash RAM"
 
-//Shell Integration Tab
-#640#  "Associer l’extension de fichier :"
-
-//ROM Notes
+// ROM notes
 #660#  "Statut ROM :"
 #661#  "Note noyau :"
 #662#  "Note plugin :"
 
-// Accelerator Selector
+// Accelerator selector
 #680#  "État du CPU :"
 #681#  "Menu objet :"
 #682#  "Touches actuelles :"
@@ -356,32 +495,32 @@
 #691#  "Un jeu est lancé (Plein écran)"
 #692#  "Détecter la touche"
 
-// Frame Rate Option
+// Framerate option
 #700#  "Interruptions verticales par seconde"
 #701#  "Listes d’affichage par seconde"
 #702#  "Pourcentage de la vitesse normale"
+#703#  "VI/s & DL/s"
 
 // Increase speed
 #710#  "Augmenter la vitesse du jeu"
 #711#  "Diminuer la vitesse du jeu"
 
-//Bottom page buttons
+// Bottom page buttons
 #720#  "Réinitialiser la page"
 #721#  "Tout réinitialiser"
 #722#  "Appliquer"
 #723#  "Fermer"
 
-//Disk Save Type
+// Disk save type
 #730#  "Copie Complète du Disque"
 #731#  "Zone Sauvegarde Uniquement"
 
-/*********************************************************************************
-* ROM Information                                                                *
-*********************************************************************************/
-//ROM Info Title
+/*** ROM information ***/
+
+// ROM info title
 #800#  "Informations sur la ROM"
 
-//ROM Info Text
+// ROM info text
 #801#  "Nom de la ROM :"
 #802#  "Nom du fichier :"
 #803#  "Emplacement :"
@@ -394,17 +533,16 @@
 #810#  "Puce CIC :"
 #811#  "MD5 :"
 
-/*********************************************************************************
-* Cheats                                                                         *
-*********************************************************************************/
-//Cheat List
+/*** Cheats ***/
+
+// Cheat list
 #1000#  "Cheats"
-#1001#  "Cheats :"
-#1002#  " Notes : "
+#1001#  "Cheats:"
+#1002#  " Notes: "
 #1003#  "Tout cocher"
 #1004#  "Tout décocher"
 
-//Add Cheat
+// Add cheat
 #1005#  "Ajouter un cheat"
 #1006#  "Nom :"
 #1007#  "Code :"
@@ -413,13 +551,13 @@
 #1010#  " Notes cheat : "
 #1011#  "Ajouter à la BDD"
 
-//Code extension
+// Code extension
 #1012#  "Extensions de code"
 #1013#  "Veuillez choisir une valeur à utiliser pour :"
 #1014#  "OK"
 #1015#  "Annuler"
 
-//Digital Value
+// Digital value
 #1016#  "Nombre quantité"
 #1017#  "Veuillez choisir une valeur pour :"
 #1018#  "&Valeur"
@@ -432,18 +570,18 @@
 #1025#  "Options :"
 #1026#  "<valeur> <label>"
 
-//Edit Cheat
+// Edit cheat
 #1027#  "Éditer un cheat"
 #1028#  "Mettre à jour un cheat"
 #1029#  "Le cheat a été modifié.\n\nVoulez vous mettre à jour ?"
 #1030#  "Cheat mise à jour"
 
-//Cheat Popup Menu
+// Cheat pop-up menu
 #1040#  "Ajouter un nouveau cheat…"
 #1041#  "Éditer"
 #1042#  "Effacer"
 
-// short-cut editor
+// Shortcut editor
 #1100#  "Réinitialiser les raccourcis"
 #1101#  "Êtes-vous sûr de vouloir réinitialiser les raccourcis?\n\nCette action ne peut pas être annulée."
 #1102#  "Menu fichier"
@@ -451,9 +589,8 @@
 #1104#  "Options"
 #1105#  "Emplacements de sauvegarde"
 
-/*********************************************************************************
-* Support Window                                                                 *
-*********************************************************************************/
+/*** Support window ***/
+
 #1200#  "Support Project64"
 #1201#  "Project64 est un logiciel crée pour émuler le système de jeu vidéo Nintendo64 sur un PC basé sur Microsoft Windows. Ceci vous permet de jouer avec des jeux N64  comme vous le feriez sur avec une vrai console.\n\nSi vous appréciez Project64, alros veuillez supporter Project64 avec soit des remerciements soit en proposant des idées d'améliorations.\n\nSi vous avez supporté Project64 :"
 #1202#  "Entrez un Code de Notification"
@@ -466,11 +603,29 @@
 #1209#  "Veuillez entrer le code se trouvant dans l'email"
 #1210#  "OK"
 #1211#  "Annuler"
+#1212#  "Request Code"
+#1213#  "Code has been sent to your email"
+#1214#  "Failed to send code, please make sure it is the email you supported with"
 
-/*********************************************************************************
-* Messages                                                                       *
-*********************************************************************************/
-#2000#  "*** CPU EN PAUSE ***"
+/*** Enhancements ***/
+
+#1300#  "Enhancements"
+
+/*** Messages ***/
+
+#2000#  "*** CPU PAUSED ***"
+#2001#  "CPU Resumed"
+#2002#  "In a permanent loop that cannot be exited.\nEmulation will now stop.\n\nVerify ROM and its settings."
+#2003#  "Failed to allocate memory"
+#2004#  "The default or selected video plugin is missing or invalid.\n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2005#  "The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2006#  "The default or selected RSP plugin is missing or invalid.\n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2007#  "The default or selected input plugin is missing or invalid.\n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+#2008#  "Failed to load plugin:"
+#2009#  "Failed to load word.\n\nVerify ROM and its settings."
+#2010#  "Failed to open save file"
+#2011#  "Failed to open EEPROM"
+##2000#  "*** CPU EN PAUSE ***"
 #2001#  "Reprise du CPU"
 #2002#  "Dans une boucle permanente dont il est impossible de sortir.\nL’émulation va maintenant s’arrêter.\n\nVérifiez la ROM et les paramètres de la ROM."
 #2003#  "L’allocation de mémoire a échoué"
@@ -495,6 +650,7 @@
 #2022#  "Opcode R4300i non pris en charge à"
 #2023#  "Exécution depuis un espace non mappé.\n\nVérifiez la ROM et les paramètres de ROM."
 #2024#  "Cette sauvegarde d’état ne semble pas correspondre à la ROM qui est lancée.\n\nLes états sauvegardés et chargés doivent être à 100 % identiques à la ROM.\nEn particulier la RÉGION et la VERSION doivent être identiques.\nLe chargement de cette sauvegarde va probablement faire planter le jeu ou l’émulateur.\n\nSouhaitez-vous le charger quand même ?"
+#2060#  "Warning"
 #2025#  "Erreur"
 #2026#  "La séquence de copyright n’a pas été trouvé dans la LUT. Le jeu ne fonctionnera plus."
 #2027#  "Échec de la protection de copie"
@@ -532,45 +688,14 @@
 #2059#  "La ROM IPL 64DD Japonaise n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD japonais.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
 #2061#  "La ROM IPL 64DD Américaine n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD américain.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
 #2062#  "La ROM IPL 64DD Développement n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD de développement.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
-
-
-/*********************************************************************************
-* Android                                                                        *
-*********************************************************************************/
-#3000#  "Paramètres"
-#3001#  "Aide/Forum"
-#3002#  "Rapporter un Problème"
-#3003#  "A Propos De"
-#3004#  "Jeu Récemment Joué"
-#3005#  "Jeux"
-#3006#  "Répertoire du Jeu"
-#3007#  "Choisir un dossier à scanner"
-#3008#  "Inclure les sous répertoires"
-#3009#  "Dossier Parent"
-#3010#  "Répertoires"
-#3011#  "Mémoire Interne"
-#3012#  "Scan..."
-#3013#  "OK"
-#3014#  "Annuler"
-#3015#  "Information"
-#3016#  "Project64 pour Android"
-#3017#  "Licence"
-#3018#  "Révision"
-#3019#  "Project64 pour Android\u2122 est un port de la version Windows de project64. La version Android\u2122 peut lancer la plupart des jeux N64."
-#3020#  "Auteurs de Project64."
-
-//In game menu
-#3100#  "Paramètres"
-#3101#  "Sauvegarder un Etat"
-#3102#  "Charger un Etat"
-#3103#  "Fin de l'Emulation"
-#3104#  "Pause"
-#3105#  "Résumer"
-#3106#  "Vitesse du Jeu"
-#3107#  "Sauvegarde d'Etat en Cours..."
-#3108#  "Auto"
-#3109#  "Emplacement"
-#3110#  "Redémarrer"
-#3111#  "Options de Débuguage"
-#3112#  "Temps de la Fonction Redémarrer"
-#3113#  "Temps de la Fonction de Copie"
+#2063#  "Failed to update cheat, it is invalid"
+#2064#  "Invalid Cheat"
+#2065#  "Debugger features are disabled by default to improve performance.\nIt is recommended that you only enable this if you need to use them.\nWould you like to enable debugger features? You can disable them in this menu at any time."
+#2066#  "The setting \"Use Audio HLE\", which was enabled for all games, is no longer supported and has been disabled."
+#2077#  "The setting \"Use Audio HLE\", which was enabled for the currently opened game, is no longer supported and has been disabled."
+#2078#  "Deprecated setting"
+#2079#  "SD Card"
+#2080#  "SD Card is prepared for mounting. Please check Windows popup to access SD Card contents."
+#2081#  "SD Card is unmounted and can be accessed in emulator"
+#2082#  "Failed to unmount SD Card.\nMake sure SDCard is ejected in Windows. Right click on disk \"SDCARD0\" in Explorer and click Eject."
+#2083#  "Failed to mount SD Card"

@@ -66,7 +66,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_OPTIONS, "&Options");
     DEF_STR(MENU_FULL_SCREEN, "&Fullscreen");
     DEF_STR(MENU_ON_TOP, "&Always on &top");
-    DEF_STR(MENU_CONFG_GFX, "&Graphic Settings");
+    DEF_STR(MENU_CONFG_GFX, "&Graphics Settings");
     DEF_STR(MENU_CONFG_AUDIO, "&Audio Settings");
     DEF_STR(MENU_CONFG_CTRL, "&Input Settings");
     DEF_STR(MENU_CONFG_RSP, "&RSP Settings");
