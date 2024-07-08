@@ -12,8 +12,8 @@ const char * CEnhancement::EnhancementIdent = "Enhancement";
 static std::string GenerateKeyName(const char * Name, const char * Ident, const char * PostIdent)
 {
     stdstr KeyName(Name);
-    KeyName.Replace('\\', '_');
-    KeyName.Replace(' ', '_');
+    KeyName.Replace("\\", "_");
+    KeyName.Replace(" ", "_");
     if (KeyName.empty())
     {
         return "";
