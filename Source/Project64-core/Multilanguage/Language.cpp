@@ -66,7 +66,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_OPTIONS, "&Options");
     DEF_STR(MENU_FULL_SCREEN, "&Fullscreen");
     DEF_STR(MENU_ON_TOP, "&Always on &top");
-    DEF_STR(MENU_CONFG_GFX, "&Graphics Settings");
+    DEF_STR(MENU_CONFG_GFX, "&Graphic Settings");
     DEF_STR(MENU_CONFG_AUDIO, "&Audio Settings");
     DEF_STR(MENU_CONFG_CTRL, "&Input Settings");
     DEF_STR(MENU_CONFG_RSP, "&RSP Settings");
@@ -381,7 +381,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_DARKTHEME, "Dark theme (Requires emu restart)");
     DEF_STR(OPTION_AUTO_SLEEP, "Pause emulation when window is not active");
     DEF_STR(OPTION_MINIMIZED_SLEEP, "Pause emulation when window is minimized");
-    DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter full-screen mode when loading a ROM");
+    DEF_STR(OPTION_AUTO_FULLSCREEN, "Enter fullscreen mode when loading a ROM");
     DEF_STR(OPTION_BASIC_MODE, "Hide advanced settings");
     DEF_STR(OPTION_REMEMBER_CHEAT, "Remember selected cheats");
     DEF_STR(OPTION_DISABLE_SS, "Disable screensaver when running a ROM");
@@ -453,8 +453,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_CUSTOM_SMM, "Custom self-mod Method");
     DEF_STR(ROM_SYNC_AUDIO, "Sync using audio");
     DEF_STR(ROM_COUNTPERBYTE, "AI count per byte:");
-    DEF_STR(ROM_32BIT, "32-bit engine:");
-    DEF_STR(ROM_DELAY_DP, "Delay DP interrupt:");
+    DEF_STR(ROM_32BIT, "32-bit engine");
+    DEF_STR(ROM_DELAY_DP, "Delay DP interrupt");
     DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Overclock modifier:");
     DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
     DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
@@ -547,7 +547,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(INFO_LOCATION_TEXT, "Location:");
     DEF_STR(INFO_SIZE_TEXT, "ROM size:");
     DEF_STR(INFO_CART_ID_TEXT, "Cartridge ID:");
-    DEF_STR(INFO_MEDIA_TEXT, "Media:");
+    DEF_STR(INFO_MEDIA_TEXT, "Media Type:");
     DEF_STR(INFO_COUNTRY_TEXT, "Country:");
     DEF_STR(INFO_CRC1_TEXT, "CRC1:");
     DEF_STR(INFO_CRC2_TEXT, "CRC2:");
