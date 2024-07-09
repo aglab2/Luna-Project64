@@ -12,6 +12,11 @@ I hope you have fun playing!
 
 CHANGELOG:
 
+-- v3.5.1 --
+	- Fixed a bug where ROM browser wouldn't work.
+	- Fixed a bug where enabling cheat codes wouldn't work.
+	- Updated multiple translations.
+
 -- v3.5.0 --
 	- Added dark theme.
 	- Added SD card emulation support.
@@ -27,6 +32,7 @@ CHANGELOG:
 	- Moved JS scripts folder to %AppData%.
 	- Updated ANGLE GLideN64 (v4.3.8 --> v4.3.9.1).
 	- Updated ParaLLEl RSP (v0.1 --> v0.5).
+	- Massive thanks to aglab2 btw.
 
 -- v3.4.1 --
 	- Fixed register caching crashing on certain decomp hacks (Thanks to aglab2).
