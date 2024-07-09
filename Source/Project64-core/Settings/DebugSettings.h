@@ -29,7 +29,7 @@ public:
     static inline bool ShowUnhandledMemory(void) { return m_ShowUnhandledMemory; }
 
 private:
-    static void StaticRefreshSettings(CDebugSettings * _this)
+    static void CALL StaticRefreshSettings(CDebugSettings * _this)
     {
         _this->RefreshSettings();
     }

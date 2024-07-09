@@ -39,7 +39,7 @@ private:
     CSettingTypeSelectedDirectory(const CSettingTypeSelectedDirectory&);
     CSettingTypeSelectedDirectory& operator=(const CSettingTypeSelectedDirectory&);
 
-    static void DirectoryChanged(CSettingTypeSelectedDirectory * _this);
+    static void CALL DirectoryChanged(CSettingTypeSelectedDirectory * _this);
 
     std::string m_Name;
     SettingID m_InitialDir;

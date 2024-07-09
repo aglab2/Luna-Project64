@@ -38,7 +38,7 @@ private:
     CSettingTypeAppdataPath(const CSettingTypeAppdataPath&);
     CSettingTypeAppdataPath& operator=(const CSettingTypeAppdataPath&);
 
-    static void RefreshSettings(void * _this);
+    static void CALL RefreshSettings(void * _this);
     void BuildPath ( void );
 
     std::string m_FullPath;

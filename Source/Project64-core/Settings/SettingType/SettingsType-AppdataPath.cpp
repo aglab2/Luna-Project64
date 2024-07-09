@@ -73,7 +73,7 @@ void CSettingTypeAppdataPath::BuildPath(void)
     m_FullPath = (const char*)FullPath;
 }
 
-void CSettingTypeAppdataPath::RefreshSettings(void * _this)
+void CALL CSettingTypeAppdataPath::RefreshSettings(void * _this)
 {
     ((CSettingTypeAppdataPath *)_this)->BuildPath();
 }

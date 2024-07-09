@@ -50,7 +50,7 @@ CPlugins::~CPlugins(void)
     DestroyControlPlugin();
 }
 
-void CPlugins::PluginChanged(CPlugins * _this)
+void CALL CPlugins::PluginChanged(CPlugins * _this)
 {
     WriteTrace(TracePlugins, TraceDebug, "Start");
     if (g_Settings->LoadBool(Game_TempLoaded) == true)

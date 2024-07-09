@@ -116,7 +116,7 @@ private:
     friend class CArmRecompilerOps;
 #endif
 
-    static void RdramChanged(CMipsMemoryVM * _this);
+    static void CALL RdramChanged(CMipsMemoryVM * _this);
     static void ChangeSpStatus();
     static void ChangeMiIntrMask();
 

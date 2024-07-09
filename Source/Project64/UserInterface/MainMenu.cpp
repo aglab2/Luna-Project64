@@ -84,7 +84,7 @@ CMainMenu::~CMainMenu()
     }
 }
 
-void CMainMenu::SettingsChanged(CMainMenu * _this)
+void CALL CMainMenu::SettingsChanged(CMainMenu * _this)
 {
     _this->ResetMenu();
 }

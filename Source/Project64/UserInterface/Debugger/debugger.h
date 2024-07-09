@@ -77,10 +77,10 @@ public:
     CCPULog* CPULog();
     CSymbolTable* SymbolTable();
 
-    static void GameReset(CDebuggerUI * _this);
-    static void GameCpuRunningChanged(CDebuggerUI * _this);
-    static void GameNameChanged(CDebuggerUI * _this);
-    static void SteppingOpsChanged(CDebuggerUI * _this);
+    static void CALL GameReset(CDebuggerUI * _this);
+    static void CALL GameCpuRunningChanged(CDebuggerUI * _this);
+    static void CALL GameNameChanged(CDebuggerUI * _this);
+    static void CALL SteppingOpsChanged(CDebuggerUI * _this);
 
 protected:
     void TLBChanged(void);

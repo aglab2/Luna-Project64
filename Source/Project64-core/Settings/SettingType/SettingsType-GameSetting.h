@@ -41,7 +41,7 @@ protected:
     static bool m_EraseDefaults;
     static std::string * m_SectionIdent;
 
-    static void UpdateSettings(void * /*Data */);
+    static void CALL UpdateSettings(void * /*Data */);
 
     virtual const char * SectionName(void) const;
 

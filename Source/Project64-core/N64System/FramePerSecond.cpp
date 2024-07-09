@@ -127,13 +127,13 @@ void CFramePerSecond::DisplayViCounter(int32_t FrameRateWhole, uint32_t FrameRat
     UpdateDisplay();
 }
 
-void CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this)
+void CALL CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this)
 {
     _this->m_iFrameRateType = g_Settings->LoadDword(UserInterface_FrameDisplayType);
     _this->Reset(true);
 }
 
-void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
+void CALL CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
 {
     _this->m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
     _this->Reset(true);

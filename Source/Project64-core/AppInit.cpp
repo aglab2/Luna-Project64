@@ -23,7 +23,7 @@ static void IncreaseThreadPriority(void);
 
 static CTraceFileLog * g_LogFile = nullptr;
 
-void LogFlushChanged(CTraceFileLog * LogFile)
+void CALL LogFlushChanged(CTraceFileLog * LogFile)
 {
     LogFile->SetFlushFile(g_Settings->LoadDword(Debugger_AppLogFlush) != 0);
 }
@@ -76,7 +76,7 @@ void SetTraceModuleNames(void)
     TraceSetModuleName(TraceExceptionHandler, "Exception Handler");
 }
 
-void UpdateTraceLevel(void * /*NotUsed*/)
+void CALL UpdateTraceLevel(void * /*NotUsed*/)
 {
     g_ModuleLogLevel[TraceMD5] = (uint8_t)g_Settings->LoadDword(Debugger_TraceMD5);
     g_ModuleLogLevel[TraceThread] = (uint8_t)g_Settings->LoadDword(Debugger_TraceThread);

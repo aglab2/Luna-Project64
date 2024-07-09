@@ -41,8 +41,8 @@ public:
     static void CleanUp(void);
 
 protected:
-    static void GameChanged(void * /*Data */);
-    static void BaseDirChanged(void * /*Data */);
+    static void CALL GameChanged(void * /*Data */);
+    static void CALL BaseDirChanged(void * /*Data */);
 
     static bool IsVideoSetting(const char * Name);
     static bool IsAudioSetting(const char * Name);
