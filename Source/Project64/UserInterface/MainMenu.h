@@ -117,8 +117,8 @@ private:
     void SetTraceModuleSetttings(SettingID Type);
     void ShortCutsChanged(void);
 
-    static void SettingsChanged(CMainMenu * _this);
-    static void stShortCutsChanged(CMainMenu * _this) { return _this->ShortCutsChanged(); }
+    static void CALL SettingsChanged(CMainMenu * _this);
+    static void CALL stShortCutsChanged(CMainMenu * _this) { return _this->ShortCutsChanged(); }
 
     typedef std::list<SettingID> SettingList;
     typedef std::list<UISettingID> UISettingList;

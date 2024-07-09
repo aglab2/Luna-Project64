@@ -13,7 +13,7 @@ protected:
 	static inline bool bGlobalCheats(void) { return m_bGlobalCheats; }
 
 private:
-	static void RefreshSettings (void *);
+	static void CALL RefreshSettings (void *);
 
 	static bool m_bCPURunning;
 	static bool m_bAutoSleep;

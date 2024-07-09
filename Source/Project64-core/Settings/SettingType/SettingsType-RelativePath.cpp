@@ -73,7 +73,7 @@ void CSettingTypeRelativePath::BuildPath(void)
     m_FullPath = (const char *)FullPath;
 }
 
-void CSettingTypeRelativePath::RefreshSettings(void * _this)
+void CALL CSettingTypeRelativePath::RefreshSettings(void * _this)
 {
     ((CSettingTypeRelativePath *)_this)->BuildPath();
 }

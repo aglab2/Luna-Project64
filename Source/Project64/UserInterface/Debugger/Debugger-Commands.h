@@ -161,9 +161,9 @@ private:
         TOOLTIP(IDC_SYMBOLS_BTN, "Symbols...")
     END_TOOLTIP_MAP()
 
-    static void StaticSteppingOpsChanged(CDebugCommandsView * __this) { __this->SteppingOpsChanged(); }
-    static void StaticWaitingForStepChanged(CDebugCommandsView * __this) { __this->WaitingForStepChanged(); }
-    static void GameCpuRunningChanged(CDebugCommandsView* _this);
+    static void CALL StaticSteppingOpsChanged(CDebugCommandsView * __this) { __this->SteppingOpsChanged(); }
+    static void CALL StaticWaitingForStepChanged(CDebugCommandsView * __this) { __this->WaitingForStepChanged(); }
+    static void CALL GameCpuRunningChanged(CDebugCommandsView* _this);
 
     void RecompilerCheck(void);
 

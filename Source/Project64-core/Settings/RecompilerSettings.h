@@ -11,7 +11,7 @@ public:
     static inline bool bShowRecompMemSize(void) { return m_bShowRecompMemSize; }
 
 private:
-    static void StaticRefreshSettings(CRecompilerSettings * _this)
+    static void CALL StaticRefreshSettings(CRecompilerSettings * _this)
     {
         _this->RefreshSettings();
     }

@@ -1,8 +1,16 @@
 #pragma once
 
+#ifndef CALL
+#ifdef _WIN32
+#define CALL __cdecl
+#else
+#define CALL
+#endif
+#endif
+
 class CNotificationSettings
 {
-    static void StaticRefreshSettings(CNotificationSettings * _this)
+    static void CALL StaticRefreshSettings(CNotificationSettings * _this)
     {
         _this->RefreshSettings();
     }

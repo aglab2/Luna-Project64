@@ -53,7 +53,7 @@ const char * CSettingTypeGame::SectionName(void) const
     return m_SectionIdent ? m_SectionIdent->c_str() : "";
 }
 
-void CSettingTypeGame::UpdateSettings(void * /*Data */)
+void CALL CSettingTypeGame::UpdateSettings(void * /*Data */)
 {
     m_RdbEditor = g_Settings->LoadBool(Setting_RdbEditor);
     m_EraseDefaults = g_Settings->LoadBool(Setting_EraseGameDefaults);

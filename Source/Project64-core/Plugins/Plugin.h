@@ -156,7 +156,7 @@ private:
     void DestroyRspPlugin(void);
     void DestroyControlPlugin(void);
 
-    static void PluginChanged(CPlugins * _this);
+    static void CALL PluginChanged(CPlugins * _this);
 
     RenderWindow * m_MainWindow;
     RenderWindow * m_SyncWindow;

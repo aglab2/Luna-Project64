@@ -14,7 +14,7 @@ protected:
     inline static int bInputDelay(void) { return m_bInputDelay; }
 
 private:
-    static void RefreshSettings(void *);
+    static void CALL RefreshSettings(void *);
 
     static bool m_bShowCPUPer;
     static bool m_bBasicMode;

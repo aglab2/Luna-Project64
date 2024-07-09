@@ -39,7 +39,7 @@ public:
     inline static bool  LogUnknown           ( void ) { return m_LogUnknown; }
 
 private:
-    static void RefreshSettings ( void * );
+    static void CALL RefreshSettings ( void * );
 
     static bool m_GenerateLog;
 

@@ -95,7 +95,7 @@ CLogSettings::~CLogSettings()
 	}
 }
 
-void CLogSettings::RefreshSettings(void *)
+void CALL CLogSettings::RefreshSettings(void *)
 {
 	m_GenerateLog = g_Settings->LoadBool(Logging_GenerateLog);
 	m_LogRDRamRegisters = g_Settings->LoadBool(Logging_LogRDRamRegisters);
