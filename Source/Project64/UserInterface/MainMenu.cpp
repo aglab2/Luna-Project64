@@ -746,7 +746,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://ko-fi.com/shin3", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/discord", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_ABOUT: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/project64-301n", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_ABOUT: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/luna-project64", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_DEBUGGER_ENABLE:
         if (g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_ENABLE_DEBUGGER_MSG).c_str()))
         {
