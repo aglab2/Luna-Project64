@@ -335,7 +335,7 @@ void CLanguage::LoadDefaultStrings(void)
     /*** Options ***/
 
     // Options title
-    DEF_STR(OPTIONS_TITLE, "Configura&tion");
+    DEF_STR(OPTIONS_TITLE, "Configuration");
 
     // Tabs
     DEF_STR(TAB_PLUGIN, "Plugins");

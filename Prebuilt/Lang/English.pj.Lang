@@ -1,7 +1,7 @@
 ﻿// Meta information
 #1  #  "English"		// Language ID
 #2  #  "Zilmar, ShiN3"		// Author
-#3  #  "3.5.0"			// Version
+#3  #  "3.5.1"			// Version
 #4  #  "July, 2024"		// Date
 
 /*** Menu ***/
@@ -313,7 +313,7 @@
 /*** Options ***/
 
 // Options title
-#400#  "Configura&tion"
+#400#  "Configuration"
 
 // Tabs
 #401#  "Plugins"
@@ -439,7 +439,6 @@
 #5440# "Disk seek timing:"
 #5441# "Turbo"
 #5442# "Slow"
-
 
 // Core styles
 #540#  "Interpreter"
