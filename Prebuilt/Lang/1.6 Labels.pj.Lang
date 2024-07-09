@@ -374,7 +374,7 @@
 #475#  "Exit fullscreen on lose focus"
 #476#  "Enable Discord Rich Presence"
 #478#  "Input delay in milliseconds"
-#479#  "Share cheat codes between games"
+#494#  "Share cheat codes between games"
 
 // ROM browser tab
 #480#  "Max # of Roms Remembered (Max 10):"
