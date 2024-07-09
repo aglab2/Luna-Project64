@@ -3,6 +3,7 @@
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 #include <Project64-core/Settings/SettingsID.h>
 #include <map>
+#include <windows.h>
 
 #ifndef CALL
 #ifdef _WIN32
@@ -26,7 +27,7 @@ enum SettingDataType
 class CSettings
 {
 public:
-    typedef void(*SettingChangedFunc)(void *);
+    typedef void(CALL *SettingChangedFunc)(void *);
 
     CSettings(void);
     ~CSettings(void);

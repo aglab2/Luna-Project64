@@ -87,7 +87,7 @@ void CSettingTypeSelectedDirectory::Delete(uint32_t /*Index*/)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeSelectedDirectory::DirectoryChanged(CSettingTypeSelectedDirectory * _this)
+void CALL CSettingTypeSelectedDirectory::DirectoryChanged(CSettingTypeSelectedDirectory * _this)
 {
     g_Settings->NotifyCallBacks(_this->m_NotifyChangeId);
 }

@@ -1013,7 +1013,7 @@ void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
     }
 }
 
-void CMipsMemoryVM::RdramChanged(CMipsMemoryVM * _this)
+void CALL CMipsMemoryVM::RdramChanged(CMipsMemoryVM * _this)
 {
     const size_t new_size = g_Settings->LoadDword(Game_RDRamSize);
     const size_t old_size = _this->m_AllocatedRdramSize;

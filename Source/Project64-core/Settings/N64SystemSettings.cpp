@@ -40,7 +40,7 @@ CN64SystemSettings::~CN64SystemSettings()
     }
 }
 
-void CN64SystemSettings::RefreshSettings(void *)
+void CALL CN64SystemSettings::RefreshSettings(void *)
 {
     m_bBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
     m_bDisplayFrameRate = g_Settings->LoadBool(UserInterface_DisplayFrameRate);

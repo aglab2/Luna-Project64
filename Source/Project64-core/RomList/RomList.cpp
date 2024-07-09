@@ -790,7 +790,7 @@ MD5 CRomList::RomListHash(strlist & FileList)
     return md5Hash;
 }
 
-void CRomList::RefreshSettings(CRomList * _this)
+void CALL CRomList::RefreshSettings(CRomList * _this)
 {
     _this->m_GameDir = g_Settings->LoadStringVal(RomList_GameDir).c_str();
 }

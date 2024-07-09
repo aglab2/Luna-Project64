@@ -6,6 +6,14 @@
 #include <list>
 #include <stdint.h>
 
+#ifndef CALL
+#ifdef _WIN32
+#define CALL __cdecl
+#else
+#define CALL
+#endif
+#endif
+
 typedef std::map<int32_t, std::string, std::less<int32_t> > LANG_STRINGS;
 typedef LANG_STRINGS::value_type LANG_STR;
 
@@ -34,7 +42,7 @@ private:
     CLanguage(const CLanguage&);
     CLanguage& operator=(const CLanguage&);
 
-    static void StaticResetStrings(CLanguage * _this)
+    static void CALL StaticResetStrings(CLanguage * _this)
     {
         _this->ResetStrings();
     }

@@ -72,7 +72,7 @@ private:
     void SaveRomList(strlist & FileList);
     void RefreshRomListThread(void);
 
-    static void RefreshSettings(CRomList *);
+    static void CALL RefreshSettings(CRomList *);
     static void NotificationCB(const char * Status, CRomList * _this);
     static void RefreshRomListStatic(CRomList * _this);
     static void ByteSwapRomData(uint8_t * Data, int32_t DataLen);

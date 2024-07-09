@@ -18,8 +18,8 @@ private:
     CFramePerSecond(const CFramePerSecond&);
     CFramePerSecond& operator=(const CFramePerSecond&);
 
-    static void FrameRateTypeChanged(CFramePerSecond * _this);
-    static void ScreenHertzChanged(CFramePerSecond * _this);
+    static void CALL FrameRateTypeChanged(CFramePerSecond * _this);
+    static void CALL ScreenHertzChanged(CFramePerSecond * _this);
     void UpdateDisplay(void);
 
     int32_t  m_iFrameRateType, m_ScreenHertz;

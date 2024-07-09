@@ -67,7 +67,7 @@ CDebuggerUI::~CDebuggerUI(void)
     delete m_SymbolTable;
 }
 
-void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
+void CALL CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
 {
     if (g_Settings->LoadBool(Debugger_SteppingOps))
     {
@@ -75,7 +75,7 @@ void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
     }
 }
 
-void CDebuggerUI::GameCpuRunningChanged(CDebuggerUI * _this)
+void CALL CDebuggerUI::GameCpuRunningChanged(CDebuggerUI * _this)
 {
     if (!g_Settings->LoadBool(GameRunning_CPU_Running))
     {
@@ -86,7 +86,7 @@ void CDebuggerUI::GameCpuRunningChanged(CDebuggerUI * _this)
     }
 }
 
-void CDebuggerUI::GameNameChanged(CDebuggerUI * _this)
+void CALL CDebuggerUI::GameNameChanged(CDebuggerUI * _this)
 {
     if (_this->m_MemorySearch)
     {
@@ -94,7 +94,7 @@ void CDebuggerUI::GameNameChanged(CDebuggerUI * _this)
     }
 }
 
-void CDebuggerUI::GameReset(CDebuggerUI * _this)
+void CALL CDebuggerUI::GameReset(CDebuggerUI * _this)
 {
     if (!g_Settings->LoadBool(GameRunning_InReset))
     {
