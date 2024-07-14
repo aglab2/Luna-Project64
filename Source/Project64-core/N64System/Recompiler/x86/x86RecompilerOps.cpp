@@ -9391,14 +9391,14 @@ void CX86RecompilerOps::SyncRegState(const CRegInfo & SyncTo)
             case CRegInfo::STATE_CONST_64:
                 if (GetMipsReg(i) != SyncTo.GetMipsReg(i))
                 {
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    //g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 continue;
             case CRegInfo::STATE_CONST_32_SIGN:
                 if (GetMipsRegLo(i) != SyncTo.GetMipsRegLo(i))
                 {
-                    CPU_Message("Value of constant is different register %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    //CPU_Message("Value of constant is different register %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
+                    //g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
                 continue;
             default:
