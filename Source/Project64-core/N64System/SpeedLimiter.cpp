@@ -131,8 +131,8 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     }
 
     uint64_t CalculatedTime;
-    record.calculatedTime = (CalculatedTime = LastTime + (m_MicroSecondsPerFrame * m_Frames));
-    char reset = CurrentTimeValue - LastTime >= 1000000;
+    record.calculatedTime = (CalculatedTime = LastTime + ((uint64_t) m_MicroSecondsPerFrame * m_Frames));
+    bool reset = CurrentTimeValue - LastTime >= 1000000;
 
     if (CurrentTimeValue < CalculatedTime)
     {
@@ -156,7 +156,7 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     else
     {
         // this is a new code - if we are falling very behind, try to reset the timer
-        long time = CurrentTimeValue - CalculatedTime;
+        uint64_t time = CurrentTimeValue - CalculatedTime;
         reset = time > MS_RESET_TIME * 1000;
     }
 
