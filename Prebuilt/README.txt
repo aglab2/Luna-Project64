@@ -12,6 +12,11 @@ I hope you have fun playing!
 
 CHANGELOG:
 
+-- v3.5.2 --
+	- Fixed a couple crashes that would've surfaced with upcoming HackerSM64 improvements.
+	- (Probably?) fixed a bug where the emu would get stuck on unlimited FPS if left paused for too long.
+	- Updated traditional Chinese translation.
+
 -- v3.5.1 --
 	- Fixed a bug where ROM browser wouldn't work.
 	- Fixed a bug where enabling cheat codes wouldn't work.
