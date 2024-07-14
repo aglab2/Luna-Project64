@@ -304,7 +304,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 #endif
                 break;
             case R4300i_REGIMM_BLTZAL:
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                // g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
                 m_Reg.GetMipsRegLo(31) = m_PC + 8;
                 m_Reg.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
@@ -320,7 +320,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 #endif
                 break;
             case R4300i_REGIMM_BGEZAL:
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                // g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
                 m_NextInstruction = DELAY_SLOT;
                 if (m_Reg.IsConst(m_Command.rs))
