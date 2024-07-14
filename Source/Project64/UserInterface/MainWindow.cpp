@@ -92,7 +92,7 @@ CMainGui::~CMainGui(void)
 
 bool CMainGui::RegisterWinClass(void)
 {
-    std::wstring VersionDisplay = stdstr_f("Luna's Project64 v3.5.1").ToUTF16();
+    std::wstring VersionDisplay = stdstr_f("Luna's Project64 v3.5.2").ToUTF16();
 
     WNDCLASS wcl;
 
@@ -387,7 +387,7 @@ void CMainGui::Caption(LPCWSTR Caption)
 
 void CMainGui::Create(const char * WindowTitle)
 {
-    stdstr_f VersionDisplay("Luna's Project64 v3.5.1");
+    stdstr_f VersionDisplay("Luna's Project64 v3.5.2");
     m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, 5, 5, 640, 480,
         nullptr, nullptr, GetModuleHandle(nullptr), this);
