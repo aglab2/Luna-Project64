@@ -24,6 +24,8 @@
 #include <Project64-core/N64System/N64Types.h>
 #include <Common/Trace.h>
 
+#include <shlwapi.h>
+
 CSettings * g_Settings = nullptr;
 
 CSettings::CSettings() :
@@ -73,11 +75,9 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
-    wchar_t* AppdataPathW = NULL;
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-    char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
-    wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
-    strcat(AppdataPath, "\\Luna-Project64\\");
+    char AppdataPath[1024];
+    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
+    PathAppendA(AppdataPath, "Luna-Project64\\");
 
     // Command settings
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
@@ -85,8 +85,6 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
     AddHandler(Cmd_RomFile, new CSettingTypeTempString(""));
     AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));
-
-    delete[] AppdataPath;
 
     // Support files>
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("Settings", "ConfigFile", SupportFile_SettingsDefault));
