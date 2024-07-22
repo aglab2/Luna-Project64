@@ -473,7 +473,15 @@ const char* CScriptInstance::Eval(const char* jsCode)
 
 bool CScriptInstance::AddFile(const char* path, const char* mode, int* fd)
 {
-    FILE* fp = fopen(path, mode);
+    const char* pathToOpen = path;
+    char exPath[1024];
+    DWORD sz = ExpandEnvironmentStringsA(path, exPath, 1024);
+    if (0 < sz && sz < sizeof(exPath))
+	{
+        pathToOpen = exPath;
+	}
+
+    FILE* fp = fopen(pathToOpen, mode);
 
     if (fp == nullptr)
     {
