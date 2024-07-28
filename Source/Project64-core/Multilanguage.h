@@ -93,6 +93,7 @@ enum LanguageStringID
 
     // Help menu
     MENU_HELP = 180,
+    MENU_OPEN_APPDATA = 188,
     MENU_ABOUT_PJ64 = 182,
     MENU_WEBSITE = 184,
     MENU_SUPPORT_PROJECT64 = 185,

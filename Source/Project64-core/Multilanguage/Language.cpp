@@ -81,6 +81,7 @@ void CLanguage::LoadDefaultStrings(void)
 
     // Help menu
     DEF_STR(MENU_HELP, "&Help");
+    DEF_STR(MENU_OPEN_APPDATA, "Open AppData");
     DEF_STR(MENU_ABOUT_PJ64, "&About Luna's Project64");
     DEF_STR(MENU_WEBSITE, "&Website (Shuri's Library)");
     DEF_STR(MENU_SUPPORT_PROJECT64, "Support Vanilla Project64");

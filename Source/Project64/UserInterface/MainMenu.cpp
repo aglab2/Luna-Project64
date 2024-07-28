@@ -743,6 +743,14 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1));
         break;
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
+    case ID_HELP_OPEN_APPDATA:
+        {
+            wchar_t* AppdataPathW = NULL;
+            SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
+            PathAppend(AppdataPathW, L"Luna-Project64");
+            ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
+        }
+        break;
     case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://ko-fi.com/shin3", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/discord", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
@@ -1822,6 +1830,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
     // Help menu
     MenuItemList HelpMenu;
+    HelpMenu.push_back(MENU_ITEM(ID_HELP_OPEN_APPDATA, MENU_OPEN_APPDATA));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_LUNA, MENU_SUPPORT_LUNA));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_DISCORD, MENU_DISCORD));
