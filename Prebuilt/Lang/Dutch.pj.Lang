@@ -1,7 +1,7 @@
 ﻿// Meta information
 #1  #  "Nederlands"		// Language ID
 #2  #  "Lex, Cryogeon"			// Author
-#3  #  "3.5.1"			// Version
+#3  #  "3.5.3"			// Version
 #4  #  "Juli, 2024"		// Date
 
 /*** Menu ***/
@@ -59,6 +59,7 @@
 
 // Help menu
 #180#  "Help"
+#188#  "Open AppData"
 #182#  "&Over Luna's Project64"
 #184#  "&Website (Shuri's Library)"
 #185#  "Support Vanilla Project64"
