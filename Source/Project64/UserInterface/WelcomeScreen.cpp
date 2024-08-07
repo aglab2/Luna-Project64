@@ -210,11 +210,11 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
             std::string DriveDirectoryStr = PrevDir.GetDriveDirectory();
             char* PrevDirChar = const_cast<char*>(DriveDirectoryStr.c_str());
 
-            wchar_t* AppdataPathW = NULL;
-            SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-            char* AppdataPath = new char[wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20];
-            wcstombs(AppdataPath, AppdataPathW, wcslen(AppdataPathW) * sizeof(AppdataPathW[0]) + 20);
-            strcat(AppdataPath, "\\Luna-Project64\\Save\\");
+            char AppdataPath[1024];
+            SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
+            PathAppendA(AppdataPath, "Luna-Project64");
+            PathAppendA(AppdataPath, "Save");
+
             strcat(PrevDirChar, "\\");
             std::error_code ec;
 
@@ -228,14 +228,12 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 
             if (strstr(PrevDirChar, "Program Files") != NULL)
             {
-                wchar_t* LocalPathW = NULL;
-                SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &LocalPathW);
-                char* LocalPath = new char[wcslen(LocalPathW) * sizeof(LocalPathW[0]) + 20];
-                wcstombs(LocalPath, LocalPathW, wcslen(LocalPathW) * sizeof(LocalPathW[0]) + 20);
-                strcat(LocalPath, "\\VirtualStore\\");
+                char LocalPath[1024];
+                SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, LocalPath);
+                PathAppendA(LocalPath, "VirtualStore");
                 char* ptr = strstr(PrevDirChar, "Project64");
                 if (ptr != NULL) {
-                    strcat(LocalPath, strstr(PrevDirChar, "Project64"));
+                    PathAppendA(LocalPath, ptr);
                     try {
                         std::filesystem::copy(LocalPath, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
                     }
@@ -260,9 +258,7 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
                     MessageBox(L"Failed to convert savestate file extensions from PJ64 1.6.", L"Error", MB_OK);
                     return FALSE;
                 }
-                delete[] LocalPath;
             }
-            delete[] AppdataPath;
         }
         else
         {
