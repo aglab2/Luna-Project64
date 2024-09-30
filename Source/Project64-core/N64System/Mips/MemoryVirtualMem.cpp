@@ -73,6 +73,7 @@ CMipsMemoryVM::~CMipsMemoryVM()
 
 void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
 {
+    m_RomWrittenTo = false;
     if (m_TLB_ReadMap)
     {
         size_t address;
