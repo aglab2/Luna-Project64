@@ -61,7 +61,7 @@ Older versions used a number+letter naming convention that can be translated to 
 * Help building by [Kelvinnkat](https://github.com/kelvinnkat) and [Derpyhsi](https://github.com/derpyhsi).
 * Help with plugins by [aglab2](https://github.com/aglab2) and [wermi](https://github.com/wermipls).
 * Help with new features by [aglab2](https://github.com/aglab2) and **HeralayanSalty**.
-* Thanks to [Prakxo](https://github.com/Prakxo) for convincing me to make this, and to [aglab2](https://github.com/aglab2) for annoying me enough to get v3.4.0 out.
+* Thanks to to [aglab2](https://github.com/aglab2) for annoying me enough to get v3.4.0 out.
 
 ## License
 
