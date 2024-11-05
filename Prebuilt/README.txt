@@ -12,6 +12,12 @@ I hope you have fun playing!
 
 CHANGELOG:
 
+-- v3.5.3 --
+	- Added "Open AppData" button in the Help tab.
+	- Added UTF8 support.
+	- Updated Polish and Czech translations.
+	- Added "Analog to Digital Threshold" setting to NRage. Change this if you have issues with C stick.
+
 -- v3.5.2 --
 	- Fixed a couple crashes that would've surfaced with upcoming HackerSM64 improvements.
 	- (Probably?) fixed a bug where the emu would get stuck on unlimited FPS if left paused for too long.

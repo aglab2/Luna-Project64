@@ -1,8 +1,8 @@
 // Meta information
 #1  #  "Polski"		// Language ID
 #2  #  "Sigotu"		// Author
-#3  #  "3.5.3"			// Version
-#4  #  "July 2024"		// Date
+#3  #  "3.5.3"		// Version
+#4  #  "August 2024"	// Date
 
 /*** Menu ***/
 
@@ -59,7 +59,7 @@
 
 // Help menu
 #180#  "&Pomoc"
-#188#  "Open AppData"
+#188#  "Otwórz folder AppData"
 #182#  "Informacje &o Luna's Project64"
 #184#  "&Strona (Shuri's Library - ENG)"
 #185#  "Wesprzyj oryginalny Project64"
