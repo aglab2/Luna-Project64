@@ -236,7 +236,7 @@ bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
         CurrentSection->m_EndPC = TestPC;
         if (!AnalyzeInstruction(TestPC, TargetPC, ContinuePC, LikelyBranch, IncludeDelaySlot, EndBlock, PermLoop))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            // g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
         }
 
@@ -474,7 +474,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             EndBlock = true;
             break;
         default:
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            // g_Notify->BreakPoint(__FILE__, __LINE__);
             return false;
         }
         break;
