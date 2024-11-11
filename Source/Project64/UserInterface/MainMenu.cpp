@@ -11,6 +11,10 @@
 #include <windows.h>
 #include <commdlg.h>
 
+#ifdef RETROACHIEVEMENTS
+#include <Project64-core/RetroAchievements.h>
+#endif
+
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     CBaseMenu(),
     m_ResetAccelerators(true),
@@ -148,6 +152,11 @@ void CMainMenu::ShortCutsChanged(void)
 
 void CMainMenu::OnOpenRom(HWND hWnd)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_ConfirmLoadNewRom(false))
+        return;
+#endif
+
     std::string File = ChooseFileToOpen(hWnd);
     if (File.length() == 0)
     {
@@ -199,6 +208,11 @@ void CMainMenu::OnRomInfo(HWND hWnd)
 
 void CMainMenu::OnEndEmulation(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_ConfirmLoadNewRom(false))
+        return;
+#endif
+
     WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
     if (g_BaseSystem)
     {
@@ -264,6 +278,11 @@ void CMainMenu::OnSaveAs(HWND hWnd)
 
 void CMainMenu::OnLodState(HWND hWnd)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("load a state"))
+        return;
+#endif
+
     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 
     char Directory[255];
@@ -286,11 +305,21 @@ void CMainMenu::OnLodState(HWND hWnd)
 
 void CMainMenu::OnEnhancements(HWND /*hWnd*/)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("use enhancements"))
+        return;
+#endif
+
     m_Gui->DisplayEnhancements(false);
 }
 
 void CMainMenu::OnCheats(HWND /*hWnd*/)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("use cheats"))
+        return;
+#endif
+
     m_Gui->DisplayCheatsUI(false);
 }
 
@@ -396,7 +425,13 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
     case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomList(); break;
-    case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
+    case ID_FILE_EXIT:
+#ifdef RETROACHIEVEMENTS
+        if (!RA_ConfirmLoadNewRom(true))
+            break;
+#endif
+        DestroyWindow((HWND)hWnd);
+        break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft);
@@ -408,6 +443,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_SYSTEM_PAUSE:
         m_Gui->SaveWindowLoc();
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE");
+#ifdef RETROACHIEVEMENTS
+        RA_SetPaused(!g_Settings->LoadBool(GameRunning_CPU_Paused));
+#endif
         g_BaseSystem->ExternalEvent(g_Settings->LoadBool(GameRunning_CPU_Paused) ? SysEvent_ResumeCPU_FromMenu : SysEvent_PauseCPU_FromMenu);
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE 1");
         break;
@@ -436,6 +474,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_SYSTEM_SAVEAS: OnSaveAs(hWnd); break;
     case ID_SYSTEM_RESTORE:
+#ifdef RETROACHIEVEMENTS
+        if (!RA_WarnDisableHardcore("load a state"))
+            break;
+#endif
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");
         g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
         break;
@@ -443,6 +485,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_SYSTEM_ENHANCEMENT: OnEnhancements(hWnd); break;
     case ID_SYSTEM_CHEAT: OnCheats(hWnd); break;
     case ID_SYSTEM_GSBUTTON:
+#ifdef RETROACHIEVEMENTS
+        if (!RA_WarnDisableHardcore("press the GS button"))
+            break;
+#endif
         g_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
         break;
     case ID_OPTIONS_DISPLAY_FR:
@@ -769,6 +815,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
+#ifdef RETROACHIEVEMENTS
+            if (!RA_ConfirmLoadNewRom(false))
+                return false;
+#endif
             stdstr FileName;
             if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
                 FileName.length() > 0)
@@ -1921,6 +1971,10 @@ void CMainMenu::ResetMenu(void)
             RemoveMenu((HMENU)OldMenuHandle, (DWORD)g_Plugins->RSP()->GetDebugMenu(), MF_BYCOMMAND);
         }
         WriteTrace(TraceUserInterface, TraceDebug, "Destroy old menu");
+
+#ifdef RETROACHIEVEMENTS
+        RA_RebuildMenu();
+#endif
 
         // Destroy the old menu
         DestroyMenu((HMENU)OldMenuHandle);

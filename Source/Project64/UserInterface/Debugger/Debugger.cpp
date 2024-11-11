@@ -7,6 +7,10 @@
 #include "DMALog.h"
 #include "Symbols.h"
 
+#ifdef RETROACHIEVEMENTS
+#include <../RAInterface/RA_Interface.h>
+#endif
+
 CPj64Module _Module;
 
 CDebuggerUI::CDebuggerUI() :
@@ -205,6 +209,11 @@ void CDebuggerUI::Debug_Reset(void)
 
 void CDebuggerUI::OpenMemoryDump()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("dump memory"))
+        return;
+#endif
+
     if (g_MMU == nullptr)
     {
         return;
@@ -221,6 +230,11 @@ void CDebuggerUI::OpenMemoryDump()
 
 void CDebuggerUI::OpenMemoryWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view memory"))
+        return;
+#endif
+
     if (m_MemoryView == nullptr)
     {
         m_MemoryView = new CDebugMemoryView(this);
@@ -242,6 +256,11 @@ void CDebuggerUI::Debug_ShowMemoryLocation(uint32_t Address, bool VAddr)
 
 void CDebuggerUI::OpenTLBWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view TLB entries"))
+        return;
+#endif
+
     if (g_MMU == nullptr)
     {
         return;
@@ -274,6 +293,11 @@ void CDebuggerUI::Debug_RefreshDMALogWindow(void)
 
 void CDebuggerUI::OpenMemorySearch()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("search memory"))
+        return;
+#endif
+
     if (m_MemorySearch == nullptr)
     {
         m_MemorySearch = new CDebugMemorySearch(this);
@@ -286,6 +310,11 @@ void CDebuggerUI::OpenMemorySearch()
 
 void CDebuggerUI::OpenCommandWindow()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view commands"))
+        return;
+#endif
+
     if (m_CommandsView == nullptr)
     {
         m_CommandsView = new CDebugCommandsView(this, m_StepEvent);
@@ -304,6 +333,11 @@ void CDebuggerUI::Debug_ShowCommandsLocation(uint32_t address, bool top)
 
 void CDebuggerUI::OpenScriptsWindow()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view scripts"))
+        return;
+#endif
+
     if (m_Scripts == nullptr)
     {
         m_Scripts = new CDebugScripts(this);
@@ -337,6 +371,11 @@ void CDebuggerUI::Debug_ClearScriptsWindow()
 
 void CDebuggerUI::OpenSymbolsWindow()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view symbols"))
+        return;
+#endif
+
     if (m_Symbols == nullptr)
     {
         m_Symbols = new CDebugSymbols(this);
@@ -354,6 +393,11 @@ void CDebuggerUI::Debug_RefreshSymbolsWindow()
 
 void CDebuggerUI::OpenDMALogWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view the DMA log"))
+        return;
+#endif
+
     if (m_DMALogView == nullptr)
     {
         m_DMALogView = new CDebugDMALogView(this);
@@ -363,6 +407,11 @@ void CDebuggerUI::OpenDMALogWindow(void)
 
 void CDebuggerUI::OpenCPULogWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view the CPU log"))
+        return;
+#endif
+
     if (m_CPULogView == nullptr)
     {
         m_CPULogView = new CDebugCPULogView(this);
@@ -372,6 +421,11 @@ void CDebuggerUI::OpenCPULogWindow(void)
 
 void CDebuggerUI::OpenExcBreakpointsWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view breakpoints"))
+        return;
+#endif
+
     if (m_ExcBreakpoints == nullptr)
     {
         m_ExcBreakpoints = new CDebugExcBreakpoints(this);
@@ -381,6 +435,11 @@ void CDebuggerUI::OpenExcBreakpointsWindow(void)
 
 void CDebuggerUI::OpenStackTraceWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view stack traces"))
+        return;
+#endif
+
     if (m_StackTrace == nullptr)
     {
         m_StackTrace = new CDebugStackTrace(this);
@@ -390,6 +449,11 @@ void CDebuggerUI::OpenStackTraceWindow(void)
 
 void CDebuggerUI::OpenStackViewWindow(void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("view stack"))
+        return;
+#endif
+
     if (m_StackView == nullptr)
     {
         m_StackView = new CDebugStackView(this);

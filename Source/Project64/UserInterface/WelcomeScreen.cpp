@@ -76,6 +76,9 @@ void WelcomeScreen::SelectPrevDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 
 LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+#ifdef RETROACHIEVEMENTS
+    SetWindowText(L"RAProject64 - Welcome");
+#endif
     m_Logo.SubclassWindow(GetDlgItem(IDC_BMP_LOGO));
     m_Logo.SetBitmap(MAKEINTRESOURCE(IDB_ABOUT_LOGO));
  
