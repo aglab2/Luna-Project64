@@ -47,6 +47,11 @@ m_SettingsConfig(SettingsConfig)
     TxtBox->SetTextField(GetDlgItem(IDC_INPUTDELAY));
 
     UpdatePageSettings();
+    
+    if (g_Settings->LoadBool(UserInterface_BasicMode)) {
+        g_Settings->SaveBool(UserInterface_BasicMode, 0);
+        MessageBox(wGS(MSG_BASICMODE_UNSUPPORTED).c_str(), wGS(MSG_DEPRECATED_SETTING_TITLE).c_str(), MB_OK);
+    }
 }
 
 void CGeneralOptionsPage::HidePage()

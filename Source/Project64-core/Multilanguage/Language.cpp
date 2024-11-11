@@ -709,6 +709,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SDCARD_UNMOUNTED, "SD Card is unmounted and can be accessed in emulator");
     DEF_STR(MSG_SDCARD_UNMOUNT_FAILED, "Failed to unmount SD Card.\nMake sure SDCard is ejected in Windows. Right click on disk \"SDCARD0\" in Explorer and click Eject.");
     DEF_STR(MSG_SDCARD_MOUNT_FAILED, "Failed to mount SD Card");
+    DEF_STR(MSG_BASICMODE_UNSUPPORTED, "The setting \"Hide advanced settings\" is no longer supported and has been disabled.");
 }
 
 CLanguage::CLanguage() :

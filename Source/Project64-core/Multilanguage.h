@@ -767,6 +767,7 @@ enum LanguageStringID
     MSG_SDCARD_UNMOUNTED = 2081,
     MSG_SDCARD_UNMOUNT_FAILED = 2082,
     MSG_SDCARD_MOUNT_FAILED = 2083,
+    MSG_BASICMODE_UNSUPPORTED = 2084,
 };
 
 #include "Multilanguage/Language.h"
