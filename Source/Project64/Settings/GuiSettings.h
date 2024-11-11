@@ -11,6 +11,7 @@ protected:
 	static inline bool bMinimizedSleep(void) { return m_bMinimizedSleep; }
 	static inline bool bDarkTheme(void) { return m_bDarkTheme; }
 	static inline bool bGlobalCheats(void) { return m_bGlobalCheats; }
+	static inline bool bRetroAchievements(void) { return m_bRetroAchievements;  }
 
 private:
 	static void CALL RefreshSettings (void *);
@@ -20,6 +21,7 @@ private:
 	static bool m_bMinimizedSleep;
 	static bool m_bDarkTheme;
 	static bool m_bGlobalCheats;
+	static bool m_bRetroAchievements;
 	
 	static int  m_RefCount;
 

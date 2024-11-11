@@ -23,6 +23,7 @@ enum UISettingID
     Setting_AutoFullscreen,
     Setting_InputDelay,
     Setting_GlobalCheats,
+    Setting_RetroAchievements,
 
     // RDB TLB settings
     Rdb_Status,

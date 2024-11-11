@@ -341,6 +341,7 @@
 #define IDC_JAP                         1145
 #define IDC_UNIQUE_SAVE_DIR             1145
 #define IDC_R12_EDIT                    1145
+#define IDC_RETROACHIEVEMENTS           1145
 #define IDC_PAL                         1146
 #define IDC_R13_EDIT                    1146
 #define IDC_ENABLE_ENHANCEMENTS         1146

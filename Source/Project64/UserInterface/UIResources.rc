@@ -156,7 +156,8 @@ BEGIN
     CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,60,206,10
     CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,73,206,10
-    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,99,206,10
+    CONTROL         "Enable RetroAchievements integration",IDC_RETROACHIEVEMENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,99,206,10
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,115,208,1
     LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,9,122,145,10
     EDITTEXT        IDC_REMEMBER,148,120,26,12,ES_AUTOHSCROLL | ES_NUMBER

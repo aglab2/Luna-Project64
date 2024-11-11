@@ -25,6 +25,7 @@ m_SettingsConfig(SettingsConfig)
     SetDlgItemText(IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
     SetDlgItemText(IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
     SetDlgItemText(IDC_INPUTDELAY_TXT, wGS(OPTION_INPUTDELAY).c_str());
+    SetDlgItemText(IDC_RETROACHIEVEMENTS, wGS(OPTION_RETROACHIEVEMENTS).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_DARKTHEME), (SettingID)Setting_DarkTheme);
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), (SettingID)Setting_AutoSleep);
@@ -34,6 +35,7 @@ m_SettingsConfig(SettingsConfig)
 	AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);
     AddModCheckBox(GetDlgItem(IDC_GLOBAL_CHEATS), (SettingID)Setting_GlobalCheats);
     AddModCheckBox(GetDlgItem(IDC_BASIC_MODE), UserInterface_BasicMode);
+    AddModCheckBox(GetDlgItem(IDC_RETROACHIEVEMENTS), (SettingID)Setting_RetroAchievements);
 
     CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), (SettingID)File_RecentGameFileCount, false);
     TxtBox->SetTextField(GetDlgItem(IDC_MAXROMS_TXT));

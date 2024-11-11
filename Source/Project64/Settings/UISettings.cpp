@@ -33,6 +33,7 @@ void RegisterUISettings (void)
     AddUISetting(Setting_AutoFullscreen, new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
     AddUISetting(Setting_GlobalCheats, new CSettingTypeApplication("Settings", "Global Cheats", (uint32_t)false));
     AddUISetting(Setting_InputDelay, new CSettingTypeApplication("Settings", "Input Delay", (uint32_t)0));
+    AddUISetting(Setting_RetroAchievements, new CSettingTypeApplication("Settings", "RetroAchievements", (uint32_t)false));
 
     // RDB settings
     AddUISetting(Rdb_Status, new CSettingTypeRomDatabase("Status", "Unknown"));
