@@ -118,28 +118,32 @@ typedef HRESULT(WINAPI* pFnDwmSetWindowAttribute)(HWND hwnd, DWORD dwAttribute, 
 
 // https://stackoverflow.com/questions/39261826/change-the-color-of-the-title-bar-caption-of-a-win32-application
 HRESULT enableImmersiveDarkMode(HWND hwnd) {
-    HMODULE dwmMod = LoadLibrary(L"dwmapi.dll");
-    if (dwmMod)
-    {
-        pFnDwmSetWindowAttribute DwmSetWindowAttribute;
-        DwmSetWindowAttribute = (pFnDwmSetWindowAttribute)GetProcAddress(dwmMod, "DwmSetWindowAttribute");
+    static pFnDwmSetWindowAttribute DwmSetWindowAttribute = nullptr;
+    static std::once_flag flag;
+    std::call_once(flag, []() {
+        HMODULE dwmMod = LoadLibrary(L"dwmapi.dll");
+        if (dwmMod)
+        {
+            DwmSetWindowAttribute = (pFnDwmSetWindowAttribute)GetProcAddress(dwmMod, "DwmSetWindowAttribute");
+        }
+    });
 
-        HRESULT hr = S_OK;
-        DWMNCRENDERINGPOLICY ncrp;
-        bool enable = true;
-        if (enable)
-            ncrp = DWMNCRP_ENABLED;
-        else
-            ncrp = DWMNCRP_DISABLED;
+    if (!DwmSetWindowAttribute)
+        return E_FAIL;
 
-        // Disable non-client area rendering on the window.
-        DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &ncrp, sizeof(ncrp));
-        BOOL value = TRUE;
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
-        FreeLibrary(dwmMod);
-    }
+    HRESULT hr = S_OK;
+    DWMNCRENDERINGPOLICY ncrp;
+    bool enable = true;
+    if (enable)
+        ncrp = DWMNCRP_ENABLED;
+    else
+        ncrp = DWMNCRP_DISABLED;
+
+    // Disable non-client area rendering on the window.
+    DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &ncrp, sizeof(ncrp));
+    BOOL value = TRUE;
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
     return S_FALSE;
-
 }
 
 #if 1
