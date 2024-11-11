@@ -16,17 +16,17 @@ static HWND g_hWnd = nullptr;
 static const char* g_sFileBeingLoaded = nullptr;
 static unsigned int g_nGameId = 0;
 
-static void CauseUnpause()
+static void __cdecl CauseUnpause()
 {
     g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
 }
 
-static void CausePause()
+static void __cdecl CausePause()
 {
     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_FromMenu);
 }
 
-static int GetMenuItemIndex(HMENU hMenu, const char* pItemName)
+static int __cdecl GetMenuItemIndex(HMENU hMenu, const char* pItemName)
 {
     int nIndex = 0;
     char pBuffer[256];
@@ -62,7 +62,7 @@ void RA_RebuildMenu()
     DrawMenuBar(g_hWnd);
 }
 
-static void GetEstimatedGameTitle(char* sNameOut)
+static void __cdecl GetEstimatedGameTitle(char* sNameOut)
 {
     if (g_sFileBeingLoaded != nullptr)
     {
@@ -91,7 +91,7 @@ void RA_IdentifyGame(const char* sFilename, uint8_t* pData, size_t nSize)
     g_sFileBeingLoaded = nullptr;
 }
 
-static void ResetEmulator()
+static void __cdecl ResetEmulator()
 {
     if (!g_BaseSystem)
         return;
@@ -112,7 +112,12 @@ static void ResetEmulator()
     g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Hard);
 }
 
-static void LoadROM(const char*) {}
+static void __cdecl LoadROM(const char*) {}
+
+static void __cdecl RebuildMenu()
+{
+	return RA_RebuildMenu();
+}
 
 void RA_Init(HWND hMainWindow)
 {
@@ -122,7 +127,7 @@ void RA_Init(HWND hMainWindow)
     g_hWnd = hMainWindow;
 
     // provide callbacks to the DLL
-    RA_InstallSharedFunctions(NULL, CauseUnpause, CausePause, RA_RebuildMenu, GetEstimatedGameTitle, ResetEmulator, LoadROM);
+    RA_InstallSharedFunctions(NULL, CauseUnpause, CausePause, RebuildMenu, GetEstimatedGameTitle, ResetEmulator, LoadROM);
 
     // add a placeholder menu item and start the login process - menu will be updated when login completes
     RA_RebuildMenu();
@@ -132,18 +137,18 @@ void RA_Init(HWND hMainWindow)
     RA_UpdateAppTitle("");
 }
 
-static unsigned int RAMBlockReader(unsigned int nAddress, unsigned char* pBuffer, unsigned int nBytes)
+static unsigned int __cdecl RAMBlockReader(unsigned int nAddress, unsigned char* pBuffer, unsigned int nBytes)
 {
     memcpy(pBuffer, &g_MMU->Rdram()[nAddress], nBytes);
     return nBytes;
 }
 
-static unsigned char RAMByteReader(unsigned int nAddress)
+static unsigned char __cdecl RAMByteReader(unsigned int nAddress)
 {
     return g_MMU->Rdram()[nAddress];
 }
 
-static void RAMByteWriter(unsigned int nAddress, unsigned char nVal)
+static void __cdecl RAMByteWriter(unsigned int nAddress, unsigned char nVal)
 {
     g_MMU->Rdram()[nAddress] = nVal;
 }
