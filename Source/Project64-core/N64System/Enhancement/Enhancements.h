@@ -33,6 +33,9 @@ public:
     CEnhancementList Enhancements(void);
 
 private:
+    void LoadImpl(CUniqueLock&);
+    void LoadActiveImpl(CUniqueLock&, CMipsMemoryVM* MMU, CPlugins* Plugins);
+
     class GAMESHARK_CODE
     {
     public:
@@ -98,9 +101,10 @@ private:
     ORIGINAL_VALUES16 m_OriginalValues16;
     ORIGINAL_VALUES8 m_OriginalValues8;
     CThread m_ScanFileThread;
-    bool m_Scan;
-    bool m_Scanned;
+    std::atomic_bool m_Scan;
     bool m_UpdateCheats;
     bool m_OverClock;
     uint32_t m_OverClockModifier;
+
+    CEvent m_Scanned;
 };
