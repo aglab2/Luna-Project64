@@ -13,7 +13,11 @@
 #include <Common/Util.h>
 #include <Project64/Settings/UISettings.h>
 
-CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(const GAMESHARK_CODE&rhs)
+#ifdef RETROACHIEVEMENTS
+#include "../RAInterface/RA_Interface.h"
+#endif
+
+CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(const GAMESHARK_CODE & rhs)
 {
     m_Command = rhs.m_Command;
     m_Value = rhs.m_Value;
@@ -301,8 +305,18 @@ void CEnhancements::LoadActiveImpl(CUniqueLock& guard, CMipsMemoryVM * MMU, CPlu
     m_OverClockModifier = 1;
 
     ResetCodes(MMU);
+
+#ifdef RETROACHIEVEMENTS
+    if (!RA_HardcoreModeIsActive())
+    {
+#endif
+
     LoadActive(m_Cheats, nullptr);
     LoadActive(m_Enhancements, Plugins);
+
+#ifdef RETROACHIEVEMENTS
+    }
+#endif
 
     CGameSettings::SetOverClockModifier(m_OverClock, m_OverClockModifier);
 }
