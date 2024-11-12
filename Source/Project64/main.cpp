@@ -150,7 +150,8 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         }
 
 #ifdef RETROACHIEVEMENTS
-        RA_Init(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
+        if (g_Settings->LoadBool((SettingID) Setting_RetroAchievements))
+            RA_Init(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
 #endif
 
         WriteTrace(TraceUserInterface, TraceDebug, "Entering message loop");
