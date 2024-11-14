@@ -191,6 +191,7 @@ void CSystemTimer::TimerDone()
     case CSystemTimer::SoftResetTimer:
         g_SystemTimer->StopTimer(CSystemTimer::SoftResetTimer);
         g_System->ExternalEvent(SysEvent_ResetCPU_SoftDone);
+        g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
         break;
     case CSystemTimer::SiTimer:
         g_SystemTimer->StopTimer(CSystemTimer::SiTimer);

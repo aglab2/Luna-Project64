@@ -631,6 +631,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
     uint32_t & PC = PROGRAM_COUNTER;
 
     uint32_t PhysicalAddr;
+    auto jt = JumpTable();
 
     while (!Done)
     {
@@ -646,7 +647,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
         }
         if (PhysicalAddr < g_System->RdramSize())
         {
-            CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
+            CCompiledFunc * info = jt[PhysicalAddr >> 2];
 
             if (info == nullptr)
             {
@@ -659,7 +660,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                 {
                     m_MMU.ProtectMemory(PC & ~0xFFF, PC | 0xFFF);
                 }
-                JumpTable()[PhysicalAddr >> 2] = info;
+                jt[PhysicalAddr >> 2] = info;
             }
             else
             {
@@ -674,7 +675,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                     {
                         ClearRecompCode_Phys(0, 0x2000, Remove_ValidateFunc);
                     }
-                    info = JumpTable()[PhysicalAddr >> 2];
+                    info = jt[PhysicalAddr >> 2];
                     if (info != nullptr)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
