@@ -3,6 +3,10 @@
 
 #include <Common/Util.h>
 
+#ifdef RETROACHIEVEMENTS
+#include "../RAInterface/RA_Interface.h"
+#endif
+
 #ifdef _WIN32
 #pragma comment(lib, "winmm.lib")
 
@@ -50,16 +54,16 @@ static void setAccurateTimerResolution()
 
 static void unsetAccurateTimerResolution()
 {
-	timeEndPeriod(1);
+    timeEndPeriod(1);
 }
 #endif
 
 const uint32_t CSpeedLimiter::m_DefaultSpeed = 60;
 
 CSpeedLimiter::CSpeedLimiter() :
-m_Frames(0),
-m_Speed(m_DefaultSpeed),
-m_BaseSpeed(m_DefaultSpeed)
+    m_Frames(0),
+    m_Speed(m_DefaultSpeed),
+    m_BaseSpeed(m_DefaultSpeed)
 {
 #ifdef _WIN32
     setAccurateTimerResolution();
@@ -101,7 +105,7 @@ struct RecordedFrame
 
 #define MS_RESET_TIME 70
 
-bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
+bool CSpeedLimiter::Timer_Process(uint32_t* FrameRate)
 {
     if (-2 == m_Frames)
     {
@@ -131,7 +135,7 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     }
 
     uint64_t CalculatedTime;
-    record.calculatedTime = (CalculatedTime = LastTime + ((uint64_t) m_MicroSecondsPerFrame * m_Frames));
+    record.calculatedTime = (CalculatedTime = LastTime + ((uint64_t)m_MicroSecondsPerFrame * m_Frames));
     bool reset = CurrentTimeValue - LastTime >= 1000000;
 
     if (CurrentTimeValue < CalculatedTime)
@@ -194,26 +198,31 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     return false;
 }
 
-void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
+void CSpeedLimiter::AlterSpeed(const ESpeedChange SpeedChange)
 {
-	int32_t SpeedFactor = 1;
-	if (SpeedChange == DECREASE_SPEED) { SpeedFactor = -1; }
+    int32_t SpeedFactor = 1;
+    if (SpeedChange == DECREASE_SPEED) { SpeedFactor = -1; }
 
-	if (m_Speed >= m_DefaultSpeed)
-	{
-		m_Speed += 10 * SpeedFactor;
-	}
-	else if (m_Speed >= 15)
-	{
-		m_Speed += 5 * SpeedFactor;
-	}
-	else if ((m_Speed > 1 && SpeedChange == DECREASE_SPEED) || SpeedChange == INCREASE_SPEED)
-	{
-		m_Speed += 1 * SpeedFactor;
-	}
+    if (m_Speed >= m_DefaultSpeed)
+    {
+        m_Speed += 10 * SpeedFactor;
+    }
+    else if (m_Speed >= 15)
+    {
+        m_Speed += 5 * SpeedFactor;
+    }
+    else if ((m_Speed > 1 && SpeedChange == DECREASE_SPEED) || SpeedChange == INCREASE_SPEED)
+    {
+        m_Speed += 1 * SpeedFactor;
+    }
 
-	SpeedChanged(m_Speed);
-	FixSpeedRatio();
+#ifdef RETROACHIEVEMENTS
+    if (m_Speed < m_DefaultSpeed && RA_HardcoreModeIsActive())
+        m_Speed = m_DefaultSpeed;
+#endif
+
+    SpeedChanged(m_Speed);
+    FixSpeedRatio();
 }
 
 void CSpeedLimiter::SetSpeed(int Speed)
@@ -222,6 +231,12 @@ void CSpeedLimiter::SetSpeed(int Speed)
     {
         Speed = 1;
     }
+
+#ifdef RETROACHIEVEMENTS
+    if (Speed < m_DefaultSpeed && RA_HardcoreModeIsActive())
+        Speed = m_DefaultSpeed;
+#endif
+
     m_Speed = Speed;
     SpeedChanged(m_Speed);
     FixSpeedRatio();
