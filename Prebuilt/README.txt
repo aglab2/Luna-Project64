@@ -1,8 +1,7 @@
-This is a build of Project64 3.0.1 designed to:
-- Contain all of the good plugins for SM64 romhacks with good settings.
-- Work on Linux (via Wine).
-- Remove the 30 second nagware donation screen.
-- Add extra settings.
+This is a fork of Project64 3.0.1 that I made to have a Linux compatible alternative to 2.4 (Yes, it works on Windows too).
+
+It is not focused on accuracy or compatibility, but rather on functionality that improves the general gameplay experience on a select set of games.
+As such, it removes the nagware screen, and it contains the plugins that are necessary to play these games without issues.
 
 I would strongly encourage you to read the information at https://sites.google.com/view/shurislibrary/luna-project64
 if you haven't already.
@@ -11,6 +10,19 @@ I hope you have fun playing!
 
 
 CHANGELOG:
+
+-- v3.5.4 --
+	- Added RetroAchievements support.
+	- Fixed a bug where the emu would sometimes freeze for 30 seconds on startup.
+	- (Probably?) stopped LunaUpdater from asking for admin permissions every time the emu is opened.
+	- Updated NRage (LPJ64 v2.4.3 --> LPJ64 v2.4.4).
+		- Removed nonstandard digital to analog implementation from NRage.
+		- NRage's "Analog to Digital Threshold" setting now works on XInput (Thanks to NoxZet).
+	- Updated ANGLE GLideN64 (v4.3.9.1 --> v4.3.12).
+	- Updated LINK's AziAudio (Sep 2023 --> Nov 2024 2).
+	- Updated ParaLLEl RSP (v0.5 --> v0.6).
+	- Deleted Angrylion ("if your pc is too bad for parallel, it is likely too bad for angrylion as well" -aglab2)
+	- Lots of small performance improvements.
 
 -- v3.5.3 --
 	- Added "Open AppData" button in the Help tab.
