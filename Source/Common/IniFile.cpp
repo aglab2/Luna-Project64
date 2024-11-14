@@ -155,6 +155,8 @@ void CIniFileBase::SaveCurrentSection(void)
     {
         return;
     }
+    m_KeyValueStringCache.clear();
+    m_KeyValueNumberCache.clear();
     m_CurrentSectionDirty = false;
     if (m_CurrentSection.length() == 0)
     {
@@ -575,16 +577,27 @@ bool CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName,
         lpSectionName = "default";
     }
 
+    auto it = m_KeyValueStringCache.find(std::make_pair(lpSectionName, lpKeyName));
+    if (it != m_KeyValueStringCache.end())
+    {
+        const auto& cachedEntry = it->second;
+        Value = cachedEntry ? *cachedEntry : lpDefault;
+        return cachedEntry.has_value();
+    }
+
     if (m_File.IsOpen() && MoveToSectionNameData(lpSectionName, true))
     {
         KeyValueList::iterator iter = m_CurrentSectionData.find(lpKeyName);
         if (iter != m_CurrentSectionData.end())
         {
             Value = iter->second.c_str();
+            m_KeyValueStringCache[std::make_pair(lpSectionName, lpKeyName)] = Value;
             return true;
         }
     }
+
     Value = lpDefault;
+    m_KeyValueStringCache[std::make_pair(lpSectionName, lpKeyName)] = std::nullopt;
     return false;
 }
 
@@ -610,6 +623,24 @@ uint32_t CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyN
         strSection = lpSectionName;
     }
 
+    auto it = m_KeyValueStringCache.find(std::make_pair(lpSectionName, lpKeyName));
+    if (it != m_KeyValueStringCache.end())
+    {
+        const auto& cachedEntry = it->second;
+        if (cachedEntry)
+        {
+            strncpy(lpReturnedString, cachedEntry->c_str(), nSize - 1);
+            lpReturnedString[nSize - 1] = 0;
+            return (uint32_t)std::min(cachedEntry->length(), nSize - 1);
+        }
+        else
+        {
+            strncpy(lpReturnedString, lpDefault, nSize - 1);
+            lpReturnedString[nSize - 1] = 0;
+            return (uint32_t)strlen(lpReturnedString);
+        }
+    }
+
     if (m_File.IsOpen() && MoveToSectionNameData(strSection.c_str(), true))
     {
         KeyValueList::iterator iter = m_CurrentSectionData.find(lpKeyName);
@@ -617,9 +648,12 @@ uint32_t CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyN
         {
             strncpy(lpReturnedString, iter->second.c_str(), nSize - 1);
             lpReturnedString[nSize - 1] = 0;
+            m_KeyValueStringCache[std::make_pair(lpSectionName, lpKeyName)] = iter->second;
             return (uint32_t)strlen(lpReturnedString);
         }
     }
+
+    m_KeyValueStringCache[std::make_pair(lpSectionName, lpKeyName)] = std::nullopt;
     strncpy(lpReturnedString, lpDefault, nSize - 1);
     lpReturnedString[nSize - 1] = 0;
     return (uint32_t)strlen(lpReturnedString);
@@ -641,6 +675,14 @@ bool CIniFileBase::GetNumber(const char * lpSectionName, const char * lpKeyName,
         lpSectionName = "default";
     }
 
+    auto it = m_KeyValueNumberCache.find(std::make_pair(lpSectionName, lpKeyName));
+    if (it != m_KeyValueNumberCache.end())
+    {
+        const auto& cachedEntry = it->second;
+        Value = cachedEntry ? *cachedEntry : nDefault;
+        return cachedEntry.has_value();
+    }
+
     if (m_File.IsOpen() && MoveToSectionNameData(lpSectionName, true))
     {
         KeyValueList::iterator iter = m_CurrentSectionData.find(lpKeyName);
@@ -648,10 +690,12 @@ bool CIniFileBase::GetNumber(const char * lpSectionName, const char * lpKeyName,
         {
             Value = 0;
             sscanf(iter->second.c_str(), "%u", &Value);
+            m_KeyValueNumberCache[std::make_pair(lpSectionName, lpKeyName)] = Value;
             return true;
         }
     }
     Value = nDefault;
+    m_KeyValueNumberCache[std::make_pair(lpSectionName, lpKeyName)] = std::nullopt;
     return false;
 }
 

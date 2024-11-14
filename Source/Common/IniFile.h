@@ -12,6 +12,18 @@
 #include <list>
 #include <set>
 #include <memory>
+#include <unordered_map>
+#include <optional>
+
+namespace std
+{
+    template<class A, class B>
+    struct hash<pair<A, B>> {
+        size_t operator() (const pair<A, B>& p) const {
+            return hash<A>{}(p.first) ^ hash<B>{}(p.second);
+        }
+    };
+}
 
 class CIniFileBase
 {
@@ -22,6 +34,8 @@ public:
     typedef std::pair<const std::string *, const std::string *> KeyValueItem;
     typedef std::vector<KeyValueItem> KeyValueVector;
     typedef void(*SortData)(KeyValueVector &);
+    typedef std::unordered_map<std::pair<std::string, std::string>, std::optional<std::string>> KeyValueStringCache;
+    typedef std::unordered_map<std::pair<std::string, std::string>, std::optional<uint32_t>> KeyValueNumberCache;
 
     CIniFileBase(CFileBase & FileObject, const char * FileName);
     virtual ~CIniFileBase(void);
@@ -84,6 +98,9 @@ private:
     CriticalSection m_CS;
     FILELOC m_SectionsPos;
     SortData m_SortFunction;
+
+    KeyValueStringCache m_KeyValueStringCache;
+    KeyValueNumberCache m_KeyValueNumberCache;
 
     void fInsertSpaces(int Pos, int NoOfSpaces);
     int GetStringFromFile(char * & String, std::unique_ptr<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
