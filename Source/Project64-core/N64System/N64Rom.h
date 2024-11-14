@@ -47,7 +47,6 @@ private:
     enum { ReadFromRomSection = 0x400000 };
 
     // Class variables
-    CFile m_RomFile;
     uint8_t * m_ROMImage;
     uint8_t * m_ROMImageBase;
     uint32_t m_RomFileSize;

@@ -53,8 +53,9 @@ bool CN64Rom::AllocateRomImage(uint32_t RomFileSize)
 
 bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 {
+    CFile romFile;
     WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", FileLoc);
-    if (!m_RomFile.Open(FileLoc, CFileBase::modeRead))
+    if (!romFile.Open(FileLoc, CFileBase::modeRead))
     {
         WriteTrace(TraceN64System, TraceError, "Failed to open %s", FileLoc);
         return false;
@@ -62,20 +63,20 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
 
     // Read the first 4 bytes and make sure it is a valid N64 image
     uint8_t Test[4];
-    m_RomFile.SeekToBegin();
-    if (m_RomFile.Read(Test, sizeof(Test)) != sizeof(Test))
+    romFile.SeekToBegin();
+    if (romFile.Read(Test, sizeof(Test)) != sizeof(Test))
     {
-        m_RomFile.Close();
+        romFile.Close();
         WriteTrace(TraceN64System, TraceError, "Failed to read ident bytes");
         return false;
     }
     if (!IsValidRomImage(Test))
     {
-        m_RomFile.Close();
+        romFile.Close();
         WriteTrace(TraceN64System, TraceError, "Invalid image file %X %X %X %X", Test[0], Test[1], Test[2], Test[3]);
         return false;
     }
-    uint32_t RomFileSize = m_RomFile.GetLength();
+    uint32_t RomFileSize = romFile.GetLength();
     WriteTrace(TraceN64System, TraceDebug, "Successfully opened, size: 0x%X", RomFileSize);
 
     // If loading boot code then just load the first 0x1000 bytes
@@ -87,13 +88,13 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
 
     if (!AllocateRomImage(RomFileSize))
     {
-        m_RomFile.Close();
+        romFile.Close();
         return false;
     }
 
     // Load the N64 ROM into the allocated memory
     g_Notify->DisplayMessage(5, MSG_LOADING);
-    m_RomFile.SeekToBegin();
+    romFile.SeekToBegin();
 
     uint32_t count, TotalRead = 0;
     for (count = 0; count < (int)RomFileSize; count += ReadFromRomSection)
@@ -101,9 +102,9 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
         uint32_t dwToRead = RomFileSize - count;
         if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
 
-        if (m_RomFile.Read(&m_ROMImage[count], dwToRead) != dwToRead)
+        if (romFile.Read(&m_ROMImage[count], dwToRead) != dwToRead)
         {
-            m_RomFile.Close();
+            romFile.Close();
             SetError(MSG_FAIL_IMAGE);
             WriteTrace(TraceN64System, TraceError, "Failed to read file (TotalRead: 0x%X)", TotalRead);
             return false;
@@ -116,7 +117,7 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
 
     if (RomFileSize != TotalRead)
     {
-        m_RomFile.Close();
+        romFile.Close();
         SetError(MSG_FAIL_IMAGE);
         WriteTrace(TraceN64System, TraceError, "Expected to read: 0x%X, read: 0x%X", TotalRead, RomFileSize);
         return false;
@@ -182,7 +183,6 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
 
             if (!AllocateRomImage(RomFileSize))
             {
-                m_RomFile.Close();
                 return false;
             }
 
@@ -919,8 +919,6 @@ bool CN64Rom::IsPal()
 
 void CN64Rom::UnallocateRomImage()
 {
-    m_RomFile.Close();
-
     if (m_ROMImageBase)
     {
         ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READWRITE);
