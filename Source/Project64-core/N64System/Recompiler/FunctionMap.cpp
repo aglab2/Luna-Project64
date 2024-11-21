@@ -3,8 +3,9 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64System.h>
 
+CFunctionMap::PCCompiledFunc* CFunctionMap::m_JumpTable = nullptr;
+
 CFunctionMap::CFunctionMap() :
-    m_JumpTable(nullptr),
     m_FunctionTable(nullptr)
 {
 }
@@ -28,14 +29,17 @@ bool CFunctionMap::AllocateMemory()
         }
         memset(m_FunctionTable, 0, 0x100000 * sizeof(PCCompiledFunc_TABLE));
     }
-    if (LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == nullptr)
+    if (LookUpMode() == FuncFind_PhysicalLookup)
     {
-        m_JumpTable = new PCCompiledFunc[RdramSize() >> 2];
         if (m_JumpTable == nullptr)
         {
-            WriteTrace(TraceRecompiler, TraceError, "Failed to allocate jump table");
-            g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
-            return false;
+            m_JumpTable = new PCCompiledFunc[0x800000 >> 2];
+            if (m_JumpTable == nullptr)
+            {
+                WriteTrace(TraceRecompiler, TraceError, "Failed to allocate jump table");
+                g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
+                return false;
+            }
         }
         memset(m_JumpTable, 0, (RdramSize() >> 2) * sizeof(PCCompiledFunc));
     }
@@ -59,8 +63,7 @@ void CFunctionMap::CleanBuffers()
     }
     if (m_JumpTable)
     {
-        delete[] m_JumpTable;
-        m_JumpTable = nullptr;
+        memset(m_JumpTable, 0, (RdramSize() >> 2) * sizeof(PCCompiledFunc));
     }
 }
 

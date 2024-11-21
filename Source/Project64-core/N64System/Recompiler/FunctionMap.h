@@ -22,6 +22,6 @@ public:
 private:
     void CleanBuffers();
 
-    PCCompiledFunc       * m_JumpTable;
+    static PCCompiledFunc* m_JumpTable;
     PCCompiledFunc_TABLE * m_FunctionTable;
 };
