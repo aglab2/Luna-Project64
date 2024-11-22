@@ -253,9 +253,9 @@ bool CNotificationImp::ProcessGuiMessages(void) const
 
 void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
 {
+    DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).c_str());
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
-        DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).c_str());
         if (IsDebuggerPresent() != 0)
         {
             DebugBreak();
@@ -270,7 +270,6 @@ void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
     }
     else
     {
-        DisplayError("Fatal Error: Stopping emulation");
         if (g_BaseSystem)
         {
             g_BaseSystem->CloseCpu();
