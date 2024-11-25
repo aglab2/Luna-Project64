@@ -1,8 +1,8 @@
 // Meta information
 #1  #  "Polski"		// Language ID
 #2  #  "Sigotu"		// Author
-#3  #  "3.5.3"		// Version
-#4  #  "August 2024"	// Date
+#3  #  "3.5.4"		// Version
+#4  #  "November 2024"	// Date
 
 /*** Menu ***/
 
@@ -378,6 +378,7 @@
 #476#  "Włącz Discord Rich Presence"
 #478#  "Opóźnienie urządzenia wejścia w milisekundach"
 #494#  "Współdziel kody między grami"
+#495#  "Włącz integrację z RetroAchievements"
 
 // ROM browser tab
 #480#  "Maks. # zapamiętanych ROM-ów (0-10):"
@@ -687,3 +688,4 @@
 #2081#  "Wirtualna karta SD jest wysunięta i gotowa to użytku w emulatorze."
 #2082#  "Nie udało się wysunąć wirtualnej karty SD.\nUpewnij się, że karta SD jest wysunięta w systemie Windows. Prawym przyciskiem myszy wciśnij dysk \"SDCARD0\" w Eksploratorze plików i naciśnij Wysuń."
 #2083#  "Nie udało się zamontować wirtualnej karty SD"
+#2084#  "Opcja "Ukryj zaawansowane opcje" nie jest już wspierana i została wyłączona."

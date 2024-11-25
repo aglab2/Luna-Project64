@@ -1,8 +1,8 @@
 ﻿// Meta information
 #1  #  "English"		// Language ID
 #2  #  "Zilmar, ShiN3"		// Author
-#3  #  "3.5.3"			// Version
-#4  #  "July, 2024"		// Date
+#3  #  "3.5.4"			// Version
+#4  #  "November, 2024"		// Date
 
 /*** Menu ***/
 
@@ -378,6 +378,7 @@
 #476#  "Enable Discord Rich Presence"
 #478#  "Input delay in milliseconds"
 #494#  "Share cheat codes between games"
+#495#  "Enable RetroAchievements integration"
 
 // ROM browser tab
 #480#  "Max # of ROMs remembered (0-10):"
@@ -687,3 +688,4 @@
 #2081#  "SD Card is unmounted and can be accessed in emulator"
 #2082#  "Failed to unmount SD Card.\nMake sure SDCard is ejected in Windows. Right click on disk \"SDCARD0\" in Explorer and click Eject."
 #2083#  "Failed to mount SD Card"
+#2084#  "The setting \"Hide advanced settings\" is no longer supported and has been disabled."
