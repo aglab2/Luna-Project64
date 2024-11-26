@@ -21,6 +21,8 @@ CHANGELOG:
 	- Updated ANGLE GLideN64 (v4.3.9.1 --> v4.3.12).
 	- Updated LINK's AziAudio (Sep 2023 --> Nov 2024 2).
 	- Updated ParaLLEl RSP (v0.5 --> v0.6).
+	- Updated Octomino (wermi 2023.03.11 --> aglab2 v1.0)
+	- Updated Latvian translation.
 	- Deleted Angrylion ("if your pc is too bad for parallel, it is likely too bad for angrylion as well" -aglab2)
 	- Lots of small performance improvements.
 
