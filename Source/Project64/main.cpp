@@ -35,7 +35,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     }
 
     // Construct the full path to updater.exe
-    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaUpdater.exe", currentPath);
+    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaUpdater2.exe", currentPath);
 
     char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
     snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.3");
