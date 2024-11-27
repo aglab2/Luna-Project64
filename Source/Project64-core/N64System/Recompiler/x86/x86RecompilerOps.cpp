@@ -3239,7 +3239,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
     {
 		if (0x45000154 == VAddr && isSuperBanjoTooie())
 		{
-			MoveConstToX86reg(0, Reg);
+			MoveConstToX86reg(1, Reg);
 			return;
 		}
 
