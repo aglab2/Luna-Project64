@@ -3213,6 +3213,22 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     }
 }
 
+// Some dumbass wrote code that looks like this
+// LW AT, 0x80361160
+// SW 2048.f, 0x19C(AT)
+// LW T1, 0x154(AT)
+//...
+
+// SW 2048.f, 0x19C(AT) ended up being macro'd to code that clobbers AT register
+// LUI AT, 0x4500
+// SW AT, 0x19C(AT)
+
+// I am trying to do my best here to workaround this situation
+static bool isSuperBanjoTooie(void)
+{
+	return g_Rom->GetRomName() == "SUPER BANJO TOOIE";
+}
+
 void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
 {
     char VarName[100];
@@ -3221,6 +3237,12 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
     m_RegWorkingSet.SetX86Protected(Reg, true);
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
+		if (0x45000154 == VAddr && isSuperBanjoTooie())
+		{
+			MoveConstToX86reg(1, Reg);
+			return;
+		}
+
         if (!g_System->bUseTlb())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10772,6 +10794,11 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
+        if (VAddr == 0x4500019c && isSuperBanjoTooie())
+        {
+            return;
+        }
+
         x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
         x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
         MoveConstToX86reg(VAddr, TempReg1);
