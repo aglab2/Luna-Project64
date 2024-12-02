@@ -65,6 +65,7 @@ protected:
     void OpenIniFileReadOnly();
     void OpenIniFile(bool bCreate = true);
     void SaveCurrentSection(void);
+    void DropCache(void);
 
     std::string FormatStr(const char * strFormat, ...);
 
