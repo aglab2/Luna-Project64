@@ -149,14 +149,19 @@ int CIniFileBase::GetStringFromFile(char * & String, std::unique_ptr<char> &Data
     }
 }
 
+void CIniFileBase::DropCache(void)
+{
+    m_KeyValueStringCache.clear();
+    m_KeyValueNumberCache.clear();
+}
+
 void CIniFileBase::SaveCurrentSection(void)
 {
     if (!m_CurrentSectionDirty)
     {
         return;
     }
-    m_KeyValueStringCache.clear();
-    m_KeyValueNumberCache.clear();
+    DropCache();
     m_CurrentSectionDirty = false;
     if (m_CurrentSection.length() == 0)
     {
@@ -501,6 +506,7 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
     if (!m_File.IsOpen()) { return false; }
 
     SaveCurrentSection();
+    DropCache();
     if (!MoveToSectionNameData(lpSectionName, true))
     {
         return false;
@@ -757,6 +763,7 @@ void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyNam
         }
     }
 
+    DropCache();
     if (m_InstantFlush)
     {
         SaveCurrentSection();
