@@ -16,6 +16,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     PROCESS_INFORMATION pi;
     char currentPath[MAX_PATH_LENGTH];
     char updaterExePath[MAX_PATH_LENGTH];
+    char updaterExePathZoneIdentifier[MAX_PATH_LENGTH];
 
     // Zero memory for STARTUPINFO and PROCESS_INFORMATION structures
     ZeroMemory(&si, sizeof(si));
@@ -35,7 +36,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     }
 
     // Construct the full path to updater.exe
-    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaUpdater.exe", currentPath);
+    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaU.exe", currentPath);
+
+    snprintf(updaterExePathZoneIdentifier, MAX_PATH_LENGTH, "%s:Zone.Identifier", updaterExePath);
+	DeleteFileA(updaterExePathZoneIdentifier);
 
     char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
     snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.3");
