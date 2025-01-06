@@ -1,8 +1,8 @@
 ﻿// Meta information
 #1  #  "Nederlands"		// Language ID
 #2  #  "Lex, Cryogeon"			// Author
-#3  #  "3.5.3"			// Version
-#4  #  "Juli, 2024"		// Date
+#3  #  "3.5.4"			// Version
+#4  #  "November, 2024"		// Date
 
 /*** Menu ***/
 
@@ -378,6 +378,7 @@
 #476#  "Schakel Discord Rich Presence in"
 #478#  "Invoervertraging in milliseconden"
 #494#  "Deel cheat codes meerdere spellen"
+#495#  "Schakel RetroAchievements integratie in"
 
 // ROM browser tab
 #480#  "Maximale # onthouden ROMs (Max 10):"
@@ -688,3 +689,4 @@
 #2081#  "SD-Kaart is niet gekoppelt en is toegankelijk in de emulator.
 #2082#  "Kan de SD-Kaart niet ontkoppelen.\nZorg ervoor dat de SD-Kaart in Windows wordt uitgeworpen. Klik met de rechtermuisknop op schijf \"SDCARD0\" in de Verkenner en klik op Uitwerpen."
 #2083#  "Kan de SD-Kaart niet koppelen."
+#2084#  "De optie "Verberg geavanceerde instellingen" is niet meer ondersteund en dus is uitgeschakeld."

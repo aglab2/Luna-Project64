@@ -1,427 +1,691 @@
-﻿/*********************************************************************************
-* Meta Information                                                               *
-*********************************************************************************/
-//About DLL
-#1  #  "Lietuviø"	// LANGUAGE ID
-#2  #  "WildSOfT emu.puslapiai.lt"	// Author
-#3  #  "2.1"				// Version
-#4  #  "2005 04 12"	// Date
+﻿// Meta information
+#1  #  "Lietuvių"		// Language ID
+#2  #  "Lukas (covfefe)"			// Author
+#3  #  "3.5.4"			// Version
+#4  #  "2024-11-15"		// Date
 
-//About DLL Dialog
-#5  #  "Pasirinkta kalba"
-#6  #  "Autorius"
-#7  #  "Versija"
-#8  #  "Data"
-#9  #  "Aplankyti tinklapá"
-#10 #  "ROM'ø duombazë (.rdb)"
-#11 #  "Cheat Kodø Failas (.cht)"
-#12 #  "Iðplëstinë ROM'ø informacija (.rdx)"
+/*** Menu ***/
 
-//About INI title
-#20 #  "Apie INI failus"
-
-/*********************************************************************************
-* Menu                                                                           *
-*********************************************************************************/
-//File Menu
+// File menu
 #100#  "&Failas"
-#101#  "&Atidaryti ROM'à..."
-#102#  "&Informacija apie ROM'à..."
-#103#  "P&radëti emuliacijà"
-#104#  "Bai&gti emuliacijà"
-#105#  "&Pasirinkti ROM'ø aplankà..."
-#106#  "A&tnaujinti ROM'ø sàraðà"
+#101#  "&Atidaryti ROM'ą"
+#102#  "&Informacija apie ROM'ą..."
+#103#  "P&radėti emuliavimą"
+#104#  "Bai&gti emuliavimą"
+#105#  "&Pasirinkti ROM'ų aplanką..."
+#106#  "Atnaujinti ROM'ų sąrašą"
 #107#  "&Neseniai naudoti ROM'ai"
-#108#  "Neseniai naudoti ROM'ø ap&lankai"
-#109#  "Ið&eiti"
+#108#  "Neseniai naudoti ROM'ų ap&lankai"
+#109#  "Iš&eiti"
+#110#  "Open &Combo"
+#111#  "Prijungti SD kortelę"
+#112#  "Atjungti SD kortelę"
 
-//System Menu
+// System menu
 #120#  "&Sistema"
-#121#  "&Perkrauti"
-#122#  "Pau&zë"
-#123#  "Ekrano &nuotrauka"
-#124#  "&Greièio apribojimas"
-#125#  "&Iðsaugoti"
-#126#  "Iðsaugoti &kaip..."
-#127#  "&Uþkrauti"
-#128#  "Uþk&rauti..."
-#129#  "Iðsaugojimo &vieta"
+#121#  "&Paleisti iš naujo"
+#122#  "Pau&zė"
+#123#  "Padaryti ekrano &nuotrauką"
+#124#  "Apriboti &FPS (greitį)"
+#125#  "&Išsaugoti padėtį"
+#126#  "Išsaugoti &kaip..."
+#127#  "&Užkrauti padėtį"
+#128#  "Už&krauti..."
+#129#  "Dabartinė padėties išsaugojimo &vieta"
 #130#  "&Cheat'ai..."
 #131#  "GS &mygtukas"
-#132#  "Pra&tæsti"
+#132#  "Pra&tęsti"
+#133#  "D&alinis atkūrimas"
+#134#  "&Visiškas atkūrimas"
+#135#  "Pakeisti &diską"
+#136#  "Pag&erinimai..."
 
-//Options Menu
-#140#  "&Pasirinktys"
-#141#  "Per visà &ekranà"
-#142#  "Vi&sada virðuje"
-#143#  "Konfigûruoti &vaizdo plugin'à..."
-#144#  "Konfigûruoti &garso plugin'à..."
-#145#  "Konfigûruoti ávest&ies plugin'à..."
-#146#  "Konfigûruoti &RSP plugin'à..."
-#147#  "Ro&dyti CPU panaudojimà, %"
+// Options menu
+#140#  "&Parinktys"
+#141#  "Per visą &ekraną"
+#142#  "Vi&sada viršuje"
+#143#  "&Vaizdo nustatymai..."
+#144#  "&Garso nustatymai..."
+#145#  "Įves&ties nustatymai..."
+#146#  "&RSP nustatymai..."
+#147#  "Ro&dyti CPU naudojimo %"
 #148#  "&Nustatymai..."
 
-//Debugger Menu
-#160#  "&Derinimas"
+// Debugger menu
+#160#  "&Derintuvė"
 
-//Language Menu
+// Language menu
 #175#  "&Kalba"
 
-//Help Menu
+// Help menu
 #180#  "Pa&galba"
-#181#  "Apie &INI failus"
-#182#  "&Apie Project64"
-#183#  "Pagalbos &forumas"
-#184#  "&Tinklapis"
+#182#  "&Apie „Project64“"
+#184#  "Interneto &svetainė"
+#185#  "Pa&laikyti originalų „Project64“"
+#186#  "ShiN3 „&Discord“ serveris"
+#187#  "Palaikyti „Luna's Project64“"
+#188#  "Atidaryti aplanką „AppData“"
 
-//Current Save Slot menu
-#190#  "&Nustatyta"
-#191#  "&1 vieta"
-#192#  "&2 vieta"
-#193#  "&3 vieta"
-#194#  "&4 vieta"
-#195#  "&5 vieta"
-#196#  "&6 vieta"
-#197#  "&7 vieta"
-#198#  "&8 vieta"
-#199#  "&9 vieta"
-#200#  "1&0 vieta"
+// Current save slot menu
+#5000#  "&Numatyta"
+#5001#  "&1 vieta"
+#5002#  "&2 vieta"
+#5003#  "&3 vieta"
+#5004#  "&4 vieta"
+#5005#  "&5 vieta"
+#5006#  "&6 vieta"
+#5007#  "&7 vieta"
+#5008#  "&8 vieta"
+#5009#  "&9 vieta"
+#5010#  "1&0 vieta"
+#5011#  "11 vieta"
+#5012#  "12 vieta"
+#5013#  "13 vieta"
+#5014#  "14 vieta"
+#5015#  "15 vieta"
+#5016#  "16 vieta"
+#5017#  "17 vieta"
+#5018#  "18 vieta"
+#5019#  "19 vieta"
+#5020#  "20 vieta"
+#5021#  "21 vieta"
+#5022#  "22 vieta"
+#5023#  "23 vieta"
+#5024#  "24 vieta"
+#5025#  "25 vieta"
+#5026#  "26 vieta"
+#5027#  "27 vieta"
+#5028#  "28 vieta"
+#5029#  "29 vieta"
+#5030#  "30 vieta"
+#5031#  "31 vieta"
+#5032#  "32 vieta"
+#5033#  "33 vieta"
+#5034#  "34 vieta"
+#5035#  "35 vieta"
+#5036#  "36 vieta"
+#5037#  "37 vieta"
+#5038#  "38 vieta"
+#5039#  "39 vieta"
+#5040#  "40 vieta"
+#5041#  "41 vieta"
+#5042#  "42 vieta"
+#5043#  "43 vieta"
+#5044#  "44 vieta"
+#5045#  "45 vieta"
+#5046#  "46 vieta"
+#5047#  "47 vieta"
+#5048#  "48 vieta"
+#5049#  "49 vieta"
+#5050#  "50 vieta"
+#5051#  "51 vieta"
+#5052#  "52 vieta"
+#5053#  "53 vieta"
+#5054#  "54 vieta"
+#5055#  "55 vieta"
+#5056#  "56 vieta"
+#5057#  "57 vieta"
+#5058#  "58 vieta"
+#5059#  "59 vieta"
+#5060#  "60 vieta"
+#5061#  "61 vieta"
+#5062#  "62 vieta"
+#5063#  "63 vieta"
+#5064#  "64 vieta"
+#5065#  "65 vieta"
+#5066#  "66 vieta"
+#5067#  "67 vieta"
+#5068#  "68 vieta"
+#5069#  "69 vieta"
+#5070#  "70 vieta"
+#5071#  "71 vieta"
+#5072#  "72 vieta"
+#5073#  "73 vieta"
+#5074#  "74 vieta"
+#5075#  "75 vieta"
+#5076#  "76 vieta"
+#5077#  "77 vieta"
+#5078#  "78 vieta"
+#5079#  "79 vieta"
+#5080#  "80 vieta"
+#5081#  "81 vieta"
+#5082#  "82 vieta"
+#5083#  "83 vieta"
+#5084#  "84 vieta"
+#5085#  "85 vieta"
+#5086#  "86 vieta"
+#5087#  "87 vieta"
+#5088#  "88 vieta"
+#5089#  "89 vieta"
+#5090#  "90 vieta"
+#5091#  "91 vieta"
+#5092#  "92 vieta"
+#5093#  "93 vieta"
+#5094#  "94 vieta"
+#5095#  "95 vieta"
+#5096#  "96 vieta"
+#5097#  "97 vieta"
+#5098#  "98 vieta"
+#5099#  "99 vieta"
+#201#  "Pasirinkta (%ws) išsaugojimo vieta"
 
-//Pop up Menu
-#210#  "Þaisti þaidimà"
-#211#  "ROM'o informacija"
-#212#  "Redaguoti þaidimo nustatymus"
-#213#  "Redaguoti Cheat'us"
+// Pop-up menu
+#210#  "Žaisti žaidimą"
+#211#  "Informaciją apie ROM'ą"
+#212#  "Redaguoti žaidimo nustatymus"
+#213#  "Redaguoti cheat'us..."
+#214#  "Vaizdo įskiepis"
+#215#  "Žaisti žaidimą iš disko"
+#216#  "Parinkti pagerinimus..."
 
-// Menu Descriptions
-#250#  "Atidaryti N64 ROM'à"
-#251#  "Rodyti informacijà apie uþkrautà ROM'à"
-#252#  "Pradëti uþkrauto ROM'o emuliacijà"
-#253#  "Sustabdyti uþkrauto ROM'o emuliacijà ir gráþti á narðyklæ"
-#254#  "Pasirinkti ROM'ø aplankà"
-#255#  "Atnaujinti ROM'ø sàraðà narðyklëje"
-#256#  "Iðeiti ið Project64"
-#257#  "Perkrauti einamàjá ROM'à (perkrauti su pakeistais nustatymais)"
-#258#  "Pristabdyti/Pratæsti einamojo ROM'o emuliacijà"
-#259#  "Sukurti lango atvaizdà panaudojant video plugin'à"
-#260#  "Apriboti FPS iki teisingo N64 greièio, atsiþvelgiant á regionà"
-#261#  "Iðsaugoti Project64 esamà padëtá á einamàjà iðsaugojimo vietà"
-#262#  "Iðsaugoti Project64 esamà padëtá, pasirinkus failo vietà ir pavadinimà"
-#263#  "Uþkrauti Project64 iðsaugotà padëtá ið einamosios iðsaugojimo vietos"
-#264#  "Uþkrauti Project64 iðsaugotà padëtá ið pasirinkto failo"
-#265#  "Pasirinkti ar pridëti cheat kodus einamajam ROM'ui"
-#266#  "Emuliuoti GameShark mygtuko paspaudimà - kai kuriø cheat'ø naudojimui"
-#267#  "Persijungti ið lango á pilno ekrano reþimà (paspauskite Escape kad gráþti!)"
-#268#  "Laikyti Project64 langà virð kitø langø"
-#269#  "Konfigûruoti pasirinktà video (grafikos) plugin'à"
-#270#  "Konfigûruoti pasirinktà audio (garso) plugin'à"
-#271#  "Konfigûruoti pasirinktà ávesties (valdymo) plugin'à"
-#272#  "Konfigûruoti RSP plugin'à"
-#273#  "Rodyti/paslëpti sistemos procesoriaus panaudojimo padalinimà tarp sistemos komponentø"
-#274#  "Pagrindiniai Project64 programos nustatymai (plugin'ø pasirinkimas ir pan.)"
-#275#  "Atidaryti vartotojo vadovà Project64 programai"
-#276#  "Atidaryti Project64 specifinius þaidimø DUK"
-#277#  "Apie pagalbiniø failø autorius"
-#278#  "Apie programà ir autorius"
-#279#  "Uþkrauti paskutiná naudotà ROM'à"
-#280#  "Perjungti narðyklës vaizdà á ðá aplankà"
-#281#  "Perjungti Project64 GUI á kità kalbà"
-#282#  "Pereiti prie kitos iðsaugojimo vietos"
-#283#  "Uþkrauti pasirinktà þaidimà ir pradëti jo emuliacijà"
-#284#  "Perþiûrëti informacijà apie pasirinktà þaidimà "
-#285#  "Redaguoti RDB failo nustatymus pasirinktam þaidimui"
-#286#  "Redaguoti cheat'us CHT faile pasirinktam þaidimui"
+// Alternate name to save slot
+#5100#  "Išsaugojimo vieta - Numatytoji"
+#5101#  "Išsaugojimo vieta - 1"
+#5102#  "Išsaugojimo vieta - 2"
+#5103#  "Išsaugojimo vieta - 3"
+#5104#  "Išsaugojimo vieta - 4"
+#5105#  "Išsaugojimo vieta - 5"
+#5106#  "Išsaugojimo vieta - 6"
+#5107#  "Išsaugojimo vieta - 7"
+#5108#  "Išsaugojimo vieta - 8"
+#5109#  "Išsaugojimo vieta - 9"
+#5110#  "Išsaugojimo vieta - 10"
+#5111#  "Išsaugojimo vieta - 11"
+#5112#  "Išsaugojimo vieta - 12"
+#5113#  "Išsaugojimo vieta - 13"
+#5114#  "Išsaugojimo vieta - 14"
+#5115#  "Išsaugojimo vieta - 15"
+#5116#  "Išsaugojimo vieta - 16"
+#5117#  "Išsaugojimo vieta - 17"
+#5118#  "Išsaugojimo vieta - 18"
+#5119#  "Išsaugojimo vieta - 19"
+#5120#  "Išsaugojimo vieta - 20"
+#5121#  "Išsaugojimo vieta - 21"
+#5122#  "Išsaugojimo vieta - 22"
+#5123#  "Išsaugojimo vieta - 23"
+#5124#  "Išsaugojimo vieta - 24"
+#5125#  "Išsaugojimo vieta - 25"
+#5126#  "Išsaugojimo vieta - 26"
+#5127#  "Išsaugojimo vieta - 27"
+#5128#  "Išsaugojimo vieta - 28"
+#5129#  "Išsaugojimo vieta - 29"
+#5130#  "Išsaugojimo vieta - 30"
+#5131#  "Išsaugojimo vieta - 31"
+#5132#  "Išsaugojimo vieta - 32"
+#5133#  "Išsaugojimo vieta - 33"
+#5134#  "Išsaugojimo vieta - 34"
+#5135#  "Išsaugojimo vieta - 35"
+#5136#  "Išsaugojimo vieta - 36"
+#5137#  "Išsaugojimo vieta - 37"
+#5138#  "Išsaugojimo vieta - 38"
+#5139#  "Išsaugojimo vieta - 39"
+#5140#  "Išsaugojimo vieta - 40"
+#5141#  "Išsaugojimo vieta - 41"
+#5142#  "Išsaugojimo vieta - 42"
+#5143#  "Išsaugojimo vieta - 43"
+#5144#  "Išsaugojimo vieta - 44"
+#5145#  "Išsaugojimo vieta - 45"
+#5146#  "Išsaugojimo vieta - 46"
+#5147#  "Išsaugojimo vieta - 47"
+#5148#  "Išsaugojimo vieta - 48"
+#5149#  "Išsaugojimo vieta - 49"
+#5150#  "Išsaugojimo vieta - 50"
+#5151#  "Išsaugojimo vieta - 51"
+#5152#  "Išsaugojimo vieta - 52"
+#5153#  "Išsaugojimo vieta - 53"
+#5154#  "Išsaugojimo vieta - 54"
+#5155#  "Išsaugojimo vieta - 55"
+#5156#  "Išsaugojimo vieta - 56"
+#5157#  "Išsaugojimo vieta - 57"
+#5158#  "Išsaugojimo vieta - 58"
+#5159#  "Išsaugojimo vieta - 59"
+#5160#  "Išsaugojimo vieta - 60"
+#5161#  "Išsaugojimo vieta - 61"
+#5162#  "Išsaugojimo vieta - 62"
+#5163#  "Išsaugojimo vieta - 63"
+#5164#  "Išsaugojimo vieta - 64"
+#5165#  "Išsaugojimo vieta - 65"
+#5166#  "Išsaugojimo vieta - 66"
+#5167#  "Išsaugojimo vieta - 67"
+#5168#  "Išsaugojimo vieta - 68"
+#5169#  "Išsaugojimo vieta - 69"
+#5170#  "Išsaugojimo vieta - 70"
+#5171#  "Išsaugojimo vieta - 71"
+#5172#  "Išsaugojimo vieta - 72"
+#5173#  "Išsaugojimo vieta - 73"
+#5174#  "Išsaugojimo vieta - 74"
+#5175#  "Išsaugojimo vieta - 75"
+#5176#  "Išsaugojimo vieta - 76"
+#5177#  "Išsaugojimo vieta - 77"
+#5178#  "Išsaugojimo vieta - 78"
+#5179#  "Išsaugojimo vieta - 79"
+#5180#  "Išsaugojimo vieta - 80"
+#5181#  "Išsaugojimo vieta - 81"
+#5182#  "Išsaugojimo vieta - 82"
+#5183#  "Išsaugojimo vieta - 83"
+#5184#  "Išsaugojimo vieta - 84"
+#5185#  "Išsaugojimo vieta - 85"
+#5186#  "Išsaugojimo vieta - 86"
+#5187#  "Išsaugojimo vieta - 87"
+#5188#  "Išsaugojimo vieta - 88"
+#5189#  "Išsaugojimo vieta - 89"
+#5190#  "Išsaugojimo vieta - 90"
+#5191#  "Išsaugojimo vieta - 91"
+#5192#  "Išsaugojimo vieta - 92"
+#5193#  "Išsaugojimo vieta - 93"
+#5194#  "Išsaugojimo vieta - 94"
+#5195#  "Išsaugojimo vieta - 95"
+#5196#  "Išsaugojimo vieta - 96"
+#5197#  "Išsaugojimo vieta - 97"
+#5198#  "Išsaugojimo vieta - 98"
+#5199#  "Išsaugojimo vieta - 99"
 
-/*********************************************************************************
-* ROM Browser                                                                    *
-*********************************************************************************/
-//ROM Browser Fields
+/*** ROM browser ***/
+
+// ROM browser fields
 #300#  "Failo pavadinimas"
 #301#  "Vidinis pavadinimas"
-#302#  "GoodN64 pavadinimas"
-#303#  "Statusas"
-#304#  "ROM'o dydis"
-#305#  "Branduolio pastaba"
-#306#  "Plugin'o pastaba"
-#307#  "Pastabos (vartotojo)"
-#308#  "Kartridþo ID"
-#309#  "Medijos tipas"
-#310#  "Regionas"
-#311#  "Kûrëjas"
+#302#  "Pagrindinis pavadinimas"
+#303#  "Būklė"
+#304#  "ROM dydis"
+#305#  "Užrašai (dėl branduolio)"
+#306#  "Užrašai (dėl numatytųjų įskiepių)"
+#307#  "Užrašai (naudotojo)"
+#308#  "Kasetės ID"
+#309#  "Medijos rūšis"
+#310#  "Šalis"
+#311#  "Programuotojas"
 #312#  "CRC1"
 #313#  "CRC2"
-#314#  "CIC èipas"
-#315#  "Iðleidimo data"
-#316#  "Þanras"
-#317#  "Þaidëjai"
-#318# "Jëgos atgalinis ryðys"
+#314#  "CIC lustas"
+#315#  "Išleidimo data"
+#316#  "Žanras"
+#317#  "Žaidėjai"
+#318#  "Jėgos atsakas"
+#319#  "Failo formatas"
+#321#  "Pavadinimas"
 
-//Select ROM
-#320#  "Nustatyti ROM'ø aplankà"
+// Select ROM
+#320#  "Pasirinkti dabartinę ROM direktoriją"
 
-//Messages
-#340#  "Blogas ROM'as? Naudokite GoodN64 ir pasitikrinkite ar yra atnaujintas RDB"
+// Messages
+#340#  "Blogas ROM? Naudokite „GoodN64“ ir įsitikinkite kad RDB yra naujausios verijos."
 
-/*********************************************************************************
-* Options                                                                        *
-*********************************************************************************/
-//Options Title
-#400#  "Nusytatymai"
+/*** Options ***/
 
-//Tabs
-#401#  "Plugin'ai"
-#402#  "Aplankai"
-#403#  "Pasirinktys"
-#404#  "ROM'o pasirinkimas"
-#405#  "Patyrusiems"
-#406#  "ROM'o nustatymai"
-#407#  "Shell integracija"
-#408#  "ROM'o pastabos"
+// Options title
+#400#  "Konfigūracija"
 
-//Plugin Dialog
-#420#  "Api&e"
-#421#  "&Reality Signal Processor plugin'as:"
-#422#  "&Vaizdo (grafikos) plugin'as"
-#423#  "&Audio (garso) plugin'as"
-#424#  "Ávest&ies (valdymo) plugin'as"
+// Tabs
+#401#  "Įskiepiai"
+#402#  "Direktorijos"
+#403#  "Bendrieji nustaytmai"
+#404#  "ROM'ų naršyklė"
+#405#  "Išplėstiniai"
+#406#  "ROM nustatymai"
+#408#  "Užrašai"
+#409#  "Greitieji klavišai"
+#410#  "Būklė"
+#411#  "Rekompiliatorius"
+#412#  "Numatytieji"
+#413#  "64DD"
+#414#  "64DD"
 
-//Directory Dialog
-#440#  "Plugin'ø aplankas:"
-#441#  "ROM'ø aplankas:"
-#442#  "N64 automatiniai iðsaugojimai:"
-#443#  "Greiti iðsaugojimai:"
-#444#  "Ekrano nuotraukos:"
-#445#  "Paskutinis aplankas, ið kurio buvo atidarytas ROM'as"
-#446#  "Pasirinkti plugin'ø aplankà"
-#447#  "Pasirinkti ROM'ø aplankà"
-#448#  "Pasirinkti automatiniø iðsaugojimø aplankà"
-#449#  "Pasirinkti greito iðsaugojimo aplankà"
-#450#  "Pasirinkti aplankà ekrano nuotraukoms"
+// Plugin dialog
+#420#  "Apie"
+#421#  " RSP (Realybės signalo procesoriaus) įskiepis: "
+#422#  " Video (grafikos) įskiepis: "
+#423#  " Audio (garso) įskiepis: "
+#424#  " Įvesties (pulto) įskiepis: "
+#425#  "Grafikos HLE"
+#426#  "Garso HLE"
+#427#  "** Naudoti sistemos įskiepį **"
 
-//Options Dialog
-#460#  "Ájungti &pauzæ kai langas tampa neaktyviu"
-#461#  "Pereiti prie pilno &ekrano paleidus þaidimà"
-#462#  "Pa&slëpti nustatymus patyrusiems"
-#463#  "P&risiminti pasirinktus cheat'us"
+// Directory dialog
+#440#  " Įskiepio direktorija: "
+#441#  " ROM direktorija: "
+#442#  " N64 pagrindinė save'ų direktorija: "
+#443#  " Išsaugotų padėčių direktorija: "
+#444#  " Ekrano nuotraukų direktorija: "
+#445#  "Paskutinis aplankas, iš kurio ROM'as buvo atidarytas"
+#446#  "Pasirinkti įskiepio direktoriją"
+#447#  "Pasirinkti ROM direktoriją"
+#448#  "Pasirinkti N64 pagrindinę save'ų direktoriją"
+#449#  "Pasirinkti išsaugotų padėčių direktoriją"
+#450#  "Pasirinkti ekrano nuotraukų direktoriją"
+#451#  " Tekstūros paketų direktorija: "
+#452#  "Pasirinkti tekstūros paketų direktoriją"
 
-//ROM Browser Tab
-#480#  "&Prisimenamø ROM'ø skaièius (0-10)"
-#481#  "ROM'ai"
-#482#  "Prisimenamø ROM'ø &aplankø skaièius (0-10)"
-#483#  "Aplankai"
-#484#  "ROM'ø &narðyklë ájungta"
-#485#  "&Direktorijos rekursija"
-#486#  "&Esami laukai"
-#487#  "&Rodyti tokia tvarka:"
-#488#  "Pridë&ti ->"
-#489#  "<- &Iðmesti"
-#490#  "Á &virðø"
-#491#  "Þe&myn"
+// Options (general) tab
+#479#  
+#460#  "Pristabdyti emuliavimą, kai langas neaktyvus"
+#477#  
+#461#  "Įjungti pilno ekrano režimą užkraunant ROM'ą"
+#462#  "Paslėpti išplėstinius nustatymus"
+#463#  "Įsiminti pasirinktus cheat'us"
+#464#  "Išjungti ekrano užsklandą leidžiant ROM'ą"
+#465#  "Rodyti greitį"
+#467#  "Tikrinti, ar „Project64“ jau veikia"
+#468#  "Išsaugoti save'us skirtinguose aplankuose"
+#466#  "Greičio rodymas:"
+#469#  "Japonijos mažmeninio 64DD IPL ROM kelias:"
+#470#  "Amerikos mažmeninio 64DD IPL ROM kelias:"
+#471#  "Programuojamo 64DD IPL ROM kelias:"
+#472#  "Disko save'o rūšis:"
+#473#  "Įgalinti pagerinimus"
+#474#  "Rodyti būsenų juostą"
+#475#  "Išjungti viso ekrano režimą persijungus fokusui"
+#476#  "Įjungti „Discord“ funkciją „Rich Presence“"
+#478#  "Pristabdyti emuliavimą sumažinus langą"
+#494#  
+#495#  "Įgalinti „RetroAchievements“ integraciją"
 
-//Advanced Options
-#500#  "Dauguma ðiø nustatymø ásigalios atidarius naujà ROM'à arba perkrovus dabartiná"
-#501#  "Branduolio &nustatymai pagal nutylëjimà"
-#502#  "CPU &branduolio stilius"
-#503#  "&Savæs-mod. kodo metodas:"
-#504#  "Nustatytas atminties dydis:"
-#505#  "&Paþangus blokø suriðimas:"
-#506#  "P&radëti emuliacijà, uþkrovus ROM'à"
-#507#  "&Naudoti nustatymus ið RDB vietoj ðiø nustatymø pagal nutylëjimà"
-#508#  "Suspausti greito iðsaugojimo failà naudojant &Zip"
+// ROM browser tab
+#480#  "Maks. įsimintų ROM'ų kiekis (0-10):"
+#481#  "ROM'ų"
+#482#  "Maks. įsimintų ROM'ų dir-ijų kiekis (0-10):"
+#483#  "dir-ijų"
+#484#  "Naudoti ROM'ų naršyklę"
+#485#  "Naudoti direktorikų rekusiją"
+#493#  
+#486#  "Galimi laukeliai:"
+#487#  "Laukelių eiliškumas:"
+#488#  "Įdėti ->"
+#489#  "<- Išimti"
+#490#  "Viršun"
+#491#  "Žemyn"
+#492#  "Automatiškai atnaujinti naršyklę"
 
-//ROM Options
-#520#  "CPU &branduolio stilius:"
-#521#  "&Savæs-mod. branduolio metodas:"
-#522#  "At&minties dydis:"
-#523#  "&Paþangus blokø suriðimas:"
-#524#  "&Iðsaugojimo failø tipas:"
-#525#  "Skaitiklio &faktorius:"
-#526#  "&Didesnis kompiliavimo buferis"
-#527#  "Naudoti &TLB"
-#528#  "&Registro keðavimas"
-#529#  "Uþdelsti SI P&ertraukimà"
-#530#  "SP &Hack'as"
-#531#  "Nustatytas"
+// Advanced options
+#500#  "Dauguma šių nustatymų įsigalios tik atidarius naują ROM'ą arba atstačius esamą ROM'ą."
+#501#  "Branduolio numatytosios reikšmės"
+#502#  "CPu branduolio stilius:"
+#503#  "Self mod methods"
+#504#  "Numatytasis atminties dydis:"
+#505#  "Išplėstinis blokų apjungimas"
+#506#  "Pradėti emuliavimą atidarius ROM'ą"
+#507#  "Visada pakeisti numatytuosius nustatymus esančiais RDB"
+#508#  "Automatiškai kompresuoti išsaugotas padėtis"
+#509#  "Įgalinti derintuvę"
+#510#  "Podėlis"
+#511#  "PI DMA"
+#512#  "Pradžia pakeista"
+#513#  "Apsaugoti atmintį"
+#514#  "TLB atrišimas"
+#515#  "Visada naudoti interpretatoriaus branduolį"
+
+// ROM options
+#520#  "CPU branduolio stilius:"
+#521#  "VI atnaujinimo dažnis:"
+#522#  "Atminties dydis:"
+#523#  "išplėstinis blokų apjungimas"
+#524#  "Numatytoji save'ų rūšis:"
+#525#  "Kontrfaktorius:"
+#526#  "Didesnis kompiliavimo buferis"
+#527#  "Naudoti TLB"
+#528#  "Registruoti podėliavimą"
+#529#  "Uždelsti SI nutraukimą"
+#530#  "Greitas SP"
+#531#  "Numatytieji"
 #532#  "RSP garso signalas"
+#533#  "Fiksuotas garso chronometražas"
+#534#  "Funkcijos paieškos metodas:"
+#535#  "Pasirinktinis savarankiško modifikavimo metodas"
+#536#  "Sinchronizuoti pagal garsą"
+#537#  "AI kiekis per baitą:"
+#538#  "32 bitų variklis"
+#539#  "Uždelsti DP nutraukimą"
+#5400#
+#5410#
+#5420#
+#5440#
+#5441#
+#5442#
 
-//Core Styles
+// Core styles
 #540#  "Interpretatorius"
 #541#  "Rekompiliatorius"
 #542#  "Sinchronizuoti branduolius"
 
-//Self Mod Methods
-#560#  "Jokio"
-#561#  "Keðas"
-#562#  "Apsaugoti atmintá"
-#563#  "Patikrinti atmintá ir keðà"
-#564#  "Pakeisti atmintá ir keðà"
-#565#  "Paþangus atminties patikrinimas"
+// Self-mod methods
+#560#  "Joks"
+#561#  "Podėlis"
+#562#  "Apsaugoti atmintį"
+#563#  "Tikrinti atmintį ir podėlį"
+#564#  "Keisti atmintį ir podėlį"
+#565#  "Tikrinti atminties skubą"
+#566#  "Išvalyti kodą podėlyje"
 
-//RDRAM Size
+// Function lookup method
+#570#  "Fizinės paieškos lentelė"
+#571#  "Virtualios paieškos lentelė"
+#572#  "Keisti paiešką"
+
+// RDRAM size
 #580#  "4 MB"
 #581#  "8 MB"
 
-//Advanced Block Linking
-#600#  "Ájungtas"
-#601#  "Iðjungtas"
+// Advanced block linking
+#600#  "Įj."
+#601#  "Išj."
 
-//Save Type
-#620#  "Naudoti pirmà naudotà tipà"
+// Save type
+#620#  "Naudoti pirminę save'o rūšį"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
 #623#  "SRAM"
-#624#  "128-kbyte flash RAM"
+#624#  "Momentinis (flash) RAM"
 
-//Shell Intergration Tab
-#640#  "Failø susiejimas:"
+// ROM notes
+#660#  "ROM būklė:"
+#661#  "Branduolio užrašas:"
+#662#  "Įskiepio užrašas:"
 
-//ROM Notes
-#660#  "ROM'o &statusas:"
-#661#  "&Branduolio pastaba:"
-#662#  "&Plugin'o pastaba:"
+// Accelerator selector
+#680#  "CPU būklė:"
+#681#  "Meniu elementas:"
+#682#  "Dabartiniai klavišai:"
+#683#  "Pasirinkti naują greitąjį klavišą:"
+#684#  "Kam dabar priskirta:"
+#685#  "Priskirti"
+#686#  "Pašalinti"
+#687#  "Atstatyti visus"
+#688#  "Žaidimas neleidžiamas"
+#689#  "Žaidimas leidžiamas"
+#690#  "Žaidimas leidžiamas (lango režimu)"
+#691#  "Žaidimas leidžiamas (viso ekrano režimu)"
+#692#  "Nuskaityti klavišą"
 
-/*********************************************************************************
-* ROM Information                                                                *
-*********************************************************************************/
-//ROM Info Title Title
+// Framerate option
+#700#  "Vertikalės nutrūkimai per sekundę"
+#701#  "Atvaizdavimo sąrašai per sekundę"
+#702#  "Viso greičio procentas"
+#703# 
+
+// Increase speed
+#710#  "Padidinti žaidimo greitį"
+#711#  "Sumažinti žaidimo greitį"
+
+// Bottom page buttons
+#720#  "Atstatyti puslapį"
+#721#  "Atstatyti visus"
+#722#  "Taikyti"
+#723#  "Uždaryti"
+
+// Disk save type
+#730#  "Viso disko kopija"
+#731#  "Išsaugoti tik vietą"
+
+/*** ROM information ***/
+
+// ROM info title
 #800#  "ROM'o informacija"
 
-//ROM Info Text
-#801#  "ROM'o pavadinimas"
-#802#  "Failo pavadinimas"
-#803#  "Vieta"
-#804#  "Dydis"
-#805#  "Kartridþo ID"
-#806#  "Medijos tipas"
-#807#  "Regionas"
-#808#  "CRC1"
-#809#  "CRC2"
-#810#  "CIC èipas"
+// ROM info text
+#801#  "ROM'o pavadinimas:"
+#802#  "Failo pavadinimas:"
+#803#  "Vieta:"
+#804#  "ROM'o dydis:"
+#805#  "Kasetės ID:"
+#806#  "Medijos tipas:"
+#807#  "Šalis:"
+#808#  "CRC1:"
+#809#  "CRC2:"
+#810#  "CIC lustas:"
+#811#  "MD5:"
 
-/*********************************************************************************
-* Cheats                                                                         *
-*********************************************************************************/
-//Cheat List
+/*** Cheats ***/
+
+// Cheat list
 #1000#  "Cheat'ai"
 #1001#  "Cheat'ai:"
-#1002#  "Pastabos: "
-#1003#  "Paþymëti visus"
-#1004#  "Neþymëti nei vieno"
+#1002#  " Užrašai: "
+#1003#  "Pažymėti visus"
+#1004#  "Atžymėti visus"
 
-//Add Cheat
-#1005#  "Pridëti cheat'à"
+// Add cheat
+#1005#  "Pridėti cheat'ą"
 #1006#  "Pavadinimas:"
 #1007#  "Kodas:"
-#1008#  "Áterpti"
-#1009#  "Iðvalyti"
-#1010#  "Cheat'o pastabos: "
-#1011#  "Pridëti á DB"
-#1022#  "Pridëti cheat'à"
-#1023#  "Naujas cheat'as"
-#1024#  "<address> <value>"
-#1025#  "Pasirinktys:"
-#1026#  "<value> <label>"
+#1008#  "Įdėti"
+#1009#  "Išvalyti"
+#1010#  " Cheat'o užrašai: "
+#1011#  "Įdėti į duombazę"
 
-//Code extension
-#1012#  "Kodo pratæsimai"
-#1013#  "Praðome pasirinkti reikðmæ, naudotinà:"
+// Code extension
+#1012#  "Kodo plėtiniai"
+#1013#  "Pasirinkite vertę, kuri bus naudojama šiam:"
 #1014#  "Gerai"
-#1015#  "Atðaukti"
+#1015#  "Atšaukti"
 
-//Digital Value
-#1016#  "Kiekybës skaitmuo"
-#1017#  "Praðome pasirinkti reikðmæ, naudotinà:"
-#1018#  "&Reikðmë"
+// Digital value
+#1016#  "Kiekio skaičius"
+#1017#  "Pasirinkite vertę šiam:"
+#1018#  "&Vertė"
 #1019#  "nuo"
 #1020#  "iki"
-#1021#  "&Pastabos:"
+#1021#  "Užrašai:"
+#1022#  "Pridėti cheat'ą"
+#1023#  "Naujas cheat'as"
+#1024#  "<address> <value>:<old>"
+#1025#  "Parinktys:"
+#1026#  "<žymė> <vertė>"
 
-//Edit Cheat
-#1027#  "Redaguoti cheat'à"
-#1028#  "Atnaujinti cheat'à"
+// Edit cheat
+#1027#  "Redaguoti cheat'ą"
+#1028#  "Atnaujinti cheat'ą"
+#1029#  "Cheat'as pakeistas.\n\nAr norite atnaujinti?"
+#1030#  "Cheat'as atnaujintas"
 
-//Cheat Popup Menu
-#1040#  "Pridëti naujà cheat'à..."
+// Cheat pop-up menu
+#1040#  "Pridėti naują cheat'ą..."
 #1041#  "Redaguoti"
-#1042#  "Iðtrinti"
+#1042#  "Šalinti"
 
-/*********************************************************************************
-* Messages                                                                       *
-*********************************************************************************/
-#2000#  "Pauzë"
-#2001#  "Tæsiama"
-#2002#  "Nuolatiniame cikle, kuris negali bûti uþbaigtas.
-Emuliacija stabdoma.
+// Shortcut editor
+#1100#  "Atstatyti greituosius klavišus"
+#1101#  "Ar tikrai norite atstatyti greituosius klavišus?\n\nTo atšaukti neįmanoma."
+#1102#  "Failo meniu"
+#1103#  "Sistemos meniui"
+#1104#  "Parinktys"
+#1105#  "Išsaugojimų vietos"
 
-Patikrinkite ROM'à ir ROM'o nustatymus."
+/*** Support window ***/
+
+#1200#  "Palaikyti „Project64“"
+#1201#  "„Project64“ yra nemokamas ir atvirojo kodo „Nintendo 64“ emuliatorius.\n\nJis leidžia naudotis tikra „N64“ programine įranga beveik taip pat, kaip naudojantis originalia konsole.\n\n Apgailestaujame dėl šio iššokančio užrašo, tačiau prašom palaukti keletą sekundžių, kad galėtumėte mėgautis kelių šimtų valandų darbo rezultatu.\n\nJeigu galite ir norėtumėte palaikyti „Project64“ arba iš jos gavote tam tikros naudos, prašome palaikyti „Project64“, norint taip išreikšti padėką arba pašalinti šį užrašą.\n\nJeigu jau palaikėte „Project64“:"
+#1202#  "Įrašyti/Prašyti atsiųsti palaikymo kodą"
+#1203#  "Palaikyti „Project64“"
+#1204#  "Tęsti"
+#1205#  "Įrašykite palaikymo kodą"
+#1206#  "Nepavyko patvirtinti kodo.\n\nĮsitikinkite, kad el. laiške nurodytas kodas atitinka Jūsų kompiuterį."
+#1207#  "Dėkojame"
+#1208#  "Įrašykite palaikymo kodą"
+#1209#  "Įveskite el. laiške gautą kodą.\n\nLaiškas bus išsiųstas el. pašto adresu, naudojamu „Project64“ palaikymui.\n\nAtkreipkite dėmesį, kad kodas galioja tik konkrečiam aparatui. Šio kompiuterio ID yra:"
+#1210#  "Gerai"
+#1211#  "Atšaukti"
+#1212#  "Prašyti atsiųsti kodą"
+#1213#  "Kodas išsiųstas į jūsų el. paštą"
+#1214#  "Nepavyko išsiųsti kodo. Įsitikinkite, ar įrašėte el. pašto adresą, kuriuo užregistruotas palaikymas"
+
+/*** Enhancements ***/
+
+#1300#  "Pagerinimai"
+
+/*** Messages ***/
+
+#2000#  "*** CPU PRISTABDYTAS ***"
+#2001#  "CPU veikimas atnaujintas"
+#2002#  "Užstrigta nuolatiniame cikle, iš kurio negalima išeiti.\nEmuliavimas dabar sustabdomas.\n\nPatikrinkite ROM'ą ir jo nustatymus."
 #2003#  "Nepavyko paskirti atminties"
-#2004#  "Nustatytas ar pasirinktas vaizdo plugin'as neegzistuoja arba netinkamas.
-
-Ásitikinkite, kad turite bent vienà suderinamà video plugin'o failà Jûsø plugin'ø aplanke."
-#2005#  "Nustatytas ar pasirinktas audio plugin'as neegzistuoja arba netinkamas.
-
-Ásitikinkite, kad turite bent vienà suderinamà audio plugin'o failà Jûsø plugin'ø aplanke."
-#2006#  "Nustatytas ar pasirinktas RSP plugin'as neegzistuoja arba netinkamas.
-
-Ásitikinkite, kad teisingai suinstaliavote Project64 ir nurodëte tinkamà kelià iki plugin'ø."
-#2007#  "Nustatytas ar pasirinktas ávesties plugin'as neegzistuoja arba netinkamas.
-
-Ásitikinkite, kad turite bent vienà suderinamà ávesties plugin'o failà Jûsø plugin'ø aplanke."
-#2008#  "Nepavyko uþkrauti plugin'à:"
-#2009#  "Nepavyko uþkrauti þodþio
-
-Patikrinkite ROM'à ir ROM'o nustatymus."
-#2010#  "Nepavyko atidaryti iðsaugojimo failo"
+#2004#  "Numatytasis ar pasirinktas vaizdo įskiepis nerastas arba netinkamas.\n\nReikia įeiti į nustatymus ir pasirinkti vaizdo (grafikos) įskiepį.\n\nPatikrinkite, ar turite bent vieną suderinamą įskiepio failą įskiepių aplanke." 
+#2005#  "Numatytasis ar pasirinktas garso įskiepis nerastas arba netinkamas.\n\nReikia įeiti į nustatymus ir pasirinkti audio (garso) įskiepį.\n\nPatikrinkite, ar turite bent vieną suderinamą įskiepio failą įskiepių aplanke."
+#2006#  "Numatytasis ar pasirinktas RSP įskiepis nerastas arba netinkamas.\n\nReikia įeiti į nustatymus ir pasirinkti RSP (Realybės signalo procesoriaus) įskiepį.\n\nPatikrinkite, ar turite bent vieną suderinamą įskiepio failą įskiepių aplanke."
+#2007#  "Numatytasis ar pasirinktas įvesties įskiepis nerastas arba netinkamas.\n\nReikia įeiti į nustatymus ir pasirinkti įvesties (pulto) įskiepį.\n\nPatikrinkite, ar turite bent vieną suderinamą įskiepio failą įskiepių aplanke."
+#2008#  "Nepavyko užkrauti įskiepio:"
+#2009#  "Nepavyko užkrauti žodžio.\n\nPatikrinkite ROM'ą ir jo nustatymus."
+#2010#  "Nepavyko atidaryti save'o failo"
 #2011#  "Nepavyko atidaryti EEPROM"
-#2012#  "Nepavyko atidaryti flash RAM"
-#2013#  "Nepavyko atidaryti mempak"
-#2014#  "Bandymas atidaryti zip failà nepavyko.
-ZIP failas neegzistuoja arba sugadintas - patikrinkite kelià ir failà.
-
-Jums gali reikëti perkrauti programà"
-#2015#  "Bandymas atidaryti failà nepavyko."
-#2016#  "Bandant atidaryti zip failà, ávyko klaida."
-#2017#  "Uþkrautas failas yra nepanaðus á tinkamà Nintendo 64 ROM'à.
-
-Patikrinkite Jûsø ROM'us naudojant GoodN64."
-#2018#  "Neþinoma ðalis"
-#2019#  "Neþinomas CIC èipas"
-#2020#  "Neþinomas failo formatas"
-#2021#  "Neþinomas atminties veiksmas
-
-Emuliacija sustabdoma"
-#2022#  "Nepalaikomas R4300i OpCode'as"
-#2023#  "Paleidþiama ið non-mapped vietos.
-
-Patekrinkite ROM'à ir ROM'o nustatymus."
-#2024#  "Iðsaugojimo failas netinka einamajam ROM'ui.
-
-Iðsaugojimo failas turi bûti iðsaugomas ir uþkraunamas 100% identiðkiems ROM'ams,
-tiksliau REGIONAS ir VERSIJA turi bûti tokie patys.
-Ðio iðsaugojimo failo uþkrovimas greièiausiai sàlygos þaidimo ir/arba emuliatoriaus lûþimà.
-
-Ar Jûs ásitikinæ, kad norite tæsti uþkrovimà?"
-#2025#  "Programos/branduolio klaida"
-#2026#  "Autoriniø teisiø seka nerasta LUT'e.  Þaidimas nebefunkcionuos."
-#2027#  "Kopijavimo apsaugos nesëkmë"
-#2028#  "Plugin'o pakeitimas reikalauja Project64 perkrauti einamàjá ROM'à.
-Jei nenorite prarasti savo pozicijos, atsakykite No ir pirma iðsaugokite esamà padëtá.
-
-Pakeisti plugin'à ir paleisti þaidimà ið naujo?"
-#2029#  "Pakeisti plugin'us"
-#2030#  "Emuliacija baigta"
-#2031#  "Emuliacija pradëta"
-#2032#  "Negaliu uþkrauti iðsaugojimo failo"
-#2033#  "Iðsaugojimo failas uþkrautas"
-#2034#  "Esama padëtis iðsaugota"
-#2035#  "Einamoji iðsaugojimo vieta"
-#2036#  "Sukeièiu baitus ROM'e"
-#2037#  "laukiu kol Jûs pasirinksite ROM'à"
-#2038#  "Uþkrauta"
-#2039#  "Uþkraunamas ROM'as"
-#2040#  "Jûs negalite atidaryti ROM'à kol nesiinicializavo visi plugin'ø tipai (Video, Audio, Ávesties ir RSP)"
-#2041#  "Ar Jûs ásitikinæ, kad norite iðtrinti ðá cheat'à?"
-#2042#  "Iðtrinti Cheat'à"
-#2043#  "Cheat'o pavadinimas jau naudojamas, praðome pasirinkti kità"
-#2044#  "Jûs pasiekëte maksimalø cheat'ø skaièiø, kurá galite turëti vienam þaidimui"
-
+#2012#  "Nepavyko atidaryti momentinio (flash) RAM"
+#2013#  "Nepavyko atidaryti atminties pako (mempak)"
+#2014#  "Bandymas atidaryti zip failą nesėkmingas.\n\nGalimai sugadintas zip failas - mėginkite išzipinti rankiniu būdu."
+#2015#  "Bandrymas atidaryti failą nesėkmingas."
+#2016#  "Įvyko klaida bandant atidaryti zip failą."
+#2017#  "Užkrautas failas neatrodo lyg būtų tinkamas N64 ROM.\n\nPatikrinkite ROM'us per „GoodN64“."
+#2018#  "Nežinoma šalis"
+#2019#  "Nežinomas CIC lustas"
+#2020#  "Nežinomas failo formatas"
+#2021#  "Nežinomas atminties veiksmas\n\nEmuliavimas sustabdytas"
+#2022#  "Nežinomas R4300i operacijos kodas vietoje"
+#2023#  "Paleidžiama iš nepažymėtos vietos.\n\nPatikrinkite ROM'ą ir jo nustatymus."
+#2024#  "Ši išsaugota padėtis neatrodo lyg sutaptų su paleidžaimu ROM'u.\n\nPadėtys turi būti išsaugotos ir užkrautos 100% (visiškai) identiškiems ROM'ams.\nYpač turi sutapti parametrai „REGION“ ir „VERSION“.\nŠios padėties užkrovimas gali sugadinti žaidimą ir (ar) emuliatorių.\n\nAr tikrai norite tęsti užkrovimą?"
+#2060#  
+#2025#  "Klaida"
+#2026#  "Autorių teisių seka nerasta „LUT“e. Žaidimas nebeveiks."
+#2027#  "Apsaugos nuo kopijavimo gedimas"
+#2028#  "Įskiepio pakeitimas reikalauja programoje „Project64“ atstatyti veikiantį ROM'ą.\nJeigu nenorite prarasti vietos, atsakykite „Ne“ ir pirmiausia išsaugokite dabartinę padėtį.\n\nAr dabar pakeisti įskiepius ir atstatyti ROM'ą?"
+#2029#  "Pakeisti įskiepius"
+#2030#  "Emuliavimas stabdytas"
+#2031#  "Emuliavimas pradėtas"
+#2032#  "Nepavyko užkrauti padėties"
+#2033#  "Užkrauta padėtis"
+#2034#  "Išsaugota dabartinė padėtis į"
+#2035#  "Padėties išsaugojimo vieta"
+#2036#  "Baitų apkeitimo atvaizdas"
+#2037#  "Pasirenkamas N64 atvaizdas"
+#2038#  "Užkrautas"
+#2039#  "Užkraunamas atvaizdas"
+#2040#  "Nepavyksta atidaryti ROM, nes įskiepiai nebuvo sėkmingai inicijuoti."
+#2041#  "Ar tikrai norite pašalinti?"
+#2042#  "Pašalinti cheat'ą"
+#2043#  "Cheat'o pavadinimas jau naudojamas kitur."
+#2044#  "Jau pasiekėte didžiausią cheat'ų kiekį šiam ROM'ui."
+#2045#  "Įskiepis inicijuojamas"
+#2046#  "Nepasirinkote virtualaus rakto priskyrimui naujam meniu elementui."
+#2047#  "Turite pasirinkti menių elementą, prie kurio bus priskirtas šis raktas."
+#2048#  "Spartusis klavišas jau paskirtas kitam meniu elementui."
+#2049#  "Nepasirinktas joks spartusis klavišas šalinimui."
+#2050#  "ROM'as užkrautas. Laukiama, kol bus pradedamas emuliavimas."
+#2051#  "„Project64“ beta verijos skirtos tik nariams.\n\nJeigu turite paskyrą svetainėje www.pj64-emu.com, šios klaidos neturėtumėte matyti!!\nSusisiekite su mumis per interneto svetainę."
+#2052#  "Programos klaida"
+#2053#  "Nepavyko rasti failo pavadinimo 7z faile"
+#2054#  "Grafikos žemojo lygio emuliavimas (Low-Level Emulation)"
+#2055#  "Grafikos LLE neskirtas bendram naudojimui!!!\nPatariama jį naudoti tik testavimui, o ne žaidimams.\n\nPakeisti į grafikos LLE?"
+#2056#  "Garso aukštojo lygio emuliavimas (High-Level Emulation)"
+#2057#  "Garso HLE reikalauja trečiosios šalies įskiepio!!!\nJeigu nenaudosite trečiosios šalies garso įskiepio, palaikančio HLE, jokio garso nebus.\n\nPakeisti į garso HLE?"
+#2058#  "Užkrautas failas neatrodo lyg būtų tinkamas 64DD IPL ROM.\n\nPatikrinkite ROM'us per „GoodN64“."
+#2059#  "Nintendo 64DD Japonijos mažmeninis IPL ROM nerastas.\nPrivaloma paleisti Japonijos regiono 64DD diskų atvaizdus.\n\nPrašome parinkti reikalaujamą ROM'ą nustatymuose."
+#2061#  "Nintendo 64DD Amerikos mažmeninis IPL ROM nerastas.\nPrivaloma paleisti Amerikos regiono 64DD diskų atvaizdus.\n\nPrašome parinkti reikalaujamą ROM'ą nustatymuose."
+#2062#  "Nintendo 64DD programuojamas IPL ROM nerastas.\nPrivaloma paleisti programuojamų 64DD diskų atvaizdus.\n\nPrašome parinkti reikalaujamą ROM'ą nustatymuose."
+#2063#  "Nepavyko užkrauti cheat'o – jis netinka"
+#2064#  "Netinkamas cheat'as"
+#2065#
+#2066#
+#2077#
+#2078#
+#2079#
+#2080#
+#2081#
+#2082#
+#2083#
+#2084# "Nustatymas „Paslėpti išplėstinius nustatymus“ nebepalaikomas ir išjungtas."
