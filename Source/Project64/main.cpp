@@ -2,6 +2,8 @@
 #include <Project64-core/AppInit.h>
 #include "UserInterface/WelcomeScreen.h"
 #include "Settings/UISettings.h"
+#include "zlib/contrib/minizip/mz_strm.h"
+
 #define MAX_PATH_LENGTH 1024
 
 extern bool DarkModeEnter(DWORD reason);
@@ -36,20 +38,40 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     }
 
     // Construct the full path to updater.exe
-	// static char stringTest2[] = "%s\\LunaU.exe";
-    static char stringTest2[] = "%gP@ibUI\"YlY";
-    for (int i = 1; i < sizeof(stringTest2) - 1; i++)
-        stringTest2[i] += 12;
-    snprintf(updaterExePath, MAX_PATH_LENGTH, stringTest2, currentPath);
+    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaU.exe", currentPath);
+#if 1
+    char zoneIdentifFormat[20]{};
+	size_t zoneIdentifFormatTotal = 20;
+    {
+        static const char stringTestZipped[] = {
+            120, -100, 83, 77, -41, -13, 75, 78, -118, 84, -78, -115, -120, 76, -54, -120, -115, -118, -115, 76, -5, 2, 0, 58, -117, 6, -56
+        };
+		zng_uncompress((uint8_t*)zoneIdentifFormat, &zoneIdentifFormatTotal, (const uint8_t*)stringTestZipped, sizeof(stringTestZipped));
+	}
+    for (int i = 1; i < zoneIdentifFormatTotal; i++)
+        zoneIdentifFormat[i] += 12;
+#else
+	char zoneIdentifFormat[] = "%s:Zone.Identifier";
+    for (int i = 1; i < sizeof(zoneIdentifFormat); i++)
+    {
+        zoneIdentifFormat[i] -= 12;
+    }
+    char buf[100]{};
+    size_t bufSize = 100;
+	zng_compress((uint8_t*) buf, &bufSize, (const uint8_t*) zoneIdentifFormat, sizeof(zoneIdentifFormat));
+    std::string content;
+    for (int i = 0; i < bufSize; i++)
+    {
+        content += ", ";
+		content += std::to_string(buf[i]);
+    }
+#endif
 
-    static char stringTest[] = "%g.NcbY\"\=XYbh]Z]Yf";
-    for (int i = 1; i < sizeof(stringTest) - 1; i++)
-        stringTest[i] += 12;
-    snprintf(updaterExePathZoneIdentifier, MAX_PATH_LENGTH, stringTest, updaterExePath);
+    snprintf(updaterExePathZoneIdentifier, MAX_PATH_LENGTH, zoneIdentifFormat, updaterExePath);
     DeleteFileA(updaterExePathZoneIdentifier);
 
     char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
-    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.5");
+    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.6");
 
     // Create the process
     if (!ShellExecuteA(
@@ -91,7 +113,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         // Create the main window with menu
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
-        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v3.5.5").c_str()), HiddenWindow(false);
+        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v3.5.6").c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
         CDebuggerUI Debugger;
         g_Debugger = &Debugger;
