@@ -1,0 +1,30 @@
+name: Build PJ64
+
+on:
+  push:
+    branches:
+      - Release
+  pull_request:
+    branches:
+      - Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build Solution
+      run: msbuild Project64.sln /p:Configuration=Release
+
+    - name: Archive Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-output
+        path: |
+          **/Bin/Release/**
