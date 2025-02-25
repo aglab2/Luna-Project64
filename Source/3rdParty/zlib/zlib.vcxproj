@@ -54,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4005;4006;4100;4127;4131;4189;4244;4701;4703;4996</DisableSpecificWarnings>
       <!-- Fix for later VC versions on XP: 45KB + 436 -->
-      <PreprocessorDefinitions>X86_FEATURES;X86_SSE2;X86_SSSE3;HAVE_BUILTIN_CTZ;HAVE_ZLIB;WITH_GZFILEOP;$(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINVER=0x0601;_WIN32_WINNT=0x0601;X86_FEATURES;X86_SSE2;X86_SSSE3;HAVE_BUILTIN_CTZ;HAVE_ZLIB;WITH_GZFILEOP;$(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FastCall</CallingConvention>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FastCall</CallingConvention>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FastCall</CallingConvention>
@@ -73,7 +73,7 @@
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
       <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</OmitFramePointers>
       <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</WholeProgramOptimization>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/Gw -fmerge-all-constants -flto=thin -fsplit-lto-unit -fwhole-program-vtables -mssse3 -O2 /clang:-fno-math-errno /clang:-fno-trapping-math %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/Gw -fmerge-all-constants -flto=thin -fsplit-lto-unit -fwhole-program-vtables -mssse3 /clang:-O2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

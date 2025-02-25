@@ -94,7 +94,7 @@ void allowDarkMode(HWND hWnd) {
         //    STAP_ALLOW_CONTROLS | STAP_ALLOW_WEBCONTENT);
         //SetThemeAppProperties(dwFlags);
 
-        HMODULE hUxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+        HMODULE hUxtheme = LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
         ASSERT(hUxtheme);
         SetPreferredAppMode = (fnSetPreferredAppMode)GetProcAddress(hUxtheme, MAKEINTRESOURCEA(135));
         ASSERT(SetPreferredAppMode);
@@ -121,7 +121,7 @@ HRESULT enableImmersiveDarkMode(HWND hwnd) {
     static pFnDwmSetWindowAttribute DwmSetWindowAttribute = nullptr;
     static std::once_flag flag;
     std::call_once(flag, []() {
-        HMODULE dwmMod = LoadLibrary(L"dwmapi.dll");
+        HMODULE dwmMod = LoadLibraryA("dwmapi.dll");
         if (dwmMod)
         {
             DwmSetWindowAttribute = (pFnDwmSetWindowAttribute)GetProcAddress(dwmMod, "DwmSetWindowAttribute");
@@ -816,7 +816,6 @@ bool DarkModeEnter(DWORD reason)
         ASSERT(!hook_);
         hook_ = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
         ASSERT(hook_);
-        OutputDebugString(L"CBT Hook installed.\n");
 
         break;
     }
@@ -829,16 +828,7 @@ bool DarkModeEnter(DWORD reason)
         if (hook_) {
             UnhookWindowsHookEx(hook_);
             hook_ = NULL;
-            OutputDebugString(L"CBT Hook uninstalled.\n");
         }
-
-        std::wstringstream str;
-        str << L"WM_NCACTIVATE_cnt = " << WM_NCACTIVATE_cnt << std::endl;
-        str << L"WM_THEMECHANGED_cnt = " << WM_THEMECHANGED_cnt << std::endl;
-        str << L"WM_UAHDRAWMENU_cnt = " << WM_UAHDRAWMENU_cnt << std::endl;
-        str << L"WM_UAHDRAWMENUITEM_cnt = " << WM_UAHDRAWMENUITEM_cnt << std::endl;
-        str << L"WM_UAHMEASUREMENUITEM_cnt = " << WM_UAHMEASUREMENUITEM_cnt << std::endl;
-        OutputDebugString(str.str().c_str());
 
         break;
     }
