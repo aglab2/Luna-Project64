@@ -1714,7 +1714,6 @@ bool CN64System::SaveState()
     int Slot = 0;
     if (((const std::string &)SaveFile).empty())
     {
-        Slot = g_Settings->LoadDword(Game_CurrentSaveState);
         SaveFile = CPath(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
         if (g_Settings->LoadBool(Setting_UniqueSaveDir))
         {
@@ -1723,13 +1722,22 @@ bool CN64System::SaveState()
 #ifdef _WIN32
         SaveFile.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
 #endif
-        SaveFile.SetName(g_Settings->LoadStringVal(Rdb_GoodName).c_str());
-        g_Settings->SaveDword(Game_LastSaveSlot, g_Settings->LoadDword(Game_CurrentSaveState));
+        if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
+        {
+            SaveFile.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Rdb_GoodName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
+        }
+        else
+        {
+            SaveFile.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Rdb_GoodName).c_str()).c_str());
+        }
     }
-    stdstr_f target_ext("pj%s", Slot != 0 ? stdstr_f("%d", Slot).c_str() : "");
-    if (_stricmp(SaveFile.GetExtension().c_str(), target_ext.c_str()) != 0)
+    else
     {
-        SaveFile.SetNameExtension(stdstr_f("%s.%s", SaveFile.GetNameExtension().c_str(), target_ext.c_str()).c_str());
+        stdstr_f target_ext("pj%s", Slot != 0 ? stdstr_f("%d", Slot).c_str() : "");
+        if (_stricmp(SaveFile.GetExtension().c_str(), target_ext.c_str()) != 0)
+        {
+            SaveFile.SetNameExtension(stdstr_f("%s.%s", SaveFile.GetNameExtension().c_str(), target_ext.c_str()).c_str());
+        }
     }
 
     CPath ExtraInfo(SaveFile);
