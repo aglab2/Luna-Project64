@@ -122,7 +122,7 @@ static void __cdecl RebuildMenu()
 void RA_Init(HWND hMainWindow)
 {
     // initialize the DLL
-    RA_InitClient(hMainWindow, "LunaProject64", "3.5.5");
+    RA_InitClient(hMainWindow, "LunaProject64", "3.5.6");
     RA_SetConsoleID(N64);
     g_hWnd = hMainWindow;
 
