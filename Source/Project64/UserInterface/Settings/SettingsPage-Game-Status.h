@@ -22,5 +22,7 @@ public:
 	void             ApplySettings ( bool UpdateScreen );
 	bool             EnableReset   ( void );
 	void             ResetPage     ( void );
-	
+
+	void Init();
+	bool m_Initialized = false;
 };

@@ -33,6 +33,9 @@ public:
     void             ResetPage(void);
 
 private:
+    void Init();
+    bool m_Initialized = false;
+
     void GfxPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(GFX_LIST); }
     void AudioPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(AUDIO_LIST); }
     void ControllerPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(CONT_LIST); }

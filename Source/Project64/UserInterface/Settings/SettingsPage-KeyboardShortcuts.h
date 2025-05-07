@@ -48,6 +48,9 @@ private:
 		_this->InputGetKeys();
 	}
 
+	void Init();
+	bool m_Initialized = false;
+
 	CPartialGroupBox m_CreateNewShortCut;
 	CComboBox        m_CpuState, m_VirtualKeyList;
 	CShortCuts       m_ShortCuts;

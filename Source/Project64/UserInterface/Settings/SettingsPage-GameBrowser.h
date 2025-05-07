@@ -27,6 +27,9 @@ public:
     void             ResetPage(void);
 
 private:
+    void Init();
+    bool m_Initialized = false;
+
     void  UpdatePageSettings(void);
     void  UpdateFieldList(const ROMBROWSER_FIELDS_LIST & Fields);
     void  AddFieldClicked(UINT Code, int id, HWND ctl);

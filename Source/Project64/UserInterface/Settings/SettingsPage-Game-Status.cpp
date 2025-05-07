@@ -9,6 +9,13 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CGameStatusPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
 	CIniFile::strlist Keys;
@@ -38,6 +45,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
 
 void CGameStatusPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

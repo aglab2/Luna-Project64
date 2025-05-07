@@ -28,6 +28,9 @@ public:
 	void ResetPage ( void );
 
 private:
+	void Init();
+	bool m_Initialized = false;
+
 	void SelectIplDirJp(UINT Code, int id, HWND ctl);
     void SelectIplDirUs(UINT Code, int id, HWND ctl);
     void SelectIplDirTl(UINT Code, int id, HWND ctl);

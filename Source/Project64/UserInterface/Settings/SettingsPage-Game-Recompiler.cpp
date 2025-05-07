@@ -9,6 +9,13 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CGameRecompilePage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_CPU_TYPE_TEXT, wGS(ROM_CPU_STYLE).c_str());
@@ -62,6 +69,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
 
 void CGameRecompilePage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

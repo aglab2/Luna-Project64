@@ -7,6 +7,14 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CDefaultsOptionsPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
+
     UpdatePageSettings();
 
     SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
@@ -82,6 +90,7 @@ void CDefaultsOptionsPage::HidePage()
 
 void CDefaultsOptionsPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 
