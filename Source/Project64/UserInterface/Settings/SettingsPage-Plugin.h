@@ -57,5 +57,5 @@ private:
     bool m_Initialized = false;
 
     CPartialGroupBox m_GfxGroup, m_AudioGroup, m_ControlGroup, m_RspGroup;
-    CPluginList      m_PluginList;
+    std::unique_ptr<CPluginList> m_PluginList;
 };

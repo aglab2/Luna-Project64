@@ -85,12 +85,12 @@ void CDefaultsOptionsPage::Init()
 
 void CDefaultsOptionsPage::HidePage()
 {
-    Init();
     ShowWindow(SW_HIDE);
 }
 
 void CDefaultsOptionsPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

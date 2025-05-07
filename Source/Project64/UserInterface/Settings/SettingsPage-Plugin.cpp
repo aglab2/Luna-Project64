@@ -53,13 +53,16 @@ void COptionPluginPage::Init()
 
 void COptionPluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE PluginType)
 {
+    if (!m_PluginList)
+        m_PluginList = std::make_unique< CPluginList>();
+
     stdstr Default = g_Settings->LoadStringVal(Type);
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(ListId), Type);
-    for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++)
+    for (int i = 0, n = m_PluginList->GetPluginCount(); i < n; i++)
     {
-        const CPluginList::PLUGIN * Plugin = m_PluginList.GetPluginInfo(i);
+        const CPluginList::PLUGIN * Plugin = m_PluginList->GetPluginInfo(i);
         if (Plugin == nullptr)
         {
             continue;
