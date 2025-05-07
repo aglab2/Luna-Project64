@@ -34,6 +34,9 @@ public:
 	void             ResetPage     ( void );
 
 private:
+	void Init();
+	bool m_Initialized = false;
+
 	void OnBasicMode ( UINT Code, int id, HWND ctl );
 	CSettingConfig * m_SettingsConfig;
 };

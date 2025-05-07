@@ -2,12 +2,19 @@
 
 #include "SettingsPage.h"
 
-CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
+CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT& rcDispay)
 {
     if (!Create(hParent, rcDispay))
     {
         return;
     }
+}
+
+void CAdvancedOptionsPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_START_ON_ROM_OPEN, wGS(ADVANCE_AUTO_START).c_str());
@@ -54,6 +61,7 @@ void CAdvancedOptionsPage::HidePage()
 
 void CAdvancedOptionsPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

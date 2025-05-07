@@ -2,12 +2,19 @@
 
 #include "SettingsPage.h"
 
-COptionPluginPage::COptionPluginPage(HWND hParent, const RECT & rcDispay)
+COptionPluginPage::COptionPluginPage(HWND hParent, const RECT& rcDispay)
 {
     if (!Create(hParent, rcDispay))
     {
         return;
     }
+}
+
+void COptionPluginPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
@@ -202,6 +209,7 @@ void COptionPluginPage::HidePage()
 
 void COptionPluginPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

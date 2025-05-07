@@ -10,7 +10,15 @@ m_InUpdateSettings(false)
     {
         return;
     }
+
     SetWindowPos(HWND_TOP, &rcDispay, SWP_HIDEWINDOW);
+}
+
+void COptionsDirectoriesPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     m_PluginGroup.Attach(GetDlgItem(IDC_DIR_FRAME1));
     m_AutoSaveGroup.Attach(GetDlgItem(IDC_DIR_FRAME3));
@@ -232,6 +240,7 @@ void COptionsDirectoriesPage::HidePage()
 
 void COptionsDirectoriesPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

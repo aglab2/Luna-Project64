@@ -31,5 +31,8 @@ public:
     void             ResetPage(void);
 
 private:
+    void Init();
+    bool m_Initialized = false;
+
     CPartialGroupBox m_SelfModGroup;
 };

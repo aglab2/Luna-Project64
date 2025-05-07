@@ -9,6 +9,13 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CGameGeneralPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_GOOD_NAME_TEXT, wGS(RB_GOODNAME).c_str());
@@ -94,6 +101,7 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
 
 void CGameGeneralPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

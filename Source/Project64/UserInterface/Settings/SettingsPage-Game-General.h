@@ -36,4 +36,8 @@ public:
     void             ApplySettings(bool UpdateScreen);
     bool             EnableReset(void);
     void             ResetPage(void);
+
+private:
+    void Init();
+    bool m_Initialized = false;
 };

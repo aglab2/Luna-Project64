@@ -10,6 +10,13 @@ COptionsGameBrowserPage::COptionsGameBrowserPage(HWND hParent, const RECT & rcDi
     {
         return;
     }
+}
+
+void COptionsGameBrowserPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     SetDlgItemText(IDC_ROMSEL_TEXT2, wGS(RB_ROMS).c_str());
     SetDlgItemText(IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
@@ -183,6 +190,7 @@ void COptionsGameBrowserPage::HidePage()
 
 void COptionsGameBrowserPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

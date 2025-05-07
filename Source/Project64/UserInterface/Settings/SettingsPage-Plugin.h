@@ -53,6 +53,9 @@ private:
     void ApplyComboBoxes(void);
     bool ResetComboBox(CModifiedComboBox & ComboBox, SettingID Type);
 
+    void Init();
+    bool m_Initialized = false;
+
     CPartialGroupBox m_GfxGroup, m_AudioGroup, m_ControlGroup, m_RspGroup;
     CPluginList      m_PluginList;
 };

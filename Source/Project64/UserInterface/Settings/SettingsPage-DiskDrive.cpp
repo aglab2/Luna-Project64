@@ -8,6 +8,13 @@ CDiskDrivePage::CDiskDrivePage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CDiskDrivePage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_IPLDIR_JP_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
@@ -37,6 +44,7 @@ void CDiskDrivePage::HidePage()
 
 void CDiskDrivePage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

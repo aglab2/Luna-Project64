@@ -33,6 +33,9 @@ public:
     void ResetPage ( void );
 
 private:
+    void Init();
+    bool m_Initialized = false;
+
     void UpdatePageSettings(void);
 
     bool m_InUpdateSettings;

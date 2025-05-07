@@ -9,6 +9,13 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CGamePluginPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
@@ -212,6 +219,7 @@ void CGamePluginPage::HidePage()
 
 void CGamePluginPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

@@ -9,6 +9,13 @@ m_SettingsConfig(SettingsConfig)
     {
         return;
     }
+}
+
+void CGeneralOptionsPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_DARKTHEME, wGS(OPTION_DARKTHEME).c_str());
@@ -54,6 +61,7 @@ void CGeneralOptionsPage::HidePage()
 
 void CGeneralOptionsPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

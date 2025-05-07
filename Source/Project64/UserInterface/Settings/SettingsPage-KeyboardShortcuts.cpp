@@ -9,6 +9,13 @@ COptionsShortCutsPage::COptionsShortCutsPage(HWND hParent, const RECT & rcDispay
     {
         return;
     }
+}
+
+void COptionsShortCutsPage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     SetDlgItemText(IDC_S_CPU_STATE, wGS(ACCEL_CPUSTATE_TITLE).c_str());
     SetDlgItemText(IDC_MENU_ITEM_TEXT, wGS(ACCEL_MENUITEM_TITLE).c_str());
@@ -342,6 +349,7 @@ void COptionsShortCutsPage::HidePage()
 
 void COptionsShortCutsPage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 

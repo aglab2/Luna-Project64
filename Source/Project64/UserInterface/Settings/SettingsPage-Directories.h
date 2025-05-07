@@ -41,6 +41,9 @@ public:
     void             ResetPage(void);
 
 private:
+    void Init();
+    bool m_Initialized = false;
+
     void  SelectPluginDir(UINT Code, int id, HWND ctl);
     void  SelectAutoDir(UINT Code, int id, HWND ctl);
     void  SelectInstantDir(UINT Code, int id, HWND ctl);

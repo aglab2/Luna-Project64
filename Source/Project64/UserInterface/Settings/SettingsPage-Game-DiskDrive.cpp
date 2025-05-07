@@ -9,6 +9,13 @@ CGameDiskDrivePage::CGameDiskDrivePage(HWND hParent, const RECT & rcDispay)
     {
         return;
     }
+}
+
+void CGameDiskDrivePage::Init()
+{
+    if (m_Initialized)
+        return;
+    m_Initialized = true;
 
     // Set the text for all GUI items
     SetDlgItemText(IDC_DISKSEEKTIMING_TEXT2, wGS(ROM_DISK_SEEK_TIMING).c_str());
@@ -27,6 +34,7 @@ CGameDiskDrivePage::CGameDiskDrivePage(HWND hParent, const RECT & rcDispay)
 
 void CGameDiskDrivePage::ShowPage()
 {
+    Init();
     ShowWindow(SW_SHOW);
 }
 
