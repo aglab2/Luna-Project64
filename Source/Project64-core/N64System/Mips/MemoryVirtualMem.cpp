@@ -76,26 +76,24 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
     m_RomWrittenTo = false;
     if (m_TLB_ReadMap)
     {
-        size_t address;
-
-        memset(m_TLB_ReadMap, 0, 0xFFFFF * sizeof(size_t));
-        memset(m_TLB_WriteMap, 0, 0xFFFFF * sizeof(size_t));
-        for (address = 0x80000000; address < 0xC0000000; address += 0x1000)
+        memset(m_TLB_ReadMap, -1, 0xFFFFF * sizeof(m_TLB_ReadMap[0]));
+        memset(m_TLB_WriteMap, -1, 0xFFFFF * sizeof(m_TLB_WriteMap[0]));
+        for (uint32_t Address = 0x80000000; Address < 0xC0000000; Address += 0x1000)
         {
-            m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
-            m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address & 0x1FFFFFFF)) - address;
+            m_TLB_ReadMap[Address >> 12] = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
+            m_TLB_WriteMap[Address >> 12] = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
         }
 
         if (g_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
         {
-            size_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
-            size_t Len = g_Settings->LoadDword(Rdb_TLB_VAddrLen);   //0x01000000;
-            size_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
-            size_t End = Start + Len;
-            for (address = Start; address < End; address += 0x1000)
+            uint32_t Start = g_Settings->LoadDword(Rdb_TLB_VAddrStart); //0x7F000000;
+            uint32_t Len = g_Settings->LoadDword(Rdb_TLB_VAddrLen);     //0x01000000;
+            uint32_t PAddr = g_Settings->LoadDword(Rdb_TLB_PAddrStart); //0x10034b30;
+            uint32_t End = Start + Len;
+            for (uint32_t Address = Start; Address < End; Address += 0x1000)
             {
-                m_TLB_ReadMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
-                m_TLB_WriteMap[address >> 12] = ((size_t)m_RDRAM + (address - Start + PAddr)) - address;
+                m_TLB_ReadMap[Address >> 12] = ((size_t)m_RDRAM + (Address - Start + PAddr)) - Address;
+                m_TLB_WriteMap[Address >> 12] = ((size_t)m_RDRAM + (Address - Start + PAddr)) - Address;
             }
         }
     }
@@ -313,7 +311,7 @@ CFlashram* CMipsMemoryVM::GetFlashram()
 
 bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == 0)
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -324,7 +322,7 @@ bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
 
 bool CMipsMemoryVM::LH_VAddr(uint32_t VAddr, uint16_t& Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == 0)
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -346,7 +344,7 @@ bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t& Value)
     }
 
     uint8_t* BaseAddress = (uint8_t*)m_TLB_ReadMap[VAddr >> 12];
-    if (BaseAddress == nullptr)
+    if (BaseAddress == (uint8_t*)-1)
     {
         return false;
     }
@@ -366,7 +364,7 @@ bool CMipsMemoryVM::LW_VAddr(uint32_t VAddr, uint32_t& Value)
 
 bool CMipsMemoryVM::LD_VAddr(uint32_t VAddr, uint64_t& Value)
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == 0)
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -447,7 +445,7 @@ bool CMipsMemoryVM::LD_PAddr(uint32_t PAddr, uint64_t& Value)
 
 bool CMipsMemoryVM::SB_VAddr(uint32_t VAddr, uint8_t Value)
 {
-    if (m_TLB_WriteMap[VAddr >> 12] == 0)
+    if (m_TLB_WriteMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -458,7 +456,7 @@ bool CMipsMemoryVM::SB_VAddr(uint32_t VAddr, uint8_t Value)
 
 bool CMipsMemoryVM::SH_VAddr(uint32_t VAddr, uint16_t Value)
 {
-    if (m_TLB_WriteMap[VAddr >> 12] == 0)
+    if (m_TLB_WriteMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -479,7 +477,7 @@ bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
         }
     }
 
-    if (m_TLB_WriteMap[VAddr >> 12] == 0)
+    if (m_TLB_WriteMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -490,7 +488,7 @@ bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SD_VAddr(uint32_t VAddr, uint64_t Value)
 {
-    if (m_TLB_WriteMap[VAddr >> 12] == 0)
+    if (m_TLB_WriteMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -571,12 +569,12 @@ bool CMipsMemoryVM::SD_PAddr(uint32_t PAddr, uint64_t Value)
 
 bool CMipsMemoryVM::ValidVaddr(uint32_t VAddr) const
 {
-    return m_TLB_ReadMap[VAddr >> 12] != 0;
+    return m_TLB_ReadMap[VAddr >> 12] != -1;
 }
 
 bool CMipsMemoryVM::VAddrToRealAddr(uint32_t VAddr, void * &RealAddress) const
 {
-    if (m_TLB_ReadMap[VAddr >> 12] == 0)
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -587,7 +585,7 @@ bool CMipsMemoryVM::VAddrToRealAddr(uint32_t VAddr, void * &RealAddress) const
 bool CMipsMemoryVM::TranslateVaddr(uint32_t VAddr, uint32_t &PAddr) const
 {
     // Change the virtual address to a physical address
-    if (m_TLB_ReadMap[VAddr >> 12] == 0)
+    if (m_TLB_ReadMap[VAddr >> 12] == -1)
     {
         return false;
     }
@@ -1009,8 +1007,8 @@ void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
     for (count = Vaddr; count < End; count += 0x1000)
     {
         size_t Index = count >> 12;
-        m_TLB_ReadMap[Index] = 0;
-        m_TLB_WriteMap[Index] = 0;
+        m_TLB_ReadMap[Index] = -1;
+        m_TLB_WriteMap[Index] = -1;
     }
 }
 
