@@ -25,6 +25,7 @@ Thumbs.db
 /Bin/Package
 /Bin/Release
 /Bin/Release64
+/Bin/Release-Clang
 /build
 /Config/Cheats-User
 /Config/Enhancements-User
