@@ -24,9 +24,13 @@ jobs:
     - name: Build Solution
       run: msbuild Project64.sln /p:Configuration=Release
 
+    - name: Build Solution
+      run: msbuild Project64.sln /p:Configuration=Release-Clang
+
     - name: Archive Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-output
         path: |
           **/Bin/Release/**
+          **/Bin/Release-Clang/**
