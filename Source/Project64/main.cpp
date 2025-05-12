@@ -71,7 +71,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     DeleteFileA(updaterExePathZoneIdentifier);
 
     char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
-    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.8");
+    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.9");
 
     // Create the process
     if (!ShellExecuteA(
@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         // Create the main window with menu
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
-        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v3.5.8").c_str()), HiddenWindow(false);
+        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v3.5.9").c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
         CDebuggerUI Debugger;
         g_Debugger = &Debugger;
