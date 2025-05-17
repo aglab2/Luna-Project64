@@ -135,6 +135,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\RAInterface\RA_Interface.cpp" />
+    <ClCompile Include="GDBServer.cpp" />
     <ClCompile Include="RetroAchievements.cpp" />
     <ClCompile Include="AppInit.cpp" />
     <ClCompile Include="InputDelayer.cpp" />
@@ -225,6 +226,8 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TCPSocket.cpp" />
+    <ClCompile Include="TCPTextServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rdParty\zlib\contrib\minizip\unzip.h" />
@@ -237,6 +240,7 @@
     <ClInclude Include="CircularBuffer.h" />
     <ClInclude Include="Debugger.h" />
     <ClInclude Include="ExceptionHandler.h" />
+    <ClInclude Include="GDBServer.h" />
     <ClInclude Include="InputDelayer.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
@@ -335,7 +339,10 @@
     <ClInclude Include="Settings\SettingType\SettingsType-TempNumber.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-TempString.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TCPSocket.h" />
+    <ClInclude Include="TCPTextServer.h" />
     <ClInclude Include="TraceModulesProject64.h" />
+    <ClInclude Include="Watchpoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
