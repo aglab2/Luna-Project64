@@ -105,6 +105,7 @@ namespace GDB {
             std::function<std::string()> targetXML{};
 
             std::function<void(void)> resume;
+            std::function<void(void)> wakeup;
         } hooks{};
 
         // Exception
@@ -128,6 +129,7 @@ namespace GDB {
 
     protected:
         void onText(std::string_view text) override;
+        void onWakeUp() override;
         void onConnect() override;
         void onDisconnect() override;
 

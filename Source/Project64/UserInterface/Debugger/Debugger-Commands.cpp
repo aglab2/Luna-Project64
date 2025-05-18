@@ -58,8 +58,6 @@ CDebugCommandsView::~CDebugCommandsView()
 {
     g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
     GDB::server.close();
-    if (m_GDBPump.joinable())
-        m_GDBPump.join();
 }
 
 LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -1264,7 +1262,6 @@ LRESULT CDebugCommandsView::OnStartGDBServer(WORD /*wNotifyCode*/, WORD /*wID*/,
     if (GDB::server.isStarted())
     {
         GDB::server.close();
-        m_GDBPump.join();
         SetWindowTextA(m_GDBButton, "Start GDB Server");
     }
     else
@@ -1314,6 +1311,9 @@ LRESULT CDebugCommandsView::OnStartGDBServer(WORD /*wNotifyCode*/, WORD /*wID*/,
         };
         GDB::server.hooks.regRead = [](uint32_t regIdx) -> std::string
         {
+            if (!g_Reg)
+                return std::string{ "0000000000000000" };
+
             if (regIdx < 32) {
                 return NumConv::hex(g_Reg->m_GPR[regIdx].UDW, 16, '0');
             }
@@ -1396,15 +1396,11 @@ LRESULT CDebugCommandsView::OnStartGDBServer(WORD /*wNotifyCode*/, WORD /*wID*/,
                 m_StepEvent.Trigger();
             }
         };
+        GDB::server.hooks.wakeup = [this]() {
+            PostThreadMessage(m_threadID, 0, WM_USER + 4, 0);
+        };
 
         GDB::server.open(9123, true /*useIPV4*/);
-        m_GDBPump = std::thread([this]() {
-            while (GDB::server.isStarted())
-            {
-                PostThreadMessage(m_threadID, 0, WM_USER + 4, 0);
-                Sleep(30);
-            }
-        });
         SetWindowTextA(m_GDBButton, "Stop GDB Server");
     }
 

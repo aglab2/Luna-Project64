@@ -177,6 +177,7 @@ namespace GDB {
      */
     std::string Server::processCommand(const std::string& cmd, bool& shouldReply)
     {
+        OutputDebugStringA(cmd.c_str());
         auto cmdParts = split(cmd, ':');
         auto cmdName = cmdParts[0];
         char cmdPrefix = cmdName.size() > 0 ? cmdName[0] : ' ';
@@ -403,7 +404,7 @@ hooks.targetXML ? ";xmlRegisters+;qXfer:features:read+" : "" // (see: https://ma
             bool isInsert = cmdPrefix == 'Z';
             bool isHardware = cmdName[1] == '1'; // 0=software, 1=hardware
             auto sepIdxMaybe = cmdName.find(',', 3);
-            uint32_t sepIdx = std::string::npos != sepIdxMaybe ? (sepIdxMaybe + 3) : 0;
+            uint32_t sepIdx = std::string::npos != sepIdxMaybe ? sepIdxMaybe : 0;
 
             uint64_t address = hex(cmdName.substr(3, sepIdx - 1));
             uint64_t addressStart = address;
@@ -584,6 +585,11 @@ hooks.targetXML ? ";xmlRegisters+;qXfer:features:read+" : "" // (see: https://ma
             printf("GDB client disconnected\n");
         hadHandshake = false;
         resetClientData();
+    }
+
+    void Server::onWakeUp() {
+        if (hooks.wakeup)
+            hooks.wakeup();
     }
 
     void Server::reset() {

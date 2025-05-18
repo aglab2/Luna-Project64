@@ -215,10 +215,13 @@ namespace TCP
                     // receive data from connected clients
                     int32_t length = recv(fdClient, (char*) packet, TCP_BUFFER_SIZE, 0);
                     if (length > 0) {
-                        std::lock_guard guard{ receiveBufferMutex };
-                        auto oldSize = receiveBuffer.size();
-                        receiveBuffer.resize(oldSize + length);
-                        memcpy(receiveBuffer.data() + oldSize, packet, length);
+                        {
+                            std::lock_guard guard{ receiveBufferMutex };
+                            auto oldSize = receiveBuffer.size();
+                            receiveBuffer.resize(oldSize + length);
+                            memcpy(receiveBuffer.data() + oldSize, packet, length);
+                        }
+                        onWakeUp();
                     }
                     else if (length == 0) {
                         disconnectClient();

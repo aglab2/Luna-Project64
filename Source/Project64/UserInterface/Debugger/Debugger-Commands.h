@@ -313,5 +313,4 @@ private:
     bool m_Attached;
 
     DWORD m_threadID;
-    std::thread m_GDBPump;
 };

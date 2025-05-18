@@ -68,6 +68,7 @@ namespace TCP {
 
         void sendData(const uint8_t* data, uint32_t size);
         virtual void onData(const std::vector<uint8_t>& data) = 0;
+        virtual void onWakeUp() = 0;
 
         virtual void onConnect() = 0;
         virtual void onDisconnect() = 0;
