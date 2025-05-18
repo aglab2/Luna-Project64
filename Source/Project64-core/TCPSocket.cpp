@@ -1,3 +1,4 @@
+#include "stdafx.h"
 /*
 ----------------------------------------------------------------------
 ares
@@ -73,10 +74,9 @@ namespace TCP
 
         auto url = getURL(port, useIPv4);
         printf("Opening TCP-server on %s\n", url.data());
+        serverRunning = true;
 
         auto threadServer = std::thread([this, port, useIPv4]() {
-            serverRunning = true;
-
             while (!stopServer) {
                 fdServer = socket(useIPv4 ? AF_INET : AF_INET6, SOCK_STREAM, 0);
                 if (fdServer < 0)

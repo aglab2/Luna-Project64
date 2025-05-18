@@ -238,6 +238,7 @@
     <ClInclude Include="3rdParty\zip.h" />
     <ClInclude Include="AppInit.h" />
     <ClInclude Include="CircularBuffer.h" />
+    <ClInclude Include="NumConv.h" />
     <ClInclude Include="Debugger.h" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="GDBServer.h" />

@@ -104,7 +104,7 @@ namespace GDB {
             std::function<void(uint64_t address)> emuCacheInvalidate{};
             std::function<std::string()> targetXML{};
 
-
+            std::function<void(void)> resume;
         } hooks{};
 
         // Exception
@@ -112,8 +112,8 @@ namespace GDB {
 
         // PC / Memory State Updates
         bool reportPC(uint64_t pc);
-        void reportMemRead(uint64_t address, uint32_t size);
-        void reportMemWrite(uint64_t address, uint32_t size);
+        bool reportMemRead(uint64_t address, uint32_t size);
+        bool reportMemWrite(uint64_t address, uint32_t size);
 
         // Breakpoints / Watchpoints
         auto isHalted() const { return forceHalt && haltSignalSent; }

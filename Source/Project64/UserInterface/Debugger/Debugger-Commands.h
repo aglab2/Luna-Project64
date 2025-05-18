@@ -101,6 +101,7 @@ private:
         COMMAND_HANDLER(IDC_RMBP_BTN, BN_CLICKED, OnRemoveBPButton)
         COMMAND_HANDLER(IDC_COPYTABREGISTERS_BTN, BN_CLICKED, OnCopyTabRegistersButton)
         COMMAND_HANDLER(IDC_COPYALLREGISTERS_BTN, BN_CLICKED, OnCopyAllRegistersButton)
+        COMMAND_HANDLER(IDC_STARTGDBSERVER, BN_CLICKED, OnStartGDBServer)
         COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
         COMMAND_HANDLER(ID_POPUPMENU_EDIT, BN_CLICKED, OnPopupmenuEdit)
         COMMAND_HANDLER(ID_POPUPMENU_INSERTNOP, BN_CLICKED, OnPopupmenuInsertNOP)
@@ -138,6 +139,7 @@ private:
         DLGRESIZE_CONTROL(IDC_CLEARBP_BTN, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_COPYTABREGISTERS_BTN, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_COPYALLREGISTERS_BTN, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_STARTGDBSERVER, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_REG_TABS, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_BACK_BTN, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_FORWARD_BTN, DLSZ_MOVE_X)
@@ -189,6 +191,7 @@ private:
     LRESULT OnRemoveBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnCopyTabRegistersButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnCopyAllRegistersButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnStartGDBServer(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnPopupmenuEdit(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnPopupmenuInsertNOP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
@@ -276,6 +279,7 @@ private:
     CButton m_StepOverButton;
     CButton m_SkipButton;
     CButton m_GoButton;
+    CButton m_GDBButton;
 
     bool m_bEditing;
     CEditOp  m_OpEdit;
@@ -307,4 +311,7 @@ private:
     std::vector<BRANCHARROW> m_BranchArrows;
     vector<bool> m_bvAnnotatedLines;
     bool m_Attached;
+
+    DWORD m_threadID;
+    std::thread m_GDBPump;
 };

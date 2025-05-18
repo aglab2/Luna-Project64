@@ -1,3 +1,4 @@
+#include "stdafx.h"
 /*
 ----------------------------------------------------------------------
 ares
@@ -20,6 +21,9 @@ Removed nall references and weird C++ style by aglab2
 */
 
 #include <GDBServer.h>
+#include <NumConv.h>
+
+using namespace NumConv;
 
 #include <inttypes.h>
 
@@ -38,31 +42,6 @@ namespace {
     }
 
     template<typename T>
-    std::string hex(T value, long precision = 0, char padchar = '0') {
-        std::string buffer;
-        buffer.resize(sizeof(T) * 2);
-        char* p = buffer.data();
-
-        //create a mask to clear the upper four bits after shifting right in case T is a signed type
-        T mask = 1;
-        mask <<= sizeof(T) * 8 - 4;
-        mask -= 1;
-
-        uint32_t size = 0;
-        do {
-            uint32_t n = value & 15;
-            p[size++] = n < 10 ? '0' + n : 'a' + n - 10;
-            value = value >> 4 & mask;
-        } while (value);
-        buffer.resize(size);
-        std::reverse(buffer.begin(), buffer.end());
-        for (int i = 0; i < precision; i++)
-            buffer[i] = padchar;
-
-        return buffer;
-    }
-
-    template<typename T>
     inline auto addOrRemoveEntry(std::vector<T>& data, T value, bool shouldAdd) {
         if (shouldAdd) {
             data.emplace_back(value);
@@ -74,7 +53,7 @@ namespace {
 
     std::string build(std::initializer_list<std::string_view> list)
     {
-        size_t len;
+        size_t len = 0;
         for (const auto& str : list)
         {
             len += str.size();
@@ -102,94 +81,10 @@ namespace {
                 start = it + 1;
             }
         }
-        result.emplace_back(&*start, input.end() - start);
+        if (start != input.end())
+            result.emplace_back(&*start, input.end() - start);
 
         return result;
-    }
-
-    uint64_t toBinary_(const char* s, size_t left, uint64_t sum = 0)
-    {
-        if (0 == left)
-            return 0;
-
-        return (
-            *s == '0' || *s == '1' ? toBinary_(s + 1, left - 1, (sum << 1) | *s - '0') :
-            *s == '\'' ? toBinary_(s + 1, left - 1, sum) :
-            sum
-            );
-    }
-
-    uint64_t toOctal_(const char* s, size_t left, uint64_t sum = 0)
-    {
-        if (0 == left)
-            return 0;
-
-        return (
-            *s >= '0' && *s <= '7' ? toOctal_(s + 1, left - 1, (sum << 3) | *s - '0') :
-            *s == '\'' ? toOctal_(s + 1, left - 1, sum) :
-            sum
-            );
-    }
-
-    uint64_t toDecimal_(const char* s, size_t left, uint64_t sum = 0)
-    {
-        if (0 == left)
-            return 0;
-
-        return (
-            *s >= '0' && *s <= '9' ? toDecimal_(s + 1, left - 1, (sum * 10) + *s - '0') :
-            *s == '\'' ? toDecimal_(s + 1, left - 1, sum) :
-            sum
-            );
-    }
-
-    uint64_t toHex_(const char* s, size_t left, uint64_t sum = 0)
-    {
-        return (
-            !left ? sum :
-            *s >= 'A' && *s <= 'F' ? toHex_(s + 1, left - 1, (sum << 4) | *s - 'A' + 10) :
-            *s >= 'a' && *s <= 'f' ? toHex_(s + 1, left - 1, (sum << 4) | *s - 'a' + 10) :
-            *s >= '0' && *s <= '9' ? toHex_(s + 1, left - 1, (sum << 4) | *s - '0') :
-            *s == '\'' ? toHex_(s + 1, left - 1, sum) :
-            sum
-            );
-    }
-
-    uint64_t hex(const std::string_view& sv)
-    {
-        size_t left = sv.length();
-        if (0 == left)
-            return 0;
-
-        const char* s = sv.data();
-        return (
-            *s == '0' && left > 1 && (*(s + 1) == 'X' || *(s + 1) == 'x') ? toHex_(s + 2, left - 2) :
-            *s == '$' ? toHex_(s + 1, left - 1) : toHex_(s, left)
-            );
-    }
-
-    uint64_t toNatural(const char* s, size_t left)
-    {
-        if (0 == left)
-            return 0;
-
-        return (
-            *s == '0' && left > 1 && (*(s + 1) == 'B' || *(s + 1) == 'b') ? toBinary_(s + 2, left - 2) :
-            *s == '0' && left > 1 && (*(s + 1) == 'O' || *(s + 1) == 'o') ? toOctal_(s + 2, left - 2) :
-            *s == '0' && left > 1 && (*(s + 1) == 'X' || *(s + 1) == 'x') ? toHex_(s + 2, left - 2) :
-            *s == '%' ? toBinary_(s + 1, left - 1) : *s == '$' ? toHex_(s + 1, left - 1) : toDecimal_(s, left)
-            );
-    }
-
-    int64_t integer(const std::string_view& sv) {
-        size_t left = sv.length();
-        if (0 == left)
-            return 0;
-
-        const char* s = sv.data();
-        return (
-            *s == '+' ? +toNatural(s + 1, left - 1) : *s == '-' ? -toNatural(s + 1, left - 1) : toNatural(s, left)
-            );
     }
 }
 
@@ -216,8 +111,8 @@ namespace GDB {
         sendSignal(Signal::TRAP, build({ wp.getTypePrefix(), hex(orgAddress), ";" }));
     }
 
-    void Server::reportMemRead(uint64_t address, uint32_t size) {
-        if (watchpointRead.empty())return;
+    bool Server::reportMemRead(uint64_t address, uint32_t size) {
+        if (watchpointRead.empty())return true;
 
         if (hooks.normalizeAddress) {
             address = hooks.normalizeAddress(address);
@@ -226,13 +121,16 @@ namespace GDB {
         uint64_t addressEnd = address + size - 1;
         for (const auto& wp : watchpointRead) {
             if (wp.hasOverlap(address, addressEnd)) {
-                return reportWatchpoint(wp, address);
+                reportWatchpoint(wp, address);
+                return false;
             }
         }
+
+        return true;
     }
 
-    void Server::reportMemWrite(uint64_t address, uint32_t size) {
-        if (watchpointWrite.empty())return;
+    bool Server::reportMemWrite(uint64_t address, uint32_t size) {
+        if (watchpointWrite.empty())return true;
 
         if (hooks.normalizeAddress) {
             address = hooks.normalizeAddress(address);
@@ -241,9 +139,12 @@ namespace GDB {
         uint64_t addressEnd = address + size - 1;
         for (const auto& wp : watchpointWrite) {
             if (wp.hasOverlap(address, addressEnd)) {
-                return reportWatchpoint(wp, address);
+                reportWatchpoint(wp, address);
+                return false;
             }
         }
+
+        return true;
     }
 
     bool Server::reportPC(uint64_t pc) {
@@ -264,6 +165,8 @@ namespace GDB {
         if (singleStepActive) {
             singleStepActive = false;
             forceHalt = true;
+            sendSignal(Signal::TRAP);
+            return false;
         }
 
         return !needHalts;
@@ -666,6 +569,8 @@ hooks.targetXML ? ";xmlRegisters+;qXfer:features:read+" : "" // (see: https://ma
         pcOverride.reset();
         forceHalt = false;
         haltSignalSent = false;
+        if (hooks.resume)
+           hooks.resume();
     }
 
     void Server::onConnect() {
