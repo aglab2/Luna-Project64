@@ -8,6 +8,8 @@
 #include "OpInfo.h"
 
 #include <Project64-core/N64System/Mips/OpCodeName.h>
+#include <Project64-core/GDBServer.h>
+#include <Project64-core/NumConv.h>
 
 void CCommandList::Attach(HWND hWndNew)
 {
@@ -55,6 +57,7 @@ CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEv
 CDebugCommandsView::~CDebugCommandsView()
 {
     g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
+    GDB::server.close();
 }
 
 LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -76,6 +79,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_BackButton.Attach(GetDlgItem(IDC_BACK_BTN));
     m_ForwardButton.Attach(GetDlgItem(IDC_FORWARD_BTN));
     m_OpEdit.Attach(GetDlgItem(IDC_OP_EDIT));
+    m_GDBButton.Attach(GetDlgItem(IDC_STARTGDBSERVER));
 
     DlgResize_Init(false, true);
     DlgSavePos_Init(DebuggerUI_CommandsPos);
@@ -129,8 +133,8 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
     _this = this;
 
-    DWORD dwThreadID = ::GetCurrentThreadId();
-    hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, nullptr, dwThreadID);
+    m_threadID = ::GetCurrentThreadId();
+    hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, nullptr, m_threadID);
 
     LoadWindowPos();
     RedrawCommandsAndRegisters();
@@ -227,6 +231,7 @@ void CDebugCommandsView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
 
 LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
+    GDB::server.updateLoop();
     MSG *pMsg = (MSG*)lParam;
 
     if (pMsg->message == WM_KEYDOWN)
@@ -1249,6 +1254,156 @@ LRESULT CDebugCommandsView::OnCopyTabRegistersButton(WORD /*wNotifyCode*/, WORD 
 LRESULT CDebugCommandsView::OnCopyAllRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
     m_RegisterTabs.CopyAllRegisters();
+    return FALSE;
+}
+
+LRESULT CDebugCommandsView::OnStartGDBServer(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+{
+    if (GDB::server.isStarted())
+    {
+        GDB::server.close();
+        SetWindowTextA(m_GDBButton, "Start GDB Server");
+    }
+    else
+    {
+        GDB::server.hooks.read = [this](uint64_t address, uint32_t byteCount)
+        {
+            std::vector<uint8_t> bytes;
+            bytes.resize(byteCount);
+            (void) m_Debugger->ReadVirtual(address, byteCount, bytes.data());
+
+            string res{};
+            res.resize(byteCount * 2);
+            char* resPtr = res.data();
+
+            return NumConv::hex(bytes);
+        };
+        GDB::server.hooks.write = [this](uint64_t address, std::vector<uint8_t> value)
+        {
+            m_Debugger->WriteVirtual(address, value.size(), value.data());
+        };
+        GDB::server.hooks.normalizeAddress = [](uint64_t address) -> uint64_t
+        {
+            uint32_t paddr;
+            if (!g_MMU || !g_MMU->TranslateVaddr((uint32_t)address, paddr))
+                return address;
+            else
+                return paddr;
+        };
+        GDB::server.hooks.regReadGeneral = []() -> std::string
+        {
+            string res{};
+            for (int i = 0; i < 71; i++)
+            {
+                res.append(GDB::server.hooks.regRead(i));
+            }
+            return res;
+        };
+        GDB::server.hooks.regWriteGeneral = [](const std::string& _regData)
+        {
+            uint32_t regIdx{ 0 };
+            std::string_view regData{ _regData };
+            for (auto i = 0; i < regData.size(); i += 16)
+            {
+                GDB::server.hooks.regWrite(regIdx, NumConv::hex(regData.substr(i, 16)));
+                ++regIdx;
+            }
+        };
+        GDB::server.hooks.regRead = [](uint32_t regIdx) -> std::string
+        {
+            if (!g_Reg)
+                return std::string{ "0000000000000000" };
+
+            if (regIdx < 32) {
+                return NumConv::hex(g_Reg->m_GPR[regIdx].UDW, 16, '0');
+            }
+
+            switch (regIdx)
+            {
+            case 32: return NumConv::hex(g_Reg->STATUS_REGISTER, 16, '0'); // COP0 status
+            case 33: return NumConv::hex(g_Reg->m_LO.UDW, 16, '0');
+            case 34: return NumConv::hex(g_Reg->m_HI.UDW, 16, '0');
+            case 35: return NumConv::hex(g_Reg->BAD_VADDR_REGISTER, 16, '0'); // COP0 badvaddr
+            case 36: return NumConv::hex(g_Reg->CAUSE_REGISTER, 16, '0'); // COP0 cause
+            case 37: { // PC
+                auto pcOverride = GDB::server.getPcOverride();
+                return NumConv::hex(pcOverride ? *pcOverride : g_Reg->m_PROGRAM_COUNTER, 16, '0');
+            }
+
+                    // case 38-69: -> FPU
+            case 70: return NumConv::hex(g_Reg->m_FPCR[31], 16, '0'); // FPU control
+            }
+
+            if (regIdx < (38 + 32)) {
+                return NumConv::hex(g_Reg->m_FPR[regIdx - 38].UDW, 16, '0');
+            }
+
+            return std::string{ "0000000000000000" };
+        };
+        GDB::server.hooks.regWrite = [](uint32_t regIdx, uint64_t regValue) -> bool
+        {
+            if (!g_Reg)
+                return true;
+
+            if (regIdx == 0)return true;
+
+            if (regIdx < 32) {
+                g_Reg->m_GPR[regIdx].UDW = regValue;
+                return true;
+            }
+
+            switch (regIdx)
+            {
+            case 32: return true; // COP0 status (ignore write)
+            case 33: g_Reg->m_LO.UDW = regValue; return true;
+            case 34: g_Reg->m_HI.UDW = regValue; return true;
+            case 35: return true; // COP0 badvaddr (ignore write)
+            case 36: return true; // COP0 cause (ignore write)
+            case 37: { // PC
+                if (!GDB::server.getPcOverride())
+                {
+                    g_Reg->m_PROGRAM_COUNTER = regValue;
+                }
+                return true;
+            }
+
+                    // case 38-69: -> FPU
+            case 70: return true; // FPU control (ignore)
+            }
+
+            if (regIdx < (38 + 32)) {
+                g_Reg->m_FPR[regIdx - 38].UDW = regValue;
+                return true;
+            }
+
+            if (regIdx == 71)return true; // ignore, GDB wants this register even though it doesn't exist
+            return false;
+
+        };
+        GDB::server.hooks.emuCacheInvalidate = [](uint64_t address)
+        {
+            // currently pointless because only using the values coming from the interpreter without any caching
+        };
+        GDB::server.hooks.targetXML = []() -> std::string
+        {
+            return "<target version=\"1.0\">"
+                    "<architecture>mips:4000</architecture>"
+                    "</target>";
+        };
+        GDB::server.hooks.resume = [this]() {
+            if (WaitingForStep())
+            {
+                m_StepEvent.Trigger();
+            }
+        };
+        GDB::server.hooks.wakeup = [this]() {
+            PostThreadMessage(m_threadID, 0, WM_USER + 4, 0);
+        };
+
+        GDB::server.open(9123, true /*useIPV4*/);
+        SetWindowTextA(m_GDBButton, "Stop GDB Server");
+    }
+
     return FALSE;
 }
 

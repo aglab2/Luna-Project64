@@ -671,6 +671,7 @@ BEGIN
     SCROLLBAR       IDC_SCRL_BAR,284,0,12,327,SBS_VERT
     PUSHBUTTON      "Copy Tab Registers",IDC_COPYTABREGISTERS_BTN,298,313,70,13
     PUSHBUTTON      "Copy All Registers",IDC_COPYALLREGISTERS_BTN,370,313,70,13
+    PUSHBUTTON      "Start GDB Server",IDC_STARTGDBSERVER,442,313,70,13
 END
 
 IDD_Debugger_RegGPR DIALOGEX 0, 0, 190, 210
@@ -2156,6 +2157,9 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 100,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0
 END
 
