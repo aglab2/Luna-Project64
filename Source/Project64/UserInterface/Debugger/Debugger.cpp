@@ -11,6 +11,8 @@
 #include <../RAInterface/RA_Interface.h>
 #endif
 
+#include "Project64-Core/GDBServer.h"
+
 CPj64Module _Module;
 
 CDebuggerUI::CDebuggerUI() :
@@ -529,6 +531,15 @@ void CDebuggerUI::HandleCPUException(void)
     int intr = (g_Reg->CAUSE_REGISTER >> 8) & 0xFF;
     int fpExc = (g_Reg->m_FPCR[31] >> 12) & 0x3F;
     int rcpIntr = g_Reg->MI_INTR_REG & 0x2F;
+
+    if (exc)
+    {
+        GDB::server.reportSignal((GDB::Signal)exc, g_Reg->EPC_REGISTER);
+    }
+    if (GDB::server.isHalted())
+    {
+        goto have_bp;
+    }
     
     if ((ExceptionBreakpoints() & (1 << exc)))
     {
@@ -646,7 +657,21 @@ void CDebuggerUI::CPUStepStarted()
         HandleCartToRamDMA();
     }
 
-    if (CDebugSettings::ExceptionBreakpoints() != 0)
+    if (!GDB::server.reportPC(pc))
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+    }
+
+    if (opInfo.IsLoadCommand() && !GDB::server.reportMemRead(storeAddress, opInfo.NumBytesToLoad()))
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+    }
+    if (opInfo.IsStoreCommand() && !GDB::server.reportMemWrite(storeAddress, opInfo.NumBytesToStore()))
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+    }
+
+    if (GDB::server.hasClient() || CDebugSettings::ExceptionBreakpoints() != 0)
     {
         if (pc == 0x80000000 || pc == 0x80000080 ||
             pc == 0xA0000100 || pc == 0x80000180)

@@ -883,6 +883,8 @@
 #define IDC_COPYALLREGISTERS_BTN        1722
 #define IDC_OK                          1723
 #define IDC_CANCEL                      1724
+#define IDC_COPYALLREGISTERS_BTN2       1724
+#define IDC_STARTGDBSERVER              1724
 #define IDC_APPLY                       1725
 #define IDC_RADIO_GLIDEN64              1728
 #define IDC_RADIO_JABO                  1729
