@@ -137,7 +137,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
 	AddHandler(Default_RDRamSize, new CSettingTypeApplication("Defaults", "RDRAM Size", 0x800000u));
 	AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
 	AddHandler(Default_UseTlb, new CSettingTypeApplication("Defaults", "Use TLB", true));
-	AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 2200u));
+	AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 1500u));
 	AddHandler(Default_AiCountPerBytes, new CSettingTypeApplication("Defaults", "AiCountPerBytes", 0u));
 	AddHandler(Default_CounterFactor, new CSettingTypeApplication("Defaults", "Counter Factor", 1u));
 	AddHandler(Default_32Bit, new CSettingTypeApplication("Defaults", "32bit", true));
