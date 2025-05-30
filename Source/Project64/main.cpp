@@ -37,6 +37,8 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         *lastBackslash = '\0'; // Terminate the string to get the directory
     }
 
+    SetCurrentDirectoryA(currentPath);
+
     // Construct the full path to updater.exe
     snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaU.exe", currentPath);
 #if 1
