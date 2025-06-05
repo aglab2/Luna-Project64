@@ -12,6 +12,7 @@
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/SummerCart.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
+#include <Project64-core/VersionLuna.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);
@@ -171,7 +172,7 @@ void TraceDone(void)
 
 const char * AppName(void)
 {
-    static stdstr_f ApplicationName("Luna's Project64 v3.5.9");
+    static stdstr_f ApplicationName("Luna's Project64 v" VERSION_LUNA);
     return ApplicationName.c_str();
 }
 

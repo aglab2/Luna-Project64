@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <Project64-core/AppInit.h>
+#include <Project64-core/VersionLuna.h>
 #include "UserInterface/WelcomeScreen.h"
 #include "Settings/UISettings.h"
 #include "zlib/contrib/minizip/mz_strm.h"
@@ -73,7 +74,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     DeleteFileA(updaterExePathZoneIdentifier);
 
     char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
-    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v3.5.9");
+    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v" VERSION_LUNA);
 
     // Create the process
     if (!ShellExecuteA(
@@ -115,7 +116,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         // Create the main window with menu
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
-        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v3.5.9").c_str()), HiddenWindow(false);
+        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v" VERSION_LUNA).c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
         CDebuggerUI Debugger;
         g_Debugger = &Debugger;

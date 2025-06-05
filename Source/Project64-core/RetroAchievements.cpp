@@ -10,6 +10,7 @@
 #include <Project64-core/Plugin.h>
 #include <Project64-core/Settings.h>
 #include <Project64-core/N64System/Mips/SystemEvents.h>
+#include <Project64-core/VersionLuna.h>
 #include <Project64/UserInterface/Debugger/debugger.h>
 
 static HWND g_hWnd = nullptr;
@@ -122,7 +123,7 @@ static void __cdecl RebuildMenu()
 void RA_Init(HWND hMainWindow)
 {
     // initialize the DLL
-    RA_InitClient(hMainWindow, "LunaProject64", "3.5.9");
+    RA_InitClient(hMainWindow, "LunaProject64", VERSION_LUNA);
     RA_SetConsoleID(N64);
     g_hWnd = hMainWindow;
 
