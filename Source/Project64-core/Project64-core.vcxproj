@@ -343,6 +343,7 @@
     <ClInclude Include="TCPSocket.h" />
     <ClInclude Include="TCPTextServer.h" />
     <ClInclude Include="TraceModulesProject64.h" />
+    <ClInclude Include="VersionLuna.h" />
     <ClInclude Include="Watchpoint.h" />
   </ItemGroup>
   <ItemGroup>
