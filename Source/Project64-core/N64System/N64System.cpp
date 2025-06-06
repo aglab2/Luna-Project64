@@ -20,6 +20,8 @@
 #include <float.h>
 #include <time.h>
 
+#include <sstream>
+
 #ifdef RETROACHIEVEMENTS
 #include <Project64-core/RetroAchievements.h>
 #include "../../../RAInterface/RA_Interface.h"
@@ -747,7 +749,7 @@ void CN64System::StartEmulation2(bool NewThread)
     else
     {
         // Mark the emulation as starting and fix up menus
-        g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
+        DisplayEmulationStarted();
         WriteTrace(TraceN64System, TraceDebug, "Start executing CPU");
         ExecuteCPU();
     }
@@ -1180,6 +1182,64 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     }
 }
 
+static void verify(bool& valid, std::ostream& ss, const char* name, int given, int desired)
+{
+    if (given == desired)
+        return;
+
+    if (!valid)
+        ss << ' ';
+
+    ss << name << ' ' << given << "->" << desired;
+    valid = false;
+}
+
+static const char* toName(bool on)
+{
+    return on ? "ON" : "OFF";
+}
+
+static void verify(bool& valid, std::ostream& ss, const char* name, bool given, bool desired)
+{
+    if (given == desired)
+        return;
+
+    if (!valid)
+        ss << ' ';
+
+    ss << name << ' ' << toName(given) << "->" << toName(desired);
+    valid = false;
+}
+
+static bool gRecomp = false;
+void CN64System::DisplayEmulationStarted()
+{
+    std::stringstream ss;
+    ss << "Invalid speedrun settings: ";
+
+    g_System->RefreshGameSettings();
+    int viRefreshRate = ViRefreshRate();
+    int overclockModifier = OverClockModifier();
+    int counterFactor = CounterFactorZero() ? 0 : CountPerOp();
+    bool haveDebugger = CDebugSettings::HaveDebugger();
+
+    bool speedrunSettingsOk = true;
+    verify(speedrunSettingsOk, ss, "VI", viRefreshRate, 1500);
+    verify(speedrunSettingsOk, ss, "CF", counterFactor, 1);
+    verify(speedrunSettingsOk, ss, "VI", overclockModifier, 1);
+    verify(speedrunSettingsOk, ss, "Debugger", haveDebugger, false);
+    verify(speedrunSettingsOk, ss, "Interpreter", !gRecomp, false);
+
+    if (speedrunSettingsOk)
+    {
+        g_Notify->DisplayMessage(2, "OK");
+    }
+    else
+    {
+        g_Notify->DisplayMessage(2, ss.str().c_str());
+    }
+}
+
 void CN64System::ExecuteCPU()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
@@ -1187,7 +1247,6 @@ void CN64System::ExecuteCPU()
     // Reset code
     g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     g_Settings->SaveBool(GameRunning_CPU_Running, true);
-    g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
 
     m_EndEmulation = false;
 
@@ -1204,13 +1263,16 @@ void CN64System::ExecuteCPU()
 
     if (g_Settings->LoadBool(Setting_ForceInterpreterCPU))
     {
+        gRecomp = false;
         cpuType = CPU_Interpreter;
     }
     else
     {
+        gRecomp = true;
         cpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
     }
 
+    DisplayEmulationStarted();
     switch (cpuType)
     {
     case CPU_Recompiler: ExecuteRecompiler(); break;

@@ -89,6 +89,8 @@ public:
     void   SyncCPUPC(CN64System * const SecondCPU);
     void   SyncSystem();
     void   SyncSystemPC();
+
+    void DisplayEmulationStarted();
 private:
     // Make sure plugins can directly access this information
     friend class CGfxPlugin;
