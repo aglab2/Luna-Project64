@@ -637,7 +637,7 @@ uint32_t CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyN
         {
             strncpy(lpReturnedString, cachedEntry->c_str(), nSize - 1);
             lpReturnedString[nSize - 1] = 0;
-            return (uint32_t)std::min(cachedEntry->length(), nSize - 1);
+            return std::min((uint32_t)cachedEntry->length(), (uint32_t) (nSize - 1));
         }
         else
         {

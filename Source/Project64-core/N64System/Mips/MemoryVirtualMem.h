@@ -208,8 +208,8 @@ private:
     mutable char m_strLabelName[100];
 
     // Big look up table to quickly translate the TLB to real memory addresses
-    uint32_t * m_TLB_ReadMap;
-    uint32_t * m_TLB_WriteMap;
+    size_t * m_TLB_ReadMap;
+    size_t * m_TLB_WriteMap;
 
     static uint32_t m_MemLookupAddress;
     static MIPS_DWORD m_MemLookupValue;
