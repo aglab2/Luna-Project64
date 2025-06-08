@@ -80,8 +80,9 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
         memset(m_TLB_WriteMap, -1, 0xFFFFF * sizeof(m_TLB_WriteMap[0]));
         for (uint32_t Address = 0x80000000; Address < 0xC0000000; Address += 0x1000)
         {
-            m_TLB_ReadMap[Address >> 12] = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
-            m_TLB_WriteMap[Address >> 12] = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
+            uint64_t toWrite = ((size_t)m_RDRAM + (Address & 0x1FFFFFFF)) - Address;
+            m_TLB_ReadMap[Address >> 12] = toWrite;
+            m_TLB_WriteMap[Address >> 12] = toWrite;
         }
 
         if (g_Settings->LoadDword(Rdb_TLB_VAddrStart) != 0)
@@ -216,20 +217,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
     CPifRam::Reset();
 
     m_TLB_ReadMap = new size_t[0x100000];
-    if (m_TLB_ReadMap == nullptr)
-    {
-        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_ReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
-        FreeMemory();
-        return false;
-    }
-
     m_TLB_WriteMap = new size_t[0x100000];
-    if (m_TLB_WriteMap == nullptr)
-    {
-        WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
-        FreeMemory();
-        return false;
-    }
     Reset(false);
     return true;
 }
