@@ -366,6 +366,148 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 }
 #endif
 
+#if defined(_M_X64)
+
+#include <3rdParty/distorm/distorm.h>
+#include <3rdParty/distorm/mnemonics.h>
+
+bool CMipsMemoryVM::FilterAMD64Exception(uint64_t MemAddress, AMD64_CONTEXT& context)
+{
+    WriteTrace(TraceExceptionHandler, TraceVerbose, "MemAddress: %X", MemAddress);
+
+    if (g_MMU == nullptr)
+    {
+        WriteTrace(TraceExceptionHandler, TraceError, "g_MMU == nullptr");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+
+    if ((int64_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
+    {
+        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory address: %X", MemAddress);
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    }
+
+    uint8_t* TypePos = (uint8_t*)*(context.Rip);
+    WriteTrace(TraceExceptionHandler, TraceVerbose, "TypePos[0] = %02X TypePos[1] = %02X", TypePos[0], TypePos[2]);
+
+    _CodeInfo ci = {};
+    ci.code = TypePos;
+    ci.codeLen = 1000;
+    ci.codeOffset = *context.Rip;
+    ci.dt = Decode64Bits;
+    _DInst inst = {};
+    unsigned int decodedCount = 0;
+
+    _DecodeResult err = distorm_decompose(&ci, &inst, 1, &decodedCount);
+    if (1 != decodedCount)
+    {
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    }
+
+    bool isLoad;
+    const _Operand* op = NULL;
+    bool signExtended = false;
+    if (I_MOV == inst.opcode || I_MOVZX == inst.opcode)
+    {
+        signExtended = I_MOVZX == inst.opcode;
+        for (int i = 0; i < 4; i++)
+        {
+            const _Operand* curOp = &inst.ops[i];
+            if (curOp->type == O_REG)
+            {
+                isLoad = i == 0;
+                op = curOp;
+                break;
+            }
+        }
+
+        if (!op)
+        {
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            return false;
+        }
+    }
+    else
+    {
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    }
+
+    if (op->index > R_R15B)
+    {
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    }
+
+    uint32_t reg;
+    switch (op->size)
+    {
+    case 8:
+        if (!g_MMU->LB_NonMemory(MemAddress, &reg, false))
+        {
+            if (ShowUnhandledMemory())
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t*)*context.Rip).c_str());
+            }
+        }
+        break;
+    case 16:
+        if (!g_MMU->LH_NonMemory(MemAddress, &reg, signExtended))
+        {
+            if (ShowUnhandledMemory())
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t*)*context.Rip).c_str());
+            }
+        }
+        break;
+    case 32:
+        if (!g_MMU->LW_NonMemory(MemAddress, &reg))
+        {
+            if (ShowUnhandledMemory())
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS address: %08X\nX86 address: %08X", MemAddress, (uint8_t*)*context.Rip).c_str());
+            }
+        }
+        break;
+    default:
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    }
+
+    switch (op->index % 16)
+    {
+    case R_RAX: *context.Rax = reg; break;
+    case R_RCX: *context.Rcx = reg; break;
+    case R_RDX: *context.Rdx = reg; break;
+    case R_RBX: *context.Rbx = reg; break;
+    case R_RSP:
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    case R_RBP: *context.Rbp = reg; break;
+    case R_RSI: *context.Rsi = reg; break;
+    case R_RDI: *context.Rdi = reg; break;
+    case R_R8:  *context.R8  = reg; break;
+    case R_R9:  *context.R9  = reg; break;
+    case R_R10: *context.R10 = reg; break;
+    case R_R11: *context.R11 = reg; break;
+    case R_R12: *context.R12 = reg; break;
+    case R_R13: *context.R13 = reg; break;
+    case R_R14: *context.R14 = reg; break;
+    case R_R15: *context.R15 = reg; break;
+
+    default:
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return false;
+    }
+
+    *context.Rip = *context.Rip + inst.size;
+    return true;
+}
+#endif
+
 #ifdef __arm__
 void CMipsMemoryVM::DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context)
 {
@@ -825,7 +967,7 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
 #else
 int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer)
 {
-#if defined(_M_IX86) && defined(_WIN32)
+#if (defined(_M_IX86) || defined(_M_X64)) && defined(_WIN32)
     if (dwExptCode != EXCEPTION_ACCESS_VIOLATION || g_MMU == nullptr)
     {
         if (HaveDebugger())
@@ -838,6 +980,29 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     LPEXCEPTION_POINTERS lpEP = (LPEXCEPTION_POINTERS)lpExceptionPointer;
     uint32_t MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)g_MMU->Rdram();
 
+#ifdef _M_X64
+    AMD64_CONTEXT context;
+    context.Rdi = (uint64_t*)&lpEP->ContextRecord->Rdi;
+    context.Rsi = (uint64_t*)&lpEP->ContextRecord->Rsi;
+    context.Rbx = (uint64_t*)&lpEP->ContextRecord->Rbx;
+    context.Rdx = (uint64_t*)&lpEP->ContextRecord->Rdx;
+    context.Rcx = (uint64_t*)&lpEP->ContextRecord->Rcx;
+    context.Rax = (uint64_t*)&lpEP->ContextRecord->Rax;
+    context.Rip = (uint64_t*)&lpEP->ContextRecord->Rip;
+    context.Rsp = (uint64_t*)&lpEP->ContextRecord->Rsp;
+    context.Rbp = (uint64_t*)&lpEP->ContextRecord->Rbp;
+
+    context.R8 = (uint64_t*)&lpEP->ContextRecord->R8;
+    context.R9 = (uint64_t*)&lpEP->ContextRecord->R9;
+    context.R10 = (uint64_t*)&lpEP->ContextRecord->R10;
+    context.R11 = (uint64_t*)&lpEP->ContextRecord->R11;
+    context.R12 = (uint64_t*)&lpEP->ContextRecord->R12;
+    context.R13 = (uint64_t*)&lpEP->ContextRecord->R13;
+    context.R14 = (uint64_t*)&lpEP->ContextRecord->R14;
+    context.R15 = (uint64_t*)&lpEP->ContextRecord->R15;
+
+    if (FilterAMD64Exception(MemAddress, context))
+#else
     X86_CONTEXT context;
     context.Edi = (uint32_t*)&lpEP->ContextRecord->Edi;
     context.Esi = (uint32_t*)&lpEP->ContextRecord->Esi;
@@ -850,6 +1015,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     context.Ebp = (uint32_t*)&lpEP->ContextRecord->Ebp;
 
     if (FilterX86Exception(MemAddress, context))
+#endif
     {
         WriteTrace(TraceExceptionHandler, TraceNotice, "Success!");
         return EXCEPTION_CONTINUE_EXECUTION;

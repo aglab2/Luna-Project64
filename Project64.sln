@@ -24,6 +24,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertyS
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-core", "Source\Project64-core\Project64-core.vcxproj", "{00C7B43A-DED7-4DF0-B072-9A5783EF866D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C} = {E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "duktape", "Source\3rdParty\duktape\duktape.vcxproj", "{E8D9A652-A354-4374-B6C5-A51EE62749FD}"
 EndProject
@@ -32,11 +35,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64", "Source\Project64\Project64.vcxproj", "{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4BC6906B-213E-40D7-9FC7-1A93E228393D} = {4BC6906B-213E-40D7-9FC7-1A93E228393D}
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C} = {E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "discord-rpc", "Source\3rdParty\discord-rpc\discord-rpc.vcxproj", "{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Settings", "Source\Settings\Settings.vcxproj", "{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "distorm", "Source\3rdParty\distorm\distorm.vcxproj", "{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -180,6 +186,18 @@ Global
 		{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}.Release-Clang|Win32.Build.0 = Release-Clang|Win32
 		{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}.Release-Clang|x64.ActiveCfg = Release-Clang|x64
 		{8B9961B1-88D9-4EA3-A752-507A00DD9F3D}.Release-Clang|x64.Build.0 = Release-Clang|x64
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Debug|Win32.Build.0 = Debug|Win32
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Debug|x64.ActiveCfg = Debug|x64
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Debug|x64.Build.0 = Debug|x64
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release|Win32.ActiveCfg = Release|Win32
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release|Win32.Build.0 = Release|Win32
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release|x64.ActiveCfg = Release|x64
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release|x64.Build.0 = Release|x64
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release-Clang|Win32.ActiveCfg = Release-Clang|Win32
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release-Clang|Win32.Build.0 = Release-Clang|Win32
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release-Clang|x64.ActiveCfg = Release-Clang|x64
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C}.Release-Clang|x64.Build.0 = Release-Clang|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +208,7 @@ Global
 		{731BD205-2826-4631-B7AF-117658E88DBC} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
 		{E8D9A652-A354-4374-B6C5-A51EE62749FD} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
 		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
+		{E42FD8C2-14A7-4370-BAC5-036B5ADC7D4C} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F0EC030A-58B3-4FC1-B6B6-E5CF5CD885E3}

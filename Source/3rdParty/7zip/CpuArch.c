@@ -48,6 +48,8 @@ static UInt32 CheckFlag(UInt32 flag)
 #define CHECK_CPUID_IS_SUPPORTED
 #endif
 
+extern void __cpuid(int cpuInfo[4], int function_id);
+
 static void MyCPUID(UInt32 function, UInt32 *a, UInt32 *b, UInt32 *c, UInt32 *d)
 {
   #ifdef USE_ASM
