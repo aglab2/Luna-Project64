@@ -521,7 +521,7 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     }
     case WM_ERASEBKGND:
     {
-        DWORD style = GetWindowLongPtr(hWnd, GWL_STYLE);
+        LONG_PTR style = GetWindowLongPtr(hWnd, GWL_STYLE);
         switch (LOWORD(style)) {
         case BS_GROUPBOX: // 0x7
             break;
@@ -569,7 +569,7 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			SetWindowTheme(hWnd, L"ItemsView", nullptr); // DarkMode
 		}
         if (name == L"Button") {
-            DWORD style = GetWindowLongPtr(hWnd, GWL_STYLE);
+            LONG_PTR style = GetWindowLongPtr(hWnd, GWL_STYLE);
             switch (LOWORD(style)) {
             case BS_AUTOCHECKBOX: // 0x3
             case BS_AUTORADIOBUTTON: // 0x9

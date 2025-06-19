@@ -174,6 +174,32 @@ private:
 
     static bool FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & context);
 #endif
+#if defined(__i386__) || defined(_M_X64)
+
+    typedef struct _AMD64_CONTEXT
+    {
+        uint64_t* Rdi;
+        uint64_t* Rsi;
+        uint64_t* Rbx;
+        uint64_t* Rdx;
+        uint64_t* Rcx;
+        uint64_t* Rax;
+        uint64_t* Rip;
+        uint64_t* Rsp;
+        uint64_t* Rbp;
+
+		uint64_t* R8;
+		uint64_t* R9;
+		uint64_t* R10;
+		uint64_t* R11;
+		uint64_t* R12;
+		uint64_t* R13;
+		uint64_t* R14;
+        uint64_t* R15;
+    } AMD64_CONTEXT;
+
+    static bool FilterAMD64Exception(uint64_t MemAddress, AMD64_CONTEXT& context);
+#endif
 #ifdef __arm__
     static void DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context);
     static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);

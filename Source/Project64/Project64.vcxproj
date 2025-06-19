@@ -336,6 +336,9 @@
     <ProjectReference Include="..\3rdParty\discord-rpc\discord-rpc.vcxproj">
       <Project>{dcc841b2-298a-40f0-84d1-acbabd3b86e8}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\3rdParty\distorm\distorm.vcxproj">
+      <Project>{e42fd8c2-14a7-4370-bac5-036b5adc7d4c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\3rdParty\duktape\duktape.vcxproj">
       <Project>{e8d9a652-a354-4374-b6c5-a51ee62749fd}</Project>
     </ProjectReference>
