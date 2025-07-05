@@ -1,3 +1,3 @@
 #pragma once
 
-#define VERSION_LUNA "3.6.0"
+#define VERSION_LUNA "3.6.1"

@@ -13,8 +13,12 @@ extern bool DarkModeEnter(DWORD reason);
 #include <Project64-core/RetroAchievements.h>
 #endif
 
+extern void setupExceptionFilters();
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
+    setupExceptionFilters();
+
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     char currentPath[MAX_PATH_LENGTH];
