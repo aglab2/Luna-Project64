@@ -82,12 +82,12 @@
       <StackReserveSize>1</StackReserveSize>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Winhttp.lib;Bcrypt.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Winhttp.lib;Bcrypt.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release-Clang|Win32'">Winhttp.lib;Bcrypt.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bcrypt.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bcrypt.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release-Clang|x64'">Bcrypt.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bcrypt.lib;Dbghelp.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bcrypt.lib;Dbghelp.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release-Clang|Win32'">Bcrypt.lib;Dbghelp.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bcrypt.lib;Dbghelp.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bcrypt.lib;Dbghelp.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release-Clang|x64'">Bcrypt.lib;Dbghelp.lib;Winhttp.lib;%(AdditionalDependencies);$(DelayImplib)</AdditionalDependencies>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release-Clang|Win32'">/opt:lldltojobs=all -mllvm:-disable-auto-upgrade-debug-info /call-graph-profile-sort /opt:lldlto=2 /opt:lldltocgo=2 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release-Clang|x64'">/opt:lldltojobs=all -mllvm:-disable-auto-upgrade-debug-info /call-graph-profile-sort /opt:lldlto=2 /opt:lldltocgo=2 %(AdditionalOptions)</AdditionalOptions>
     </Link>

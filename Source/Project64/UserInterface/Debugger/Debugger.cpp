@@ -534,7 +534,26 @@ void CDebuggerUI::HandleCPUException(void)
 
     if (exc)
     {
-        GDB::server.reportSignal((GDB::Signal)exc, g_Reg->EPC_REGISTER);
+        auto pc = g_Reg->EPC_REGISTER;
+        switch (exc)
+        {
+            // case 0:  GDB::server.reportSignal(GDB::Signal::WINCH, pc); break; // ignored by default
+            case 1:  GDB::server.reportSignal(GDB::Signal::SEGV, pc); break;
+            case 2:  GDB::server.reportSignal(GDB::Signal::SEGV, pc); break;
+            case 3:  GDB::server.reportSignal(GDB::Signal::SEGV, pc); break;
+            case 4:  GDB::server.reportSignal(GDB::Signal::BUS, pc); break;
+            case 5:  GDB::server.reportSignal(GDB::Signal::BUS, pc); break;
+            case 6:  GDB::server.reportSignal(GDB::Signal::ABORT, pc); break;
+            case 7:  GDB::server.reportSignal(GDB::Signal::ABORT, pc); break;
+            case 8:  GDB::server.reportSignal(GDB::Signal::SYS, pc); break;
+            case 9:  GDB::server.reportSignal(GDB::Signal::STOP, pc); break;
+            case 10: GDB::server.reportSignal(GDB::Signal::ILL, pc); break;
+            // case 11: GDB::server.reportSignal(GDB::Signal::URG, pc); break; // ignored by default
+            case 12: GDB::server.reportSignal(GDB::Signal::FPE, pc); break;
+            case 13: GDB::server.reportSignal(GDB::Signal::TRAP, pc); break;
+            case 15: GDB::server.reportSignal(GDB::Signal::FPE, pc); break;
+            case 23: GDB::server.reportSignal(GDB::Signal::LOST, pc); break;
+        }
     }
     if (GDB::server.isHalted())
     {
