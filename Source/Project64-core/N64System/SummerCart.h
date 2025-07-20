@@ -16,6 +16,7 @@ public:
 
     bool Unlocked() const { return m_Unlock; }
     uint8_t* Buffer() { return m_Buffer; }
+    void Reset();
 
     static const std::wstring& SdPath() { return s_SdPath; }
     static const std::wstring& VhdPath() { return s_VhdPath; }

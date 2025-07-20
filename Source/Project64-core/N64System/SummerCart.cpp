@@ -183,12 +183,28 @@ CSummerCart::CSummerCart()
     m_LockSeq = 0;
 }
 
+void CSummerCart::Reset()
+{
+    if (m_SdFile)
+    {
+        fclose(m_SdFile);
+        m_SdFile = nullptr;
+    }
+    memset(m_Buffer, 0, 8192);
+    m_SdSize = -1;
+    m_Status = 0;
+    m_Data0 = 0;
+    m_Data1 = 0;
+    m_SdSector = 0;
+    m_CfgRomWrite = 0;
+    m_SdByteswap = 0;
+    m_Unlock = 0;
+    m_LockSeq = 0;
+}
+
 CSummerCart::~CSummerCart()
 {
-	if (m_SdFile)
-	{
-		fclose(m_SdFile);
-	}
+    Reset();
 }
 
 int CSummerCart::ReadRegs(uint32_t address, uint32_t* value)
