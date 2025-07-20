@@ -93,6 +93,8 @@ namespace GDB {
 
     bool Server::reportSignal(Signal sig, uint64_t originPC) {
         if (!hasActiveClient || !handshakeDone)return true; // no client -> no error
+
+        std::lock_guard<std::mutex> lock(mutex);
         if (forceHalt)return false; // Signals can only happen while the game is running, ignore others
 
         pcOverride = originPC;
@@ -105,6 +107,10 @@ namespace GDB {
     }
 
     void Server::reportWatchpoint(const Watchpoint& wp, uint64_t address) {
+        if (!hasActiveClient) return;
+
+        std::lock_guard<std::mutex> lock(mutex);
+
         auto orgAddress = wp.addressStartOrg + (address - wp.addressStart);
         forceHalt = true;
         haltSignalSent = true;
@@ -112,6 +118,10 @@ namespace GDB {
     }
 
     bool Server::reportMemRead(uint64_t address, uint32_t size) {
+        if (!hasActiveClient) return true;
+
+        std::lock_guard<std::mutex> lock(mutex);
+
         if (watchpointRead.empty())return true;
 
         if (hooks.normalizeAddress) {
@@ -130,6 +140,10 @@ namespace GDB {
     }
 
     bool Server::reportMemWrite(uint64_t address, uint32_t size) {
+        if (!hasActiveClient) return true;
+
+        std::lock_guard<std::mutex> lock(mutex);
+
         if (watchpointWrite.empty())return true;
 
         if (hooks.normalizeAddress) {
@@ -150,6 +164,8 @@ namespace GDB {
     bool Server::reportPC(uint64_t pc) {
         if (!hasActiveClient)return true;
 
+        std::lock_guard<std::mutex> lock(mutex);
+
         currentPC = pc;
         bool needHalts = forceHalt || breakpoints.end() != std::find(breakpoints.begin(), breakpoints.end(), pc);
 
@@ -169,7 +185,14 @@ namespace GDB {
             return false;
         }
 
-        return !needHalts;
+        if (needHalts)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     /**
@@ -177,7 +200,7 @@ namespace GDB {
      */
     std::string Server::processCommand(const std::string& cmd, bool& shouldReply)
     {
-        OutputDebugStringA(cmd.c_str());
+		std::lock_guard<std::mutex> lock(mutex);
         auto cmdParts = split(cmd, ':');
         auto cmdName = cmdParts[0];
         char cmdPrefix = cmdName.size() > 0 ? cmdName[0] : ' ';

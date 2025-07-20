@@ -134,6 +134,7 @@ namespace GDB {
         void onDisconnect() override;
 
     private:
+        std::mutex mutex;
         bool insideCommand{ false };
         std::string cmdBuffer{ "" };
 

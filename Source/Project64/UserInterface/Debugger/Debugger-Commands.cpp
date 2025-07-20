@@ -1391,10 +1391,8 @@ LRESULT CDebugCommandsView::OnStartGDBServer(WORD /*wNotifyCode*/, WORD /*wID*/,
                     "</target>";
         };
         GDB::server.hooks.resume = [this]() {
-            if (WaitingForStep())
-            {
-                m_StepEvent.Trigger();
-            }
+            g_Settings->SaveBool(Debugger_SteppingOps, false);
+            m_StepEvent.Trigger();
         };
         GDB::server.hooks.wakeup = [this]() {
             PostThreadMessage(m_threadID, 0, WM_USER + 4, 0);
