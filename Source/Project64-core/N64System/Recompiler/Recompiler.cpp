@@ -595,8 +595,8 @@ void CRecompiler::RecompilerMain_Lookup_validate()
             }
             else
             {
-                if (*(info->MemLocation(0)) != info->MemContents(0) ||
-                    *(info->MemLocation(1)) != info->MemContents(1))
+                __m128i cmp = _mm_cmpeq_epi16(info->MemContents(), _mm_loadu_si128(info->MemLocation()));
+                if ((uint16_t)_mm_movemask_epi8(cmp) != 0xffffU)
                 {
                     ClearRecompCode_Virt((info->EnterPC() - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
                     info = nullptr;
@@ -664,8 +664,8 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
             }
             else
             {
-                if (*(info->MemLocation(0)) != info->MemContents(0) ||
-                    *(info->MemLocation(1)) != info->MemContents(1))
+                __m128i cmp = _mm_cmpeq_epi16(info->MemContents(), _mm_loadu_si128(info->MemLocation()));
+                if ((uint16_t)_mm_movemask_epi8(cmp) != 0xffffU)
                 {
                     if (PhysicalAddr > 0x1000)
                     {

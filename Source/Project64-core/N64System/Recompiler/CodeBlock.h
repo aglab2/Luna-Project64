@@ -26,8 +26,8 @@ public:
     CCodeSection * ExistingSection(uint32_t Addr) { return m_EnterSection->ExistingSection(Addr, NextTest()); }
     bool SectionAccessible(uint32_t m_SectionID) { return m_EnterSection->SectionAccessible(m_SectionID, NextTest()); }
 
-    uint64_t   MemContents(int32_t i) const { return m_MemContents[i]; }
-    uint64_t * MemLocation(int32_t i) const { return m_MemLocation[i]; }
+    __m128i   MemContents() const { return m_MemContents; }
+    __m128i * MemLocation() const { return m_MemLocation; }
 
     uint32_t NextTest();
 
@@ -59,7 +59,7 @@ private:
     CCodeSection   * m_EnterSection;
     int32_t          m_Test;
     MD5Digest        m_Hash;
-    uint64_t         m_MemContents[2];
-    uint64_t *       m_MemLocation[2];
+	__m128i          m_MemContents;
+    __m128i *        m_MemLocation;
     CRecompilerOps * m_RecompilerOps;
 };
