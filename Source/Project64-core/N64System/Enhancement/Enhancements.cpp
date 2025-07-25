@@ -149,6 +149,13 @@ void CEnhancements::UpdateCheats(void)
     m_UpdateCheats = true;
 }
 
+void CEnhancements::DisableIfNeeded(void)
+{
+    bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
+    bool CheatsRemembered = !inBasicMode && g_Settings->LoadBool(Setting_RememberCheats);
+    m_DisableIfNeeded = !CheatsRemembered;
+}
+
 void CEnhancements::UpdateEnhancements(const CEnhancementList & Enhancements)
 {
     std::string GameName;
@@ -295,6 +302,19 @@ void CEnhancements::LoadImpl(CUniqueLock& guard)
 
     LoadEnhancements(CEnhancement::CheatIdent, m_CheatFiles, m_CheatFile, m_Cheats);
     LoadEnhancements(CEnhancement::EnhancementIdent, m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
+
+    if (m_DisableIfNeeded)
+    {
+		m_DisableIfNeeded = false;
+        for (CEnhancementList::iterator itr = m_Cheats.begin(); itr != m_Cheats.end(); itr++)
+        {
+            if (!itr->second.Active())
+            {
+                continue;
+            }
+            itr->second.SetActive(false);
+        }
+    }
 }
 
 void CEnhancements::LoadActiveImpl(CUniqueLock& guard, CMipsMemoryVM * MMU, CPlugins * Plugins)
