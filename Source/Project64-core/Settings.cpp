@@ -373,7 +373,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
 
     // Plugin
 #ifdef _WIN32
-    AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));
+    AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\parallel-rsp.dll"));
 
     AddHandler(Plugin_GFX_Default, new CSettingTypeApplication("Plugin", "Graphics Dll Default", "GFX\\GLideN64.dll"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", Plugin_GFX_Default));
