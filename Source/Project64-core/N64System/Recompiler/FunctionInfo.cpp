@@ -10,10 +10,8 @@ CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
     m_FunctionEnd(CodeBlock.CompiledLocationEnd()),
     m_Next(nullptr)
 {
-    m_MemContents[0] = CodeBlock.MemContents(0);
-    m_MemContents[1] = CodeBlock.MemContents(1);
-    m_MemLocation[0] = CodeBlock.MemLocation(0);
-    m_MemLocation[1] = CodeBlock.MemLocation(1);
+    m_MemContents = CodeBlock.MemContents();
+    m_MemLocation = CodeBlock.MemLocation();
 
 #if defined(__arm__) || defined(_M_ARM)
     // Make sure function starts at an odd address so that the system knows it is in thumb mode

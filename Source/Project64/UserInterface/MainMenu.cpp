@@ -409,6 +409,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             {
                 WriteTrace(TraceN64System, TraceDebug, "Manually starting ROM");
             }
+            g_BaseSystem->Reset(true, true);
             g_BaseSystem->StartEmulation(true);
         }
         else

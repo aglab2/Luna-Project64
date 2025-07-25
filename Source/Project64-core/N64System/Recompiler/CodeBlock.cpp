@@ -60,16 +60,14 @@ m_Test(1)
     m_Sections.push_back(m_EnterSection);
     m_SectionMap.insert(SectionMap::value_type(VAddrEnter, m_EnterSection));
 
-    if (g_TransVaddr->VAddrToRealAddr(VAddrEnter, *(reinterpret_cast<void **>(&m_MemLocation[0]))))
+    if (g_TransVaddr->VAddrToRealAddr(VAddrEnter, *(reinterpret_cast<void **>(&m_MemLocation))))
     {
-        m_MemLocation[1] = m_MemLocation[0] + 1;
-        m_MemContents[0] = *m_MemLocation[0];
-        m_MemContents[1] = *m_MemLocation[1];
+        m_MemContents = _mm_loadu_si128(m_MemLocation);
     }
     else
     {
-        memset(m_MemLocation, 0, sizeof(m_MemLocation));
-        memset(m_MemContents, 0, sizeof(m_MemContents));
+        memset(&m_MemLocation, 0, sizeof(m_MemLocation));
+        memset(&m_MemContents, 0, sizeof(m_MemContents));
     }
 
     AnalyseBlock();

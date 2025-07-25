@@ -78,9 +78,5 @@ void CN64System::CloseCpu()
     WriteTrace(TraceN64System, TraceDebug, "Deleting thread object");
     delete hThread;
     WriteTrace(TraceN64System, TraceDebug, "Done");
-
-    delete g_SummerCart;
-    g_SummerCart = nullptr;
-    delete g_InputDelayer;
-    g_InputDelayer = nullptr;
+    g_SummerCart->Reset();
 }

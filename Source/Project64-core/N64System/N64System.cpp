@@ -595,6 +595,16 @@ void CN64System::CloseSystem()
         delete g_BaseSystem;
         g_BaseSystem = nullptr;
     }
+    if (g_SummerCart)
+    {
+        delete g_SummerCart;
+        g_SummerCart = nullptr;
+    }
+    if (g_InputDelayer)
+    {
+        delete g_InputDelayer;
+        g_InputDelayer = nullptr;
+    }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
@@ -907,6 +917,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
     g_Settings->SaveBool(GameRunning_InReset, true);
+    g_SummerCart->Reset();
 
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }

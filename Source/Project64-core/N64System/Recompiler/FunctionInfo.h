@@ -18,8 +18,8 @@ public:
     CCompiledFunc*    Next () const { return m_Next; }
     void SetNext(CCompiledFunc* Next) { m_Next = Next; }
 
-    uint64_t MemContents(int32_t i) { return m_MemContents[i]; }
-    uint64_t* MemLocation(int32_t i) { return m_MemLocation[i]; }
+    __m128i MemContents() { return m_MemContents; }
+	__m128i* MemLocation() { return m_MemLocation; }
 
 private:
     CCompiledFunc(void);
@@ -35,7 +35,8 @@ private:
     Func m_Function;
 
     CCompiledFunc* m_Next;
-    uint64_t m_MemContents[2], * m_MemLocation[2];
+    __m128i m_MemContents;
+	__m128i* m_MemLocation;
 };
 
 typedef std::map<uint32_t, CCompiledFunc *> CCompiledFuncList;
