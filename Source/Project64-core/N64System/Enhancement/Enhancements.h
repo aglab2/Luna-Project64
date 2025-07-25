@@ -24,6 +24,7 @@ public:
     void ApplyGSButton(CMipsMemoryVM & MMU, bool UpdateChanges);
     void UpdateCheats(const CEnhancementList & Cheats);
     void UpdateCheats(void);
+    void DisableIfNeeded(void);
     void UpdateEnhancements(const CEnhancementList & Enhancements);
     void ResetActive(CPlugins * Plugins);
     void Load(void);
@@ -104,6 +105,7 @@ private:
     std::atomic_bool m_Scan;
     bool m_UpdateCheats;
     bool m_OverClock;
+    bool m_DisableIfNeeded = false;
     uint32_t m_OverClockModifier;
 
     CEvent m_Scanned;

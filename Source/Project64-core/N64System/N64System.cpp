@@ -126,6 +126,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     }
     g_Enhancements->ResetActive(Plugins);
     g_Enhancements->UpdateCheats();
+    g_Enhancements->DisableIfNeeded();
 
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
