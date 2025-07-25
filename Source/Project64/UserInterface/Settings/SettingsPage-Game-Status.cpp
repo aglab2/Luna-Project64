@@ -34,11 +34,23 @@ void CGameStatusPage::Init()
         }
         ComboBox->SetTextField(GetDlgItem(IDC_STATUS_TEXT));
     }
+
     CModifiedEditBox * TxtBox;
-    TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_CORE), (SettingID)Rdb_NotesCore, true);
-    TxtBox->SetTextField(GetDlgItem(IDC_NOTES_CORE_TEXT));
-    TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_PLUGIN), (SettingID)Rdb_NotesPlugin, true);
-    TxtBox->SetTextField(GetDlgItem(IDC_NOTES_PLUGIN_TEXT));
+    if (g_Settings->LoadBool(Setting_RdbEditor))
+    {
+        TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_CORE), (SettingID)Rdb_NotesCore, true);
+        TxtBox->SetTextField(GetDlgItem(IDC_NOTES_CORE_TEXT));
+        TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_PLUGIN), (SettingID)Rdb_NotesPlugin, true);
+        TxtBox->SetTextField(GetDlgItem(IDC_NOTES_PLUGIN_TEXT));
+    }
+    else
+    {
+        TxtBox = AddModTextBox(GetDlgItem(IDC_NOTES_CORE), (SettingID)Rdn_NotesUser, true);
+        TxtBox->SetTextField(GetDlgItem(IDC_NOTES_CORE_TEXT));
+        SetWindowTextA(GetDlgItem(IDC_NOTES_CORE_TEXT), "Notes");
+		::ShowWindow(GetDlgItem(IDC_NOTES_PLUGIN), SW_HIDE);
+        ::ShowWindow(GetDlgItem(IDC_NOTES_PLUGIN_TEXT), SW_HIDE);
+    }
 
     UpdatePageSettings();
 }

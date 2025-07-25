@@ -20,6 +20,7 @@
 #include "Settings/SettingType/SettingsType-TempString.h"
 #include "Settings/SettingType/SettingsType-TempNumber.h"
 #include "Settings/SettingType/SettingsType-TempBool.h"
+#include "Settings/SettingType/SettingsType-UserNoteDatabase.h"
 #include <Project64-core/Settings.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Common/Trace.h>
@@ -38,6 +39,7 @@ CSettings::~CSettings()
     CSettingTypeApplication::CleanUp();
     CSettingTypeRomDatabase::CleanUp();
     CSettingTypeGame::CleanUp();
+    CSettingTypeUserNoteDatabase::CleanUp();
 
     for (SETTING_MAP::iterator iter = m_SettingInfo.begin(); iter != m_SettingInfo.end(); iter++)
     {
@@ -670,6 +672,7 @@ bool CSettings::Initialize(const char * BaseDirectory, const char * AppName)
     CSettingTypeApplication::Initialize();
     CSettingTypeRomDatabase::Initialize();
     CSettingTypeGame::Initialize();
+    CSettingTypeUserNoteDatabase::Initialize();
 
     g_Settings->SaveString(Setting_ApplicationName, AppName);
     WriteTrace(TraceAppInit, TraceDebug, "Done");
