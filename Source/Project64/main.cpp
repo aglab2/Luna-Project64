@@ -3,7 +3,7 @@
 #include <Project64-core/VersionLuna.h>
 #include "UserInterface/WelcomeScreen.h"
 #include "Settings/UISettings.h"
-#include "zlib/contrib/minizip/mz_strm.h"
+#include "GitHubUpdater.h"
 
 #define MAX_PATH_LENGTH 1024
 
@@ -18,94 +18,22 @@ extern void setupExceptionFilters();
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     setupExceptionFilters();
-
-    STARTUPINFOA si;
-    PROCESS_INFORMATION pi;
-    char currentPath[MAX_PATH_LENGTH];
-    char updaterExePath[MAX_PATH_LENGTH];
-    char updaterExePathZoneIdentifier[MAX_PATH_LENGTH];
-
-    // Zero memory for STARTUPINFO and PROCESS_INFORMATION structures
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    ZeroMemory(&pi, sizeof(pi));
-
-    // Get the path of the current executable
-    if (GetModuleFileNameA(NULL, currentPath, MAX_PATH_LENGTH) == 0) {
-        printf("GetModuleFileName failed (%d).\n", GetLastError());
-        MessageBox(NULL, L"Failed to get current executable path.", L"Updater error", MB_OK);
-    }
-
-    // Remove the executable name from the path to get the directory
-    char* lastBackslash = strrchr(currentPath, '\\');
-    if (lastBackslash != NULL) {
-        *lastBackslash = '\0'; // Terminate the string to get the directory
-    }
-
-    SetCurrentDirectoryA(currentPath);
-
-    // Construct the full path to updater.exe
-    snprintf(updaterExePath, MAX_PATH_LENGTH, "%s\\LunaU.exe", currentPath);
-#if 1
-    char zoneIdentifFormat[20]{};
-	size_t zoneIdentifFormatTotal = 20;
     {
-        static const char stringTestZipped[] = {
-            120, -100, 83, 77, -41, -13, 75, 78, -118, 84, -78, -115, -120, 76, -54, -120, -115, -118, -115, 76, -5, 2, 0, 58, -117, 6, -56
-        };
-		zng_uncompress((uint8_t*)zoneIdentifFormat, &zoneIdentifFormatTotal, (const uint8_t*)stringTestZipped, sizeof(stringTestZipped));
-	}
-    for (int i = 1; i < zoneIdentifFormatTotal; i++)
-        zoneIdentifFormat[i] += 12;
-#else
-	char zoneIdentifFormat[] = "%s:Zone.Identifier";
-    for (int i = 1; i < sizeof(zoneIdentifFormat); i++)
-    {
-        zoneIdentifFormat[i] -= 12;
+        static char currentPath[MAX_PATH_LENGTH];
+        if (GetModuleFileNameA(NULL, currentPath, MAX_PATH_LENGTH) == 0) {
+            MessageBox(NULL, L"Failed to get current executable path.", L"Updater error", MB_OK);
+        }
+        char* lastBackslash = strrchr(currentPath, '\\');
+        if (lastBackslash != NULL) {
+            *lastBackslash = '\0';
+        }
+        SetCurrentDirectoryA(currentPath);
     }
-    char buf[100]{};
-    size_t bufSize = 100;
-	zng_compress((uint8_t*) buf, &bufSize, (const uint8_t*) zoneIdentifFormat, sizeof(zoneIdentifFormat));
-    std::string content;
-    for (int i = 0; i < bufSize; i++)
-    {
-        content += ", ";
-		content += std::to_string(buf[i]);
-    }
-#endif
-
-    snprintf(updaterExePathZoneIdentifier, MAX_PATH_LENGTH, zoneIdentifFormat, updaterExePath);
-    DeleteFileA(updaterExePathZoneIdentifier);
-
-    char commandLine[MAX_PATH_LENGTH + 10];  // Adjust size if necessary
-    snprintf(commandLine, sizeof(commandLine), "\"%s\" %s", updaterExePath, "v" VERSION_LUNA);
-
-    // Create the process
-    if (!ShellExecuteA(
-        NULL,
-        "open",
-        updaterExePath,
-        commandLine,
-        0,
-        SW_SHOWNORMAL)
-    ) {
-        // If the function fails, print the error and exit
-        int err;
-        err = GetLastError();
-        printf("CreateProcess failed (%d).\n", GetLastError());
-        MessageBox(NULL, L"Failed to create updater process.", L"Updater error", MB_OK);
-    }
-
-    // Successfully created the process
-    printf("Process launched asynchronously: %s\n", updaterExePath);
-
-    // Close process and thread handles to avoid memory leaks
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
 
     try
     {
         CoInitialize(nullptr);
+		CheckUpdatesGitHub();
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
 
         if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {

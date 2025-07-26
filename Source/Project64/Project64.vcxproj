@@ -167,6 +167,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GitHubUpdater.cpp" />
     <ClCompile Include="SdCardMounter.cpp" />
     <ClCompile Include="DarkMode.cpp" />
     <ClCompile Include="DarkModeUtils.cpp" />
@@ -243,6 +244,7 @@
     <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GitHubUpdater.h" />
     <ClInclude Include="SdCardMounter.h" />
     <ClInclude Include="DarkMode.h" />
     <ClInclude Include="DarkModeUtils.h" />
