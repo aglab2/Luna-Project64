@@ -393,7 +393,6 @@ void CMainGui::BringToTop(void)
 
 void CMainGui::MakeWindowOnTop(bool OnTop)
 {
-    CGuard Guard(m_CS);
     SetWindowPos(m_hMainWindow, OnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0,
         SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
 }
@@ -559,7 +558,6 @@ void CMainGui::SetWindowMenu(CBaseMenu * Menu)
 
     HMENU hMenu = nullptr;
     {
-        CGuard Guard(m_CS);
         m_Menu = Menu;
         hMenu = (HMENU)Menu->GetHandle();
     }
