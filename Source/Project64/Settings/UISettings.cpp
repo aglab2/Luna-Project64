@@ -8,6 +8,7 @@
 #include <Project64-core/Settings/SettingType/SettingsType-RomDatabase.h>
 #include <Project64-core/Settings/SettingType/SettingsType-SelectedDirectory.h>
 #include <Project64-core/Settings/SettingType/SettingsType-TempBool.h>
+#include <Project64-core/Settings/SettingType/SettingsType-UserNoteDatabase.h>
 
 void AddUISetting(UISettingID TypeID, CSettingType * Handler)
 {
@@ -36,9 +37,10 @@ void RegisterUISettings (void)
     AddUISetting(Setting_RetroAchievements, new CSettingTypeApplication("Settings", "RetroAchievements", (uint32_t)false));
 
     // RDB settings
-    AddUISetting(Rdb_Status, new CSettingTypeRomDatabase("Status", "Unknown"));
+    AddUISetting(Rdb_Status, new CSettingTypeUserNoteDatabase("Status", "Unknown"));
     AddUISetting(Rdb_NotesCore, new CSettingTypeRomDatabase("Core Note", ""));
     AddUISetting(Rdb_NotesPlugin, new CSettingTypeRomDatabase("Plugin Note", ""));
+    AddUISetting(Rdn_NotesUser, new CSettingTypeUserNoteDatabase("Note", ""));
 
     // User interface
     AddUISetting(UserInterface_InFullScreen, new CSettingTypeTempBool(false));

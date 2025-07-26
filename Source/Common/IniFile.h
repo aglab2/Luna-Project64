@@ -61,11 +61,12 @@ public:
     void GetVectorOfSections(SectionList & sections);
     const std::string &GetFileName() { return m_FileName; }
 
+    void DropCache(void);
+
 protected:
     void OpenIniFileReadOnly();
     void OpenIniFile(bool bCreate = true);
     void SaveCurrentSection(void);
-    void DropCache(void);
 
     std::string FormatStr(const char * strFormat, ...);
 

@@ -565,6 +565,11 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 
 void CRomList::FillRomExtensionInfo(ROM_INFO* pRomInfo)
 {
+    m_NotesIniFile->DropCache();
+	m_ExtIniFile->DropCache();
+	m_RomIniFile->DropCache();
+	m_ZipIniFile->DropCache();
+
     // Initialize the structure
     pRomInfo->UserNotes[0] = '\0';
     pRomInfo->Developer[0] = '\0';
