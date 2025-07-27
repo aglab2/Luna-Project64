@@ -15,6 +15,11 @@ extern bool DarkModeEnter(DWORD reason);
 
 extern void setupExceptionFilters();
 
+extern "C" {
+    __declspec(dllexport) DWORD NvOptimusEnablement = 1;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     setupExceptionFilters();
