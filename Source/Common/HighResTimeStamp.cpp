@@ -6,24 +6,18 @@
 #endif
 
 #ifdef _WIN32
-bool HighResTimeStamp::m_GotFreq = false;
-uint64_t HighResTimeStamp::m_Freq = { 0 };
-#endif
+static uint64_t m_Freq;
+static LONGLONG m_StartTime;
 
-HighResTimeStamp::HighResTimeStamp()
+void HighResTimeStamp::Init()
 {
-#ifndef _WIN32
-    m_time = 0;
-#else
-    if (!m_GotFreq)
-    {
-        LARGE_INTEGER value;
-        QueryPerformanceFrequency(&value);
-        m_Freq = value.QuadPart;
-    }
-    m_time = 0;
-#endif
+    LARGE_INTEGER value;
+    QueryPerformanceFrequency(&value);
+    m_Freq = value.QuadPart;
+    QueryPerformanceCounter(&value);
+    m_StartTime = value.QuadPart;
 }
+#endif
 
 HighResTimeStamp & HighResTimeStamp::SetToNow(void)
 {
@@ -35,7 +29,7 @@ HighResTimeStamp & HighResTimeStamp::SetToNow(void)
 #else
     LARGE_INTEGER value;
     QueryPerformanceCounter(&value);
-    m_time = value.QuadPart;
+    m_time = value.QuadPart - m_StartTime;
 #endif
     return *this;
 }
@@ -45,7 +39,7 @@ uint64_t HighResTimeStamp::GetMicroSeconds(void)
 #ifndef _WIN32
     return m_time;
 #else
-    return (m_time * 1000000) / m_Freq;
+    return (m_time * 1000000ULL) / m_Freq;
 #endif
 }
 
@@ -54,6 +48,6 @@ void HighResTimeStamp::SetMicroSeconds(uint64_t MicroSeconds)
 #ifndef _WIN32
     m_time = MicroSeconds;
 #else
-    m_time = (MicroSeconds * m_Freq) / 1000000;
+    m_time = (MicroSeconds * m_Freq) / 1000000ULL;
 #endif
 }

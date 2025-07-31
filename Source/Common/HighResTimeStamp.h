@@ -4,7 +4,6 @@
 class HighResTimeStamp
 {
 public:
-    HighResTimeStamp();
     HighResTimeStamp & SetToNow (void);
     uint64_t GetMicroSeconds(void);
     void SetMicroSeconds(uint64_t MicroSeconds);
@@ -21,10 +20,10 @@ public:
 		return *this;
 	}
 
-private:
 #ifdef _WIN32
-    static bool m_GotFreq;
-    static uint64_t m_Freq;
+    static void Init();
 #endif
-    uint64_t m_time;
+
+private:
+    uint64_t m_time = 0;
 };
