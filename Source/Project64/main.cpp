@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/HighResTimeStamp.h>
 #include <Project64-core/AppInit.h>
 #include <Project64-core/VersionLuna.h>
 #include "UserInterface/WelcomeScreen.h"
@@ -15,8 +16,14 @@ extern bool DarkModeEnter(DWORD reason);
 
 extern void setupExceptionFilters();
 
+extern "C" {
+    __declspec(dllexport) DWORD NvOptimusEnablement = 1;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
+    HighResTimeStamp::Init();
     setupExceptionFilters();
     {
         static char currentPath[MAX_PATH_LENGTH];
