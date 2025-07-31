@@ -40,6 +40,13 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     memcpy(m_APIScript, resData, resSize);
     m_APIScript[resSize] = '\0';
     FreeResource(hGlob);
+
+    char AppdataPath[1024];
+    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
+    PathAppendA(AppdataPath, "Luna-Project64");
+    CreateDirectoryA(AppdataPath, nullptr);
+    PathAppendA(AppdataPath, "Scripts");
+    CreateDirectoryA(AppdataPath, nullptr);
 }
 
 CScriptSystem::~CScriptSystem()

@@ -54,14 +54,6 @@ CScriptInstance::CScriptInstance(CDebuggerUI* debugger)
     {
         m_CancelIoEx = (Dynamic_CancelIoEx)GetProcAddress(m_hKernel, "CancelIoEx");
     }
-
-
-    char AppdataPath[1024];
-    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-    PathAppendA(AppdataPath, "Luna-Project64");
-    CreateDirectoryA(AppdataPath, nullptr);
-    PathAppendA(AppdataPath, "Scripts");
-    CreateDirectoryA(AppdataPath, nullptr);
 }
 
 CScriptInstance::~CScriptInstance()
