@@ -602,25 +602,12 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     }
     case WM_NOTIFY:
     {
-        auto name = getClass(hWnd);
-        if (name == L"SysListView32") { // left pane of FX dialog
-            LPNMCUSTOMDRAW nmcd = reinterpret_cast<LPNMCUSTOMDRAW>(lParam);
-            switch (nmcd->dwDrawStage)
-            {
-            case CDDS_PREPAINT:
-                return CDRF_NOTIFYITEMDRAW;
-            case CDDS_ITEMPREPAINT:
-            {
-                SetTextColor(nmcd->hdc, load_config()->menubar_bgcolor);
-                return CDRF_DODEFAULT;
-            }
-            }
-        }
-
-        break;
+        return DefSubclassProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_PAINT:
     {
+        return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+#if 0
         auto name = getClass(hWnd);
         if (name == L"tooltips_class32") {
             SendMessage(hWnd, TTM_SETTIPBKCOLOR, load_config()->menubar_bgcolor, 0);
@@ -640,6 +627,7 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
             renderStatusBar(hWnd);
             return 0;
         }
+#endif
         break;
     }
     case WM_SETFONT:
