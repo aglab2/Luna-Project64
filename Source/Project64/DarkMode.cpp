@@ -606,6 +606,8 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     }
     case WM_PAINT:
     {
+        return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+#if 0
         auto name = getClass(hWnd);
         if (name == L"tooltips_class32") {
             SendMessage(hWnd, TTM_SETTIPBKCOLOR, load_config()->menubar_bgcolor, 0);
@@ -625,6 +627,7 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
             renderStatusBar(hWnd);
             return 0;
         }
+#endif
         break;
     }
     case WM_SETFONT:
