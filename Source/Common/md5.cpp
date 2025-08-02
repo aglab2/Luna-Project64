@@ -56,7 +56,31 @@ MD5::~MD5()
 // operation, processing another message block, and updating the
 // context.
 
-void MD5::update(const uint1 *input, uint4 input_length)
+typedef unsigned       int uint4; // Assumes integer is 4 words long
+typedef unsigned short int uint2; // Assumes short integer is 2 words long
+typedef unsigned      char uint1; // Assumes char is 1 word long
+
+static inline void md5_transform(uint4* __restrict state, uint1* __restrict buffer);
+static inline void md5_encode(uint1* __restrict dest, uint4* __restrict src, uint4 length);
+static inline void md5_decode(uint4* __restrict dest, uint1* __restrict src, uint4 length);
+static inline void md5_memcpy(uint1* __restrict dest, uint1* __restrict src, uint4 length);
+static inline void md5_memset(uint1* __restrict start, uint1 val, uint4 length);
+
+static inline uint4  rotate_left(uint4 x, uint4 n);
+static inline uint4  F(uint4 x, uint4 y, uint4 z);
+static inline uint4  G(uint4 x, uint4 y, uint4 z);
+static inline uint4  H(uint4 x, uint4 y, uint4 z);
+static inline uint4  I(uint4 x, uint4 y, uint4 z);
+static inline void   FF(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
+    uint4 s, uint4 ac);
+static inline void   GG(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
+    uint4 s, uint4 ac);
+static inline void   HH(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
+    uint4 s, uint4 ac);
+static inline void   II(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x,
+    uint4 s, uint4 ac);
+
+void MD5::update(const uint1* __restrict input, uint4 input_length)
 {
     uint4 input_index, buffer_index;
     uint4 buffer_space;
@@ -85,12 +109,12 @@ void MD5::update(const uint1 *input, uint4 input_length)
     {
         // Fill the rest of the buffer and transform
         memcpy(buffer + buffer_index, (unsigned char *)input, buffer_space);
-        transform(buffer);
+        md5_transform(state, buffer);
 
         // Now, transform each 64-byte piece of the input, bypassing the buffer
         for (input_index = buffer_space; input_index + 63 < input_length; input_index += 64)
         {
-            transform((unsigned char *)(input + input_index));
+            md5_transform(state, (unsigned char *)(input + input_index));
         }
 
         buffer_index = 0;
@@ -145,7 +169,7 @@ void MD5::finalize()
     }
 
     // Save number of bits
-    encode(bits, count, 8);
+    md5_encode(bits, count, 8);
 
     // Pad out to 56 mod 64
     index = (uint4)((count[0] >> 3) & 0x3f);
@@ -156,7 +180,7 @@ void MD5::finalize()
     update(bits, 8);
 
     // Store state in digest
-    encode(digest, state, 16);
+    md5_encode(digest, state, 16);
 
     // Zeroize sensitive information
     memset(buffer, 0, sizeof(*buffer));
@@ -185,7 +209,7 @@ MD5::MD5(FILE *file)
     finalize();
 }
 
-MD5::MD5(const unsigned char *input, unsigned int input_length)
+MD5::MD5(const unsigned char* __restrict input, unsigned int input_length)
 {
     init();  // Must be called by all constructors
     update(input, input_length);
@@ -291,11 +315,11 @@ void MD5::init()
 
 // MD5 basic transformation. Transforms state based on block.
 
-void MD5::transform(uint1 block[64])
+static inline void md5_transform(uint4* __restrict state, uint1* __restrict block)
 {
     uint4 a = state[0], b = state[1], c = state[2], d = state[3], x[16];
 
-    decode(x, block, 64);
+    md5_decode(x, block, 64);
 
     //ATLASSERT(!finalized);  // Not just a user error, since the method is private
 
@@ -383,7 +407,7 @@ void MD5::transform(uint1 block[64])
 // Encodes input (UINT4) into output (unsigned char). Assumes len is
 // a multiple of 4.
 
-void MD5::encode(uint1 *output, uint4 *input, uint4 len)
+static inline void md5_encode(uint1 * __restrict output, uint4 * __restrict input, uint4 len)
 {
     unsigned int i, j;
 
@@ -399,7 +423,7 @@ void MD5::encode(uint1 *output, uint4 *input, uint4 len)
 // Decodes input (unsigned char) into output (UINT4). Assumes len is
 // a multiple of 4.
 
-void MD5::decode(uint4 *output, uint1 *input, uint4 len)
+static inline void md5_decode(uint4 * __restrict output, uint1 * __restrict input, uint4 len)
 {
     unsigned int i, j;
 
@@ -411,7 +435,7 @@ void MD5::decode(uint4 *output, uint1 *input, uint4 len)
 
 // Note: Replace "for loop" with standard memcpy if possible
 
-void MD5::memcpy(uint1 *output, uint1 *input, uint4 len)
+static inline void md5_memcpy(uint1 * __restrict output, uint1 * __restrict input, uint4 len)
 {
     unsigned int i;
 
@@ -423,7 +447,7 @@ void MD5::memcpy(uint1 *output, uint1 *input, uint4 len)
 
 // Note: Replace "for loop" with standard memset if possible
 
-void MD5::memset(uint1 *output, uint1 value, uint4 len)
+static inline void md5_memset(uint1 * __restrict output, uint1 value, uint4 len)
 {
     unsigned int i;
 
@@ -435,29 +459,29 @@ void MD5::memset(uint1 *output, uint1 value, uint4 len)
 
 // ROTATE_LEFT rotates x left n bits
 
-inline unsigned int MD5::rotate_left(uint4 x, uint4 n)
+inline unsigned int rotate_left(uint4 x, uint4 n)
 {
     return (x << n) | (x >> (32 - n));
 }
 
 // F, G, H and I are basic MD5 functions
 
-inline unsigned int MD5::F(uint4 x, uint4 y, uint4 z)
+inline unsigned int F(uint4 x, uint4 y, uint4 z)
 {
     return (x & y) | (~x & z);
 }
 
-inline unsigned int MD5::G(uint4 x, uint4 y, uint4 z)
+inline unsigned int G(uint4 x, uint4 y, uint4 z)
 {
     return (x & z) | (y & ~z);
 }
 
-inline unsigned int MD5::H(uint4 x, uint4 y, uint4 z)
+inline unsigned int H(uint4 x, uint4 y, uint4 z)
 {
     return x ^ y ^ z;
 }
 
-inline unsigned int MD5::I(uint4 x, uint4 y, uint4 z)
+inline unsigned int I(uint4 x, uint4 y, uint4 z)
 {
     return y ^ (x | ~z);
 }
@@ -465,25 +489,25 @@ inline unsigned int MD5::I(uint4 x, uint4 y, uint4 z)
 // FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
 // Rotation is separate from addition to prevent recomputation.
 
-inline void MD5::FF(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4  s, uint4 ac)
+inline void FF(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4  s, uint4 ac)
 {
     a += F(b, c, d) + x + ac;
     a = rotate_left(a, s) + b;
 }
 
-inline void MD5::GG(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac)
+inline void GG(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac)
 {
     a += G(b, c, d) + x + ac;
     a = rotate_left(a, s) + b;
 }
 
-inline void MD5::HH(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac)
+inline void HH(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac)
 {
     a += H(b, c, d) + x + ac;
     a = rotate_left(a, s) + b;
 }
 
-inline void MD5::II(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac)
+inline void II(uint4& a, uint4 b, uint4 c, uint4 d, uint4 x, uint4 s, uint4 ac)
 {
     a += I(b, c, d) + x + ac;
     a = rotate_left(a, s) + b;
