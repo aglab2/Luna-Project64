@@ -500,10 +500,31 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         return true;
     }
     if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
-        SetTextColor(ditem->hDC, load_config()->menubar_textcolor);
         if (bSelected)
         {
+            SetTextColor(ditem->hDC, load_config()->menubar_textcolor);
             hBrush = load_config()->menubaritem_bgbrush_selected;
+        }
+        else
+        {
+            if (pRomInfo->TextColor)
+            {
+				int r = (pRomInfo->TextColor) & 0xFF;
+                int g = (pRomInfo->TextColor >> 8) & 0xFF;
+                int b = (pRomInfo->TextColor >> 16) & 0xFF;
+                int a = (pRomInfo->TextColor >> 24) & 0xFF;
+
+				r = r * 0.6f + 255 * 0.4f;
+				g = g * 0.6f + 255 * 0.4f;
+				b = b * 0.6f + 255 * 0.4f;
+				a = a * 0.6f + 255 * 0.4f;
+
+                SetTextColor(ditem->hDC, r | (g << 8) | (b << 16) | (a << 24));
+            }
+            else
+            {
+                SetTextColor(ditem->hDC, load_config()->menubar_textcolor);
+            }
         }
     }
     else {

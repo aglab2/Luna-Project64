@@ -41,6 +41,7 @@ void RegisterUISettings (void)
     AddUISetting(Rdb_NotesCore, new CSettingTypeRomDatabase("Core Note", ""));
     AddUISetting(Rdb_NotesPlugin, new CSettingTypeRomDatabase("Plugin Note", ""));
     AddUISetting(Rdn_NotesUser, new CSettingTypeUserNoteDatabase("Note", ""));
+	AddUISetting(Rdn_Color, new CSettingTypeUserNoteDatabase("Color", ""));
 
     // User interface
     AddUISetting(UserInterface_InFullScreen, new CSettingTypeTempBool(false));
