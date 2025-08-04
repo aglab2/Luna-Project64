@@ -4,10 +4,13 @@
 #include <Project64-core/3rdParty/zip.h>
 #include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/N64Disk.h>
+#include <Project64-core/Settings/SettingType/SettingsType-UserNoteDatabase.h>
 
 #ifdef _WIN32
 #include <Project64-core/3rdParty/7zip.h>
 #endif
+
+#define m_NotesIniFile CSettingTypeUserNoteDatabase::UserNoteIniFile()
 
 static const char* ROM_extensions[] =
 {
@@ -32,7 +35,6 @@ CRomList::CRomList() :
     m_RefreshThread((CThread::CTHREAD_START_ROUTINE)RefreshRomListStatic),
     m_StopRefresh(false),
     m_GameDir(g_Settings->LoadStringVal(RomList_GameDir).c_str()),
-    m_NotesIniFile(nullptr),
     m_ExtIniFile(nullptr),
 #ifdef _WIN32
     m_ZipIniFile(nullptr),
@@ -42,7 +44,6 @@ CRomList::CRomList() :
     WriteTrace(TraceRomList, TraceVerbose, "Start");
     if (g_Settings)
     {
-        m_NotesIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Notes).c_str());
         m_ExtIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
         m_RomIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
 #ifdef _WIN32
@@ -61,11 +62,6 @@ CRomList::~CRomList()
 {
     WriteTrace(TraceRomList, TraceVerbose, "Start");
     m_StopRefresh = true;
-    if (m_NotesIniFile)
-    {
-        delete m_NotesIniFile;
-        m_NotesIniFile = nullptr;
-    }
     if (m_ExtIniFile)
     {
         delete m_ExtIniFile;
@@ -565,11 +561,6 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 
 void CRomList::FillRomExtensionInfo(ROM_INFO* pRomInfo)
 {
-    m_NotesIniFile->DropCache();
-	m_ExtIniFile->DropCache();
-	m_RomIniFile->DropCache();
-	m_ZipIniFile->DropCache();
-
     // Initialize the structure
     pRomInfo->UserNotes[0] = '\0';
     pRomInfo->Developer[0] = '\0';

@@ -40,6 +40,8 @@ public:
     static void Initialize(void);
     static void CleanUp(void);
 
+    static CIniFile * UserNoteIniFile(void) { return m_UserNoteIniFile; }
+
 protected:
     static void CALL GameChanged(void * /*Data */);
     static void CALL BaseDirChanged(void * /*Data */);

@@ -90,13 +90,13 @@ void CSpeedLimiter::SetHertz(uint32_t Hertz)
 
 void CSpeedLimiter::FixSpeedRatio()
 {
-    m_MicroSecondsPerFrame = 1000000 / m_Speed;
+	m_HighResSecondsPerFrame.SetMicroSeconds(1000000 / m_Speed);
     m_Frames = 0;
 }
 
 struct RecordedFrame
 {
-    uint64_t calculatedTime;
+    HighResTimeStamp calculatedTime;
     HighResTimeStamp lastTime;
     HighResTimeStamp currentTime;
     uint32_t lastFrames;
@@ -126,27 +126,27 @@ bool CSpeedLimiter::Timer_Process(uint32_t* FrameRate)
     record.currentTime = CurrentTime;
 
     // Calculate time that should have elapsed for this frame
-    uint64_t LastTime = m_LastTime.GetMicroSeconds(), CurrentTimeValue = CurrentTime.GetMicroSeconds();
-    if (LastTime == 0)
+    HighResTimeStamp LastTime = m_LastTime;
+    if (LastTime.Raw() == 0)
     {
         m_Frames = 0;
         m_LastTime = CurrentTime;
         return true;
     }
 
-    uint64_t CalculatedTime;
-    record.calculatedTime = (CalculatedTime = LastTime + ((uint64_t)m_MicroSecondsPerFrame * m_Frames));
-    bool reset = CurrentTimeValue - LastTime >= 1000000;
+    HighResTimeStamp CalculatedTime;
+    record.calculatedTime = (CalculatedTime = LastTime + (m_HighResSecondsPerFrame * m_Frames));
+	uint64_t diff = (CurrentTime - LastTime).GetMicroSeconds();
+    bool reset = diff >= 1000000;
 
-    if (CurrentTimeValue < CalculatedTime)
+    if (CurrentTime < CalculatedTime)
     {
-        int32_t time = (int)(CalculatedTime - CurrentTimeValue);
+        uint64_t time = (CalculatedTime - CurrentTime).Get100NanoSeconds();
         if (time > 0)
         {
 #ifdef _WIN32
             LARGE_INTEGER left;
-            // TODO: This is slightly inaccurate, use 100ns instead of us
-            left.QuadPart = -10 * time;
+            left.QuadPart = -time;
             SetWaitableTimer(m_Timer, &left, 0, nullptr, nullptr, false);
             WaitForSingleObject(m_Timer, INFINITE);
 #else
@@ -155,13 +155,12 @@ bool CSpeedLimiter::Timer_Process(uint32_t* FrameRate)
         }
         // Refresh current time
         CurrentTime.SetToNow();
-        CurrentTimeValue = CurrentTime.GetMicroSeconds();
     }
     else
     {
         // this is a new code - if we are falling very behind, try to reset the timer
-        uint64_t time = CurrentTimeValue - CalculatedTime;
-        reset = time > MS_RESET_TIME * 1000;
+        HighResTimeStamp time = CurrentTime - CalculatedTime;
+        reset = time.GetMicroSeconds() > MS_RESET_TIME * 1000;
     }
 
     record.reset = reset;

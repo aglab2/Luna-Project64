@@ -44,6 +44,8 @@ public:
 
     const char * GetKeyName(void) const { return m_KeyName.c_str(); }
 
+    static CIniFile* SettingsIniFile() { return m_SettingsIniFile; };
+
 protected:
     const char * m_DefaultStr;
     const uint32_t m_DefaultValue;

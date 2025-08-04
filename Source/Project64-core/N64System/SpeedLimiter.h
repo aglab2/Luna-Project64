@@ -43,7 +43,8 @@ private:
 
 	HighResTimeStamp m_LastTime;
 
-    uint32_t m_Speed, m_BaseSpeed, m_Frames, m_MicroSecondsPerFrame;
+    uint32_t m_Speed, m_BaseSpeed, m_Frames;
+    HighResTimeStamp m_HighResSecondsPerFrame;
 
 	static const uint32_t m_DefaultSpeed;
 
