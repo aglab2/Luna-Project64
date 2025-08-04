@@ -75,6 +75,7 @@ enum UISettingID
     DebuggerUI_ExceptionBPPos,
 
     Rdn_NotesUser,
+    Rdn_Color,
 };
 
 float DPIScale(void);

@@ -78,7 +78,6 @@ private:
     static void ByteSwapRomData(uint8_t * Data, int32_t DataLen);
 
     CPath  m_GameDir;
-    CIniFile * m_NotesIniFile;
     CIniFile * m_ExtIniFile;
     CIniFile * m_RomIniFile;
 #ifdef _WIN32

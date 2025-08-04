@@ -708,6 +708,7 @@ bool CIniFileBase::GetNumber(const char * lpSectionName, const char * lpKeyName,
 void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString)
 {
     CGuard Guard(m_CS);
+    DropCache();
     if (!m_File.IsOpen())
     {
         if (lpString)
@@ -763,7 +764,6 @@ void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyNam
         }
     }
 
-    DropCache();
     if (m_InstantFlush)
     {
         SaveCurrentSection();

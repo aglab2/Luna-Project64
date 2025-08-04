@@ -11,26 +11,43 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     }
 }
 
+struct ColorDescription
+{
+    const wchar_t* Name;
+    const char* RGB;
+};
+
+static const ColorDescription ColorNames[] = {
+    { L"", "" },
+    { L"Purple", "800080" },
+    { L"Yellow", "827B00" },
+    { L"Red", "990000" },
+    { L"Blue", "000099" },
+    { L"Green", "003300" },
+    { L"Orange", "A66023" },
+    { L"Brown", "603913" },
+    { L"LightBlue", "00897C"}
+};
+
+static const char* ColorRGB[] = {
+    "000000", "800080", "FFFF00", "FF0000", "0000FF", "008000", "FFA500", "A52A2A", "ADD8E6"
+};
+
 void CGameStatusPage::Init()
 {
     if (m_Initialized)
         return;
     m_Initialized = true;
 
-    CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-	CIniFile::strlist Keys;
-    RomIniFile.GetKeyList("ROM Status", Keys);
-    stdstr Status = UISettingsLoadStringVal(Rdb_Status);
+    stdstr Status = UISettingsLoadStringVal(Rdn_Color);
 
     CModifiedComboBoxTxt * ComboBox;
-    ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE), (SettingID)Rdb_Status);
+    ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE), (SettingID)Rdn_Color);
     if (ComboBox)
     {
-        for (CIniFile::strlist::iterator item = Keys.begin(); item != Keys.end(); item++)
+        for (const auto& desc : ColorNames)
         {
-            if (strstr(item->c_str(), ".Sel") != nullptr) { continue; }
-            if (strstr(item->c_str(), ".Auto") != nullptr) { continue; }
-            ComboBox->AddItem(stdstr(*item).ToUTF16().c_str(), item->c_str());
+            ComboBox->AddItem(desc.Name, desc.RGB);
         }
         ComboBox->SetTextField(GetDlgItem(IDC_STATUS_TEXT));
     }
