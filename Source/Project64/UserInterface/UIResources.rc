@@ -2105,7 +2105,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "ShiN3"
             VALUE "FileDescription", "Luna's Project64"
-            VALUE "FileVersion", "3.6.1.0"
+            VALUE "FileVersion", "3.6.2.0"
             VALUE "InternalName", "Project64.exe"
             VALUE "LegalCopyright", "Copyright (C) 2025"
             VALUE "OriginalFilename", "Project64.exe"
