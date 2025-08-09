@@ -8224,6 +8224,8 @@ void CX86RecompilerOps::ChangeDefaultRoundingModel()
 void CX86RecompilerOps::COP1_MF()
 {
     CompileCop1Test();
+    if (0 == m_Opcode.rt)
+        return;
 
     UnMap_FPR(m_Opcode.fs, true);
     Map_GPR_32bit(m_Opcode.rt, true, -1);
@@ -8240,6 +8242,9 @@ void CX86RecompilerOps::COP1_DMF()
     char Name[50];
 
     CompileCop1Test();
+
+    if (0 == m_Opcode.rt)
+        return;
 
     UnMap_FPR(m_Opcode.fs, true);
     Map_GPR_64bit(m_Opcode.rt, -1);
