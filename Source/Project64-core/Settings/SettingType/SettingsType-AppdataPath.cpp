@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "SettingsType-AppdataPath.h"
 
-CSettingTypeAppdataPath::CSettingTypeAppdataPath(const char * Directory, const char * FileName) :
+CSettingTypeAppdataPath::CSettingTypeAppdataPath(const char * Directory, const char * FileName, bool nearExe) :
     m_Directory(Directory),
-    m_FileName(FileName)
+    m_FileName(FileName),
+    m_NearExe(nearExe)
 {
     BuildPath();
     g_Settings->RegisterChangeCB(Cmd_AppdataDirectory, this, RefreshSettings);
@@ -67,10 +68,17 @@ void CSettingTypeAppdataPath::Delete(uint32_t /*Index*/)
 
 void CSettingTypeAppdataPath::BuildPath(void)
 {
-    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), "");
-    FullPath.AppendDirectory(m_Directory.c_str());
-    FullPath.SetNameExtension(m_FileName.c_str());
-    m_FullPath = (const char*)FullPath;
+    if (m_NearExe)
+    {
+        m_FullPath = m_FileName;
+    }
+    else
+    {
+        CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), "");
+        FullPath.AppendDirectory(m_Directory.c_str());
+        FullPath.SetNameExtension(m_FileName.c_str());
+        m_FullPath = (const char*)FullPath;
+    }
 }
 
 void CALL CSettingTypeAppdataPath::RefreshSettings(void * _this)

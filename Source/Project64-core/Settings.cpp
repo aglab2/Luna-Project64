@@ -92,7 +92,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("Settings", "ConfigFile", SupportFile_SettingsDefault));
     AddHandler(SupportFile_SettingsDefault, new CSettingTypeAppdataPath("Config", "Project64.cfg"));
     AddHandler(SupportFile_RomDatabase, new CSettingTypeApplicationPath("Settings", "RomDatabase", SupportFile_RomDatabaseDefault));
-    AddHandler(SupportFile_RomDatabaseDefault, new CSettingTypeAppdataPath("Config", "Project64.rdb"));
+    AddHandler(SupportFile_RomDatabaseDefault, new CSettingTypeAppdataPath("Config", "Project64.rdb", true /*near exe*/));
     AddHandler(SupportFile_VideoRDB, new CSettingTypeApplicationPath("Settings", "VideoRDB", SupportFile_VideoRDBDefault));
     AddHandler(SupportFile_VideoRDBDefault, new CSettingTypeAppdataPath("Config", "Video.rdb"));
     AddHandler(SupportFile_AudioRDB, new CSettingTypeApplicationPath("Settings", "AudioRDB", SupportFile_AudioRDBDefault));
@@ -174,6 +174,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
 	AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
 	AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
+    AddHandler(Rdb_RegCache, new CSettingTypeRomDatabase("Reg Cache", true));
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
     AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
     AddHandler(Rdb_SMM_TLB, new CSettingTypeRomDatabase("SMM-TLB", true));
@@ -223,7 +224,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Game_LoadRomToMemory, new CSettingTypeGame("Rom In Memory", Rdb_LoadRomToMemory));
     AddHandler(Game_ScreenHertz, new CSettingTypeGame("ScreenHertz", Rdb_ScreenHertz));
     AddHandler(Game_FuncLookupMode, new CSettingTypeGame("FuncFind", Rdb_FuncLookupMode));
-    AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", true));
+    AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", Rdb_RegCache));
     AddHandler(Game_BlockLinking, new CSettingTypeGame("Linking", Rdb_BlockLinking));
     AddHandler(Game_SMM_StoreInstruc, new CSettingTypeGame("SMM-StoreInst", Rdb_SMM_StoreInstruc));
     AddHandler(Game_SMM_Cache, new CSettingTypeGame("SMM-Cache", Rdb_SMM_Cache));
