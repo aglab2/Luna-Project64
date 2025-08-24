@@ -7,7 +7,7 @@ class CSettingTypeAppdataPath :
     public CSettingType
 {
 public:
-    CSettingTypeAppdataPath(const char * Directory, const char * FileName);
+    CSettingTypeAppdataPath(const char* Directory, const char* FileName, bool nearExe = false);
     ~CSettingTypeAppdataPath();
 
     bool IndexBasedSetting (void) const { return false; }
@@ -41,6 +41,7 @@ private:
     static void CALL RefreshSettings(void * _this);
     void BuildPath ( void );
 
+	bool m_NearExe;
     std::string m_FullPath;
     std::string m_Directory;
     std::string m_FileName;
