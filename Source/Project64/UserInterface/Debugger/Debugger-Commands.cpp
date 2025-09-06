@@ -234,6 +234,9 @@ LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM l
     GDB::server.updateLoop();
     MSG *pMsg = (MSG*)lParam;
 
+    if (pMsg->message == WM_USER + 4)
+        return 0;
+
     if (pMsg->message == WM_KEYDOWN)
     {
         _this->InterceptKeyDown(pMsg->wParam, pMsg->lParam);
@@ -1395,7 +1398,7 @@ LRESULT CDebugCommandsView::OnStartGDBServer(WORD /*wNotifyCode*/, WORD /*wID*/,
             m_StepEvent.Trigger();
         };
         GDB::server.hooks.wakeup = [this]() {
-            PostThreadMessage(m_threadID, 0, WM_USER + 4, 0);
+            PostThreadMessage(m_threadID, WM_USER + 4, 0, 0);
         };
 
         GDB::server.open(9123, true /*useIPV4*/);

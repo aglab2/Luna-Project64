@@ -107,10 +107,6 @@ namespace GDB {
     }
 
     void Server::reportWatchpoint(const Watchpoint& wp, uint64_t address) {
-        if (!hasActiveClient) return;
-
-        std::lock_guard<std::mutex> lock(mutex);
-
         auto orgAddress = wp.addressStartOrg + (address - wp.addressStart);
         forceHalt = true;
         haltSignalSent = true;
