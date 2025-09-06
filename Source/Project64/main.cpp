@@ -56,6 +56,13 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
         CMainGui MainWindow(true, stdstr_f("Luna's Project64 v" VERSION_LUNA).c_str()), HiddenWindow(false);
+
+#ifdef RETROACHIEVEMENTS
+        bool raInitAsync = true;
+        if (g_Settings->LoadBool((SettingID)Setting_RetroAchievements))
+            RA_Init(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
+#endif
+
         CMainMenu MainMenu(&MainWindow);
         CDebuggerUI Debugger;
         g_Debugger = &Debugger;
@@ -85,6 +92,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
                 {
                     // Cmd_ComboDiskFile must be a 64DD disk image
                     // Cmd_RomFile must be an N64 ROM image
+                    RA_AttemptLogin(true); raInitAsync = false;
                     isROMLoaded = CN64System::RunDiskComboImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str(), g_Settings->LoadStringVal(Cmd_ComboDiskFile).c_str());
                 }
             }
@@ -96,6 +104,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             MainWindow.Show(true);	// Show the main window
 
             stdstr ext = CPath(g_Settings->LoadStringVal(Cmd_RomFile)).GetExtension();
+            RA_AttemptLogin(true); raInitAsync = false;
             if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
             {
                 // File extension is not *.ndd/*.d64 so it should be an N64 ROM
@@ -124,10 +133,8 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             }
         }
 
-#ifdef RETROACHIEVEMENTS
-        if (g_Settings->LoadBool((SettingID) Setting_RetroAchievements))
-            RA_Init(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
-#endif
+        if (raInitAsync)
+			RA_AttemptLogin(false);
 
         WriteTrace(TraceUserInterface, TraceDebug, "Entering message loop");
         MainWindow.ProcessAllMessages();
