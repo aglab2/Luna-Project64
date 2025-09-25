@@ -798,10 +798,6 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
         }
         break;
-    case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://ko-fi.com/shin3", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_DISCORD: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/discord", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_WEBSITE: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
-    case ID_HELP_ABOUT: ShellExecute(nullptr, L"open", L"https://sites.google.com/view/shurislibrary/luna-project64", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_DEBUGGER_ENABLE:
         if (g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_ENABLE_DEBUGGER_MSG).c_str()))
         {
@@ -1883,8 +1879,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList HelpMenu;
     HelpMenu.push_back(MENU_ITEM(ID_HELP_OPEN_APPDATA, MENU_OPEN_APPDATA));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
-    HelpMenu.push_back(MENU_ITEM(SPLITER));
-    HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUT, MENU_ABOUT_PJ64));
 
     // Main title bar Menu
     MenuItemList MainTitleMenu;
