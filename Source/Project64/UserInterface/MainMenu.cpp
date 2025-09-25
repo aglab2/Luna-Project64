@@ -1883,9 +1883,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList HelpMenu;
     HelpMenu.push_back(MENU_ITEM(ID_HELP_OPEN_APPDATA, MENU_OPEN_APPDATA));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
-    HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_LUNA, MENU_SUPPORT_LUNA));
-    HelpMenu.push_back(MENU_ITEM(ID_HELP_DISCORD, MENU_DISCORD));
-    HelpMenu.push_back(MENU_ITEM(ID_HELP_WEBSITE, MENU_WEBSITE));
     HelpMenu.push_back(MENU_ITEM(SPLITER));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_ABOUT, MENU_ABOUT_PJ64));
 
