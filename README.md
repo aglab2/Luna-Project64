@@ -53,6 +53,19 @@ Older versions used a number+letter naming convention that can be translated to 
 * Help with plugins by [aglab2](https://github.com/aglab2) and [wermi](https://github.com/wermipls).
 * Help with new features by **HeralayanSalty**.
 
+## Plugin credits
+
+* **ANGLE GLideN64** by [aglab2](https://github.com/aglab2), based on **GLideN64** by **gonetz**.
+* **Jabo's Direct3D8** by **Jabo**.
+* **LINK's ParaLLEl** and **ParaLLEl RSP** by [aglab2](https://github.com/aglab2), based on **ParaLLEl** by **Themaister** and **mudlord**.
+* **LINK Azimer's Audio** by [aglab2](https://github.com/aglab2), based on **Azimer's Audio** by **Azimer**.
+* **NRage's Input (fork)** by **libertyernie**, based on **NRage's Direct-Input8** by **PlexaryDamato**, edited by [ShiN3](https://github.com/VulpShiN3).
+* **Octomino's SDL Input (fork)** by [aglab2](https://github.com/aglab2), based on **Octomino's SDL Input (fork)** by [wermi](https://github.com/wermipls), based on **Octomino's SDL Input** by **clickdevin**.
+* **Luna's DirectInput8** by [ShiN3](https://github.com/VulpShiN3).
+* **pj64-wiiu-gcn** by [wermi](https://github.com/wermipls).
+* **raphnetraw** by **raphnet**.
+* **LINK's Mapper v1.1.1** by [aglab2](https://github.com/aglab2).
+
 ## License
 
 This project is licensed under the GPLv2 License - see the [LICENSE.md](https://github.com/project64/project64/blob/develop/license.md) file for details
