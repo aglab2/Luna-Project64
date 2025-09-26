@@ -1,10 +1,7 @@
-This is a fork of Project64 3.0.1 that I made to have a Linux compatible alternative to 2.4 (Yes, it works on Windows too).
+This is a fork of Project64 3.0.1 that was made to have a Linux compatible alternative to 2.4 (Yes, it works on Windows too).
 
 It is not focused on accuracy or compatibility, but rather on functionality that improves the general gameplay experience on a select set of games.
 As such, it removes the nagware screen, and it contains the plugins that are necessary to play these games without issues.
-
-I would strongly encourage you to read the information at https://sites.google.com/view/shurislibrary/luna-project64
-if you haven't already.
 
 I hope you have fun playing!
 

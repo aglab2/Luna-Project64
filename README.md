@@ -1,6 +1,6 @@
 # Luna's Project64 - Nintendo 64 Emulator
 
-This is a fork of Project64 3.0.1 that I made to have a Linux compatible alternative to 2.4 (Yes, it works on Windows too).
+This is a fork of Project64 3.0.1 that was made to have a Linux compatible alternative to 2.4 (Yes, it works on Windows too).
 It is not focused on accuracy or compatibility, but rather on functionality that improves the general gameplay experience on a select set of games.
 As such, it removes the nagware screen, and it contains the plugins that are necessary to play these games without issues.
 
@@ -19,10 +19,6 @@ As such, it removes the nagware screen, and it contains the plugins that are nec
 Download the latest build in the Releases tab of this GitHub repo.
 The emulator will prompt you to update when a new version is available.
 
-## Support
-
-[**Join the Lunatic Realm Discord server**](https://discord.gg/w9aCXwsKH9) if you need any help regarding the emu.
-
 ### Compiling
 
 ```
@@ -30,11 +26,6 @@ Visual Studio
 ```
 
 Load .sln project file and compile
-
-
-## Contributing
-
-Message @lunaticshin3 on Discord if you would like to contribute. Any help is highly appreciated.
 
 ## Versioning
 
@@ -53,15 +44,27 @@ Older versions used a number+letter naming convention that can be translated to 
 ## Author / Contributors
 
 * Original Project64 by [Zilmar](https://github.com/project64), **Jabo** and other [contributors](https://github.com/project64/project64/contributors).
-* Luna's Project64 by [ShiN3](https://github.com/LunaticShiN3).
+* Luna's Project64 created by [ShiN3](https://github.com/VulpShiN3), currently maintained primarily by [aglab2](https://github.com/aglab2).
 * Auto updater by [MarvJungs](https://github.com/MarvJungs) and [aglab2](https://github.com/aglab2).
 * See [plugin guide](https://sites.google.com/view/shurislibrary/plugin-guide) for plugin credits.
 * Tested by **Winter**, **Hyena Chan**, **HeralayanSalty**, **gnavidude**, **Dackage**, **katze789** and **AndrewSM64**.
 * Nagware removal based on a fork by [Kelvinnkat](https://github.com/kelvinnkat).
 * Help building by [Kelvinnkat](https://github.com/kelvinnkat) and [Derpyhsi](https://github.com/derpyhsi).
 * Help with plugins by [aglab2](https://github.com/aglab2) and [wermi](https://github.com/wermipls).
-* Help with new features by [aglab2](https://github.com/aglab2) and **HeralayanSalty**.
-* Thanks to to [aglab2](https://github.com/aglab2) for annoying me enough to get v3.4.0 out.
+* Help with new features by **HeralayanSalty**.
+
+## Plugin credits
+
+* **ANGLE GLideN64** by [aglab2](https://github.com/aglab2), based on **GLideN64** by **gonetz**.
+* **Jabo's Direct3D8** by **Jabo**.
+* **LINK's ParaLLEl** and **ParaLLEl RSP** by [aglab2](https://github.com/aglab2), based on **ParaLLEl** by **Themaister** and **mudlord**.
+* **LINK Azimer's Audio** by [aglab2](https://github.com/aglab2), based on **Azimer's Audio** by **Azimer**.
+* **NRage's Input (fork)** by **libertyernie**, based on **NRage's Direct-Input8** by **PlexaryDamato**, edited by [ShiN3](https://github.com/VulpShiN3).
+* **Octomino's SDL Input (fork)** by [aglab2](https://github.com/aglab2), based on **Octomino's SDL Input (fork)** by [wermi](https://github.com/wermipls), based on **Octomino's SDL Input** by **clickdevin**.
+* **Luna's DirectInput8** by [ShiN3](https://github.com/VulpShiN3).
+* **pj64-wiiu-gcn** by [wermi](https://github.com/wermipls).
+* **raphnetraw** by **raphnet**.
+* **LINK's Mapper v1.1.1** by [aglab2](https://github.com/aglab2).
 
 ## License
 

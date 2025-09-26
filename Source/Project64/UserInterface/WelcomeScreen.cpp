@@ -297,19 +297,6 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     return TRUE;
 }
 
-LRESULT WelcomeScreen::OnPluginHelp(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-    if (isWine())
-    {
-        ShellExecuteA(0, 0, "http://sites.google.com/view/shurislibrary/plugin-guide/linux/linux-301n", 0, 0, SW_HIDE);
-    }
-    else
-    {
-        ShellExecuteA(0, 0, "http://sites.google.com/view/shurislibrary/plugin-guide/windows/windows-301n", 0, 0, SW_HIDE);
-    }
-    return TRUE;
-}
-
 LRESULT WelcomeScreen::OnListNotify(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
     if (lParam != NULL) {
