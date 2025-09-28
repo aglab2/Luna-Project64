@@ -24,7 +24,6 @@ public:
         COMMAND_ID_HANDLER_EX(IDC_SELECT_GAME_DIR, SelectGameDir)
         COMMAND_ID_HANDLER_EX(IDC_SELECT_PREV_DIR, SelectPrevDir)
         COMMAND_ID_HANDLER(IDOK, OnOkCmd)
-        COMMAND_ID_HANDLER(IDPLUGINHELPA, OnPluginHelp)
         MESSAGE_HANDLER(WM_NOTIFY, OnListNotify)
     END_MSG_MAP()
 
@@ -45,7 +44,6 @@ private:
     HBRUSH OnCtlColorStatic(CDCHandle dc, CStatic wndStatic);
     BOOL OnEraseBackground(CDCHandle dc);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-    LRESULT OnPluginHelp(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnListNotify(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     static int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
