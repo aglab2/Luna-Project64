@@ -399,6 +399,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
     }
     break;
+    case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://github.com/Luna-Project64/Luna-Project64/issues", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
@@ -1879,6 +1880,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList HelpMenu;
     HelpMenu.push_back(MENU_ITEM(ID_HELP_OPEN_APPDATA, MENU_OPEN_APPDATA));
     HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_PROJECT64, MENU_SUPPORT_PROJECT64));
+    HelpMenu.push_back(MENU_ITEM(ID_HELP_SUPPORT_LUNA, MENU_SUPPORT_LUNA));
 
     // Main title bar Menu
     MenuItemList MainTitleMenu;
