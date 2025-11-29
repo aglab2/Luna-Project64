@@ -98,8 +98,6 @@ CMainGui::~CMainGui(void)
 
 bool CMainGui::RegisterWinClass(void)
 {
-    std::wstring VersionDisplay = stdstr_f("Luna's Project64 v" VERSION_LUNA).ToUTF16();
-
     WNDCLASS wcl;
 
     wcl.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
@@ -112,7 +110,7 @@ bool CMainGui::RegisterWinClass(void)
     wcl.lpfnWndProc = (WNDPROC)MainGui_Proc;
     wcl.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcl.lpszMenuName = nullptr;
-    wcl.lpszClassName = VersionDisplay.c_str();
+    wcl.lpszClassName = L"Luna's Project64 v" VERSION_LUNA;
     if (RegisterClass(&wcl) == 0) return false;
     return true;
 }
