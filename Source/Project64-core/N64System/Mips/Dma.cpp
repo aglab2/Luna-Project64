@@ -393,10 +393,14 @@ void CDMA::PI_DMA_WRITE()
             alignment = PI_WR_LEN_REG | (size_t)RDRAM | (size_t)ROM;
             if ((alignment & 0x3) == 0)
             {
+#ifdef _WIN32
+				__movsb((unsigned char*)RDRAM, (unsigned char*)ROM, PI_WR_LEN_REG);
+#else
                 for (i = 0; i < PI_WR_LEN_REG; i += 4)
                 {
                     *(uint32_t *)(RDRAM + i) = *(uint32_t *)(ROM + i);
                 }
+#endif
             }
             else if ((alignment & 1) == 0)
             {
