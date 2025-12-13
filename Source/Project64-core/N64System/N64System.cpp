@@ -1815,7 +1815,10 @@ bool CN64System::SaveState()
     }
 
     CPath ExtraInfo(SaveFile);
-    ExtraInfo.SetExtension(".dat");
+    {
+        auto extension = ExtraInfo.GetExtension();
+        ExtraInfo.SetExtension(stdstr_f("dat.%s", extension.c_str()).c_str());
+    }
 
     CPath ZipFile(SaveFile);
     ZipFile.SetNameExtension(stdstr_f("%s.zip", ZipFile.GetNameExtension().c_str()).c_str());
@@ -2247,7 +2250,11 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Close();
 
         CPath ExtraInfo(SaveFile);
-        ExtraInfo.SetExtension(".dat");
+        {
+            auto extension = ExtraInfo.GetExtension();
+            ExtraInfo.SetExtension(stdstr_f("dat.%s", extension.c_str()).c_str());
+        }
+
         CFile hExtraInfo(ExtraInfo, CFileBase::modeRead);
         if (hExtraInfo.IsOpen())
         {
