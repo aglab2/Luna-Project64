@@ -110,7 +110,7 @@ bool CMainGui::RegisterWinClass(void)
     wcl.lpfnWndProc = (WNDPROC)MainGui_Proc;
     wcl.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcl.lpszMenuName = nullptr;
-    wcl.lpszClassName = L"Luna's Project64 v" VERSION_LUNA;
+    wcl.lpszClassName = L"LunaProject64";
     if (RegisterClass(&wcl) == 0) return false;
     return true;
 }
@@ -403,8 +403,7 @@ void CMainGui::Caption(LPCWSTR Caption)
 
 void CMainGui::Create(const char * WindowTitle)
 {
-    stdstr_f VersionDisplay("Luna's Project64 v" VERSION_LUNA);
-    m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, VersionDisplay.ToUTF16().c_str(), stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
+    m_hMainWindow = CreateWindowEx(WS_EX_ACCEPTFILES, L"LunaProject64", stdstr(WindowTitle).ToUTF16().c_str(), WS_OVERLAPPED | WS_CLIPCHILDREN |
         WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, 5, 5, 640, 480,
         nullptr, nullptr, GetModuleHandle(nullptr), this);
     m_Created = m_hMainWindow != nullptr;
