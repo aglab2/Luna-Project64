@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         // Create the main window with menu
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
-        CMainGui MainWindow(true, stdstr_f("Luna's Project64 v" VERSION_LUNA).c_str()), HiddenWindow(false);
+        CMainGui MainWindow(true, "Luna's Project64 v" VERSION_LUNA VERSION_LUNA_HOTFIX), HiddenWindow(false);
 
 #ifdef RETROACHIEVEMENTS
         bool raInitAsync = true;
