@@ -124,10 +124,7 @@ int main()
 
     if (DestFile.Exists())
     {
-        if (!DestFile.Delete())
-        {
-            return 0;
-        }
+        return 0;
     }
 
     CPath SourceDirectory(SourceFile.GetDriveDirectory(), "");
