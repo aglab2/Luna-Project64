@@ -68,7 +68,9 @@ public:
     x86Reg UnMap_TempReg();
     void   UnMap_GPR(uint32_t Reg, bool WriteBackValue);
     bool   UnMap_X86reg(x86Reg Reg);
+    void   UnMap_X86reg_Lite(x86Reg Reg);
     void   WriteBackRegisters();
+    void   WriteBackRegistersLite();
 
     CX86Ops::x86Reg   GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
     CX86Ops::x86Reg   GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }

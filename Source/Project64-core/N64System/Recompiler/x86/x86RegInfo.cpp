@@ -1296,6 +1296,52 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
     return false;
 }
 
+void CX86RegInfo::UnMap_X86reg_Lite(x86Reg Reg)
+{
+    int32_t count;
+    if (GetX86Mapped(Reg) == CX86RegInfo::GPR_Mapped)
+    {
+        for (count = 1; count < 32; count++)
+        {
+            if (!IsMapped(count))
+            {
+                continue;
+            }
+
+            /*
+            if (Is64Bit(count))
+            {
+                continue;
+            }
+            */
+
+            if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg)
+            {
+                if (!GetX86Protected(Reg))
+                {
+                    UnMap_GPR(count, true);
+                }
+                break;
+            }
+            if (GetMipsRegMapLo(count) == Reg)
+            {
+                if (!GetX86Protected(Reg))
+                {
+                    UnMap_GPR(count, true);
+                }
+                break;
+            }
+        }
+    }
+}
+
+void CX86RegInfo::WriteBackRegistersLite()
+{
+    int32_t X86RegCount = sizeof(x86_Registers) / sizeof(x86_Registers[0]);
+    for (int32_t i = 0; i < X86RegCount; i++) { SetX86Protected(x86_Registers[i], false); }
+    for (int32_t i = 0; i < X86RegCount; i++) { UnMap_X86reg_Lite(x86_Registers[i]); }
+}
+
 void CX86RegInfo::WriteBackRegisters()
 {
     UnMap_AllFPRs();

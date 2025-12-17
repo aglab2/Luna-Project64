@@ -334,9 +334,145 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.ResetX86Protection();
 }
 
+static bool dropRegisterOnOp(uint32_t pc, const OPCODE& Opcode)
+{
+    switch (Opcode.op)
+    {
+    case R4300i_SPECIAL:
+
+        switch (Opcode.funct)
+		{
+            /*
+		case R4300i_SPECIAL_SLL: m_RecompilerOps->SPECIAL_SLL(); break;
+		case R4300i_SPECIAL_SRL: m_RecompilerOps->SPECIAL_SRL(); break;
+		case R4300i_SPECIAL_SRA: m_RecompilerOps->SPECIAL_SRA(); break;
+		case R4300i_SPECIAL_SLLV: m_RecompilerOps->SPECIAL_SLLV(); break;
+		case R4300i_SPECIAL_SRLV: m_RecompilerOps->SPECIAL_SRLV(); break;
+		case R4300i_SPECIAL_SRAV: m_RecompilerOps->SPECIAL_SRAV(); break;
+		case R4300i_SPECIAL_JR: m_RecompilerOps->SPECIAL_JR(); break;
+		case R4300i_SPECIAL_JALR: m_RecompilerOps->SPECIAL_JALR(); break;
+		case R4300i_SPECIAL_MFLO: m_RecompilerOps->SPECIAL_MFLO(); break;
+		case R4300i_SPECIAL_SYSCALL: m_RecompilerOps->SPECIAL_SYSCALL(); break;
+		case R4300i_SPECIAL_MTLO: m_RecompilerOps->SPECIAL_MTLO(); break;
+		case R4300i_SPECIAL_MFHI: m_RecompilerOps->SPECIAL_MFHI(); break;
+		case R4300i_SPECIAL_MTHI: m_RecompilerOps->SPECIAL_MTHI(); break;
+		case R4300i_SPECIAL_DSLLV: m_RecompilerOps->SPECIAL_DSLLV(); break;
+		case R4300i_SPECIAL_DSRLV: m_RecompilerOps->SPECIAL_DSRLV(); break;
+		case R4300i_SPECIAL_DSRAV: m_RecompilerOps->SPECIAL_DSRAV(); break;
+		case R4300i_SPECIAL_MULT: m_RecompilerOps->SPECIAL_MULT(); break;
+		case R4300i_SPECIAL_DIV: m_RecompilerOps->SPECIAL_DIV(); break;
+		case R4300i_SPECIAL_DIVU: m_RecompilerOps->SPECIAL_DIVU(); break;
+		case R4300i_SPECIAL_MULTU: m_RecompilerOps->SPECIAL_MULTU(); break;
+		case R4300i_SPECIAL_DMULT: m_RecompilerOps->SPECIAL_DMULT(); break;
+		case R4300i_SPECIAL_DMULTU: m_RecompilerOps->SPECIAL_DMULTU(); break;
+		case R4300i_SPECIAL_DDIV: m_RecompilerOps->SPECIAL_DDIV(); break;
+		case R4300i_SPECIAL_DDIVU: m_RecompilerOps->SPECIAL_DDIVU(); break;
+		case R4300i_SPECIAL_ADD: m_RecompilerOps->SPECIAL_ADD(); break;
+		case R4300i_SPECIAL_ADDU: m_RecompilerOps->SPECIAL_ADDU(); break;
+		case R4300i_SPECIAL_SUB: m_RecompilerOps->SPECIAL_SUB(); break;
+		case R4300i_SPECIAL_SUBU: m_RecompilerOps->SPECIAL_SUBU(); break;
+		case R4300i_SPECIAL_AND: m_RecompilerOps->SPECIAL_AND(); break;
+		case R4300i_SPECIAL_OR: m_RecompilerOps->SPECIAL_OR(); break;
+		case R4300i_SPECIAL_XOR: m_RecompilerOps->SPECIAL_XOR(); break;
+		case R4300i_SPECIAL_NOR: m_RecompilerOps->SPECIAL_NOR(); break;
+		case R4300i_SPECIAL_SLT: m_RecompilerOps->SPECIAL_SLT(); break;
+		case R4300i_SPECIAL_SLTU: m_RecompilerOps->SPECIAL_SLTU(); break;
+		case R4300i_SPECIAL_DADD: m_RecompilerOps->SPECIAL_DADD(); break;
+		case R4300i_SPECIAL_DADDU: m_RecompilerOps->SPECIAL_DADDU(); break;
+		case R4300i_SPECIAL_DSUB: m_RecompilerOps->SPECIAL_DSUB(); break;
+		case R4300i_SPECIAL_DSUBU: m_RecompilerOps->SPECIAL_DSUBU(); break;
+		case R4300i_SPECIAL_DSLL: m_RecompilerOps->SPECIAL_DSLL(); break;
+		case R4300i_SPECIAL_DSRL: m_RecompilerOps->SPECIAL_DSRL(); break;
+		case R4300i_SPECIAL_DSRA: m_RecompilerOps->SPECIAL_DSRA(); break;
+		case R4300i_SPECIAL_DSLL32: m_RecompilerOps->SPECIAL_DSLL32(); break;
+		case R4300i_SPECIAL_DSRL32: m_RecompilerOps->SPECIAL_DSRL32(); break;
+		case R4300i_SPECIAL_DSRA32: m_RecompilerOps->SPECIAL_DSRA32(); break;
+		case R4300i_SPECIAL_TEQ: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTEQ); break;
+		case R4300i_SPECIAL_TNE: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTNE); break;
+		case R4300i_SPECIAL_TGE: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGE); break;
+		case R4300i_SPECIAL_TGEU: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTGEU); break;
+		case R4300i_SPECIAL_TLT: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTLT); break;
+		case R4300i_SPECIAL_TLTU: m_RecompilerOps->Compile_TrapCompare(CRecompilerOps::TRAP_COMPARE::CompareTypeTLTU); break;
+			break;
+            */
+        case R4300i_SPECIAL_SLL: return true; break;
+        case R4300i_SPECIAL_SRL: return true; break;
+        case R4300i_SPECIAL_SRA: return true; break;
+        case R4300i_SPECIAL_SLLV: return true; break;
+        case R4300i_SPECIAL_SRLV: return true; break;
+        case R4300i_SPECIAL_SRAV: return true; break;
+        case R4300i_SPECIAL_JR: return true; break;
+        case R4300i_SPECIAL_JALR: return true; break;
+        case R4300i_SPECIAL_MFLO: return true; break;
+        case R4300i_SPECIAL_SYSCALL: return true; break;
+        case R4300i_SPECIAL_MTLO: return true; break;
+        case R4300i_SPECIAL_MFHI: return true; break;
+        case R4300i_SPECIAL_MTHI: return true; break;
+
+        case R4300i_SPECIAL_DSLLV: return true; break;
+        case R4300i_SPECIAL_DSRLV: return true; break;
+        case R4300i_SPECIAL_DSRAV: return true; break;
+
+        case R4300i_SPECIAL_MULT: return true; break;
+        case R4300i_SPECIAL_DIV: return true; break;
+        case R4300i_SPECIAL_DIVU: return true; break;
+        case R4300i_SPECIAL_MULTU: return true; break;
+        case R4300i_SPECIAL_DMULT: return true; break;
+        case R4300i_SPECIAL_DMULTU: return true; break;
+        case R4300i_SPECIAL_DDIV: return true; break;
+        case R4300i_SPECIAL_DDIVU: return true; break;
+
+        //case R4300i_SPECIAL_ADD: return true; break;
+        //case R4300i_SPECIAL_ADDU: return true; break;
+        //case R4300i_SPECIAL_SUB: return true; break;
+        //case R4300i_SPECIAL_SUBU: return true; break;
+        // 0x80010000 < pc && pc < 0x80018000 - broken textures
+        // 0x80018000 < pc && pc < 0x80020000 - broken scaling
+        //case R4300i_SPECIAL_AND: return true; break;
+        case R4300i_SPECIAL_OR: return (0x80013800 < pc && pc < 0x80013A00); break;
+        //case R4300i_SPECIAL_XOR: return true; break;
+        //case R4300i_SPECIAL_NOR: return true; break;
+        //case R4300i_SPECIAL_SLT: return true; break;
+        //case R4300i_SPECIAL_SLTU: return true; break;
+
+        case R4300i_SPECIAL_DADD: return true; break;
+        case R4300i_SPECIAL_DADDU: return true; break;
+        case R4300i_SPECIAL_DSUB: return true; break;
+        case R4300i_SPECIAL_DSUBU: return true; break;
+        case R4300i_SPECIAL_DSLL: return true; break;
+        case R4300i_SPECIAL_DSRL: return true; break;
+        case R4300i_SPECIAL_DSRA: return true; break;
+        case R4300i_SPECIAL_DSLL32: return true; break;
+        case R4300i_SPECIAL_DSRL32: return true; break;
+        case R4300i_SPECIAL_DSRA32: return true; break;
+		default:
+            return false;
+		}
+		break;
+    case R4300i_REGIMM:
+        switch (Opcode.rt)
+        {
+        default:
+            return false;
+        }
+        break;
+    case R4300i_DADDIU: return false; break;
+    default:
+        return false;
+    }
+}
+
 void CX86RecompilerOps::PostCompileOpcode(void)
 {
-    if (!g_System->bRegCaching()) { m_RegWorkingSet.WriteBackRegisters(); }
+    if (!g_System->bRegCaching())
+    {
+        const OPCODE& Opcode = GetOpcode();
+        uint32_t pc = m_CompilePC;
+        if (dropRegisterOnOp(pc, Opcode))
+        {
+            m_RegWorkingSet.WriteBackRegistersLite();
+        }
+    }
     m_RegWorkingSet.UnMap_AllFPRs();
 }
 
