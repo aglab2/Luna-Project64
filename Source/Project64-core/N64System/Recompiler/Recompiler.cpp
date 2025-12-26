@@ -972,11 +972,13 @@ CCompiledFunc * CRecompiler::CompileCode()
     //uint32_t StartTime = timeGetTime();
     WriteTrace(TraceRecompiler, TraceDebug, "Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
 
+    // g_System->Unforce64bit();
     CCodeBlock CodeBlock(PROGRAM_COUNTER, *g_RecompPos);
     if (!CodeBlock.Compile())
     {
         return nullptr;
     }
+    // g_System->Unforce64bit();
 
     if (bShowRecompMemSize())
     {

@@ -23,6 +23,7 @@ bool CGameSettings::m_bSyncToAudio = true;
 bool CGameSettings::m_FullSpeed = true;
 bool CGameSettings::m_bFastSP = true;
 bool CGameSettings::m_b32Bit = true;
+bool CGameSettings::m_bForce64bitRecompOps = false;
 bool CGameSettings::m_RspAudioSignal;
 bool CGameSettings::m_bRomInMemory;
 bool CGameSettings::m_RegCaching;

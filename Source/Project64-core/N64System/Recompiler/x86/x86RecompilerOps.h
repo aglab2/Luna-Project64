@@ -349,6 +349,8 @@ public:
     static uint32_t CompilePC() { return m_CompilePC; }
 
 private:
+    void Enforce64Bit();
+
     void SB_Const(uint8_t Value, uint32_t Addr);
     void SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
     void SH_Const(uint16_t Value, uint32_t Addr);

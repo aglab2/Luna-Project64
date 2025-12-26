@@ -336,6 +336,27 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 
 static bool dropRegisterOnOp(uint32_t pc, const OPCODE& Opcode)
 {
+    if (0x80013800 < pc && pc < 0x80013940) // 0x80013A00
+    {
+        if (R4300i_SPECIAL == Opcode.op)
+        {
+            unsigned funct = Opcode.funct;
+            bool res = 1
+                  //&& R4300i_SPECIAL_OR   != funct
+                    && R4300i_SPECIAL_DSLL != funct
+                  //&& R4300i_SPECIAL_AND  != funct
+                     ;
+
+            return !res;
+        }
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
     switch (Opcode.op)
     {
     case R4300i_SPECIAL:
@@ -429,7 +450,7 @@ static bool dropRegisterOnOp(uint32_t pc, const OPCODE& Opcode)
         // 0x80010000 < pc && pc < 0x80018000 - broken textures
         // 0x80018000 < pc && pc < 0x80020000 - broken scaling
         //case R4300i_SPECIAL_AND: return true; break;
-        case R4300i_SPECIAL_OR: return (0x80013800 < pc && pc < 0x80013A00); break;
+        // case R4300i_SPECIAL_OR: return (0x80013800 < pc && pc < 0x80013A00); break;
         //case R4300i_SPECIAL_XOR: return true; break;
         //case R4300i_SPECIAL_NOR: return true; break;
         //case R4300i_SPECIAL_SLT: return true; break;
@@ -466,12 +487,9 @@ void CX86RecompilerOps::PostCompileOpcode(void)
 {
     if (!g_System->bRegCaching())
     {
-        const OPCODE& Opcode = GetOpcode();
-        uint32_t pc = m_CompilePC;
-        if (dropRegisterOnOp(pc, Opcode))
-        {
-            m_RegWorkingSet.WriteBackRegistersLite();
-        }
+        // const OPCODE& Opcode = GetOpcode();
+        // uint32_t pc = m_CompilePC;
+        // m_RegWorkingSet.WriteBackRegisters();
     }
     m_RegWorkingSet.UnMap_AllFPRs();
 }
@@ -2668,7 +2686,7 @@ void CX86RecompilerOps::ORI()
     }
     else if (IsMapped(m_Opcode.rs))
     {
-        if (g_System->b32BitCore())
+        if (g_System->b32BitCoreForRecompOps())
         {
             Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
         }
@@ -2687,7 +2705,7 @@ void CX86RecompilerOps::ORI()
     }
     else
     {
-        if (g_System->b32BitCore())
+        if (g_System->b32BitCoreForRecompOps())
         {
             Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
         }
@@ -2729,7 +2747,7 @@ void CX86RecompilerOps::XORI()
         {
             Map_GPR_32bit(m_Opcode.rt, IsSigned(m_Opcode.rs), m_Opcode.rs);
         }
-        else if (g_System->b32BitCore())
+        else if (g_System->b32BitCoreForRecompOps())
         {
             Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
         }
@@ -2780,6 +2798,8 @@ void CX86RecompilerOps::DADDIU()
     {
         UnMap_GPR(m_Opcode.rt, true);
     }
+
+    Enforce64Bit();
 
     m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
@@ -5587,6 +5607,8 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
         return;
     }
 
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rs))
     {
         //uint32_t Shift = (GetMipsRegLo(m_Opcode.rs) & 0x3F);
@@ -5627,6 +5649,8 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
     {
         return;
     }
+
+    Enforce64Bit();
 
     if (IsConst(m_Opcode.rs))
     {
@@ -5713,6 +5737,8 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
     {
         return;
     }
+
+    Enforce64Bit();
 
     if (IsConst(m_Opcode.rs))
     {
@@ -5910,6 +5936,8 @@ void CX86RecompilerOps::SPECIAL_DIVU()
 
 void CX86RecompilerOps::SPECIAL_DMULT()
 {
+    Enforce64Bit();
+
     if (m_Opcode.rs != 0)
     {
         UnMap_GPR(m_Opcode.rs, true);
@@ -5928,6 +5956,8 @@ void CX86RecompilerOps::SPECIAL_DMULT()
 
 void CX86RecompilerOps::SPECIAL_DMULTU()
 {
+    Enforce64Bit();
+
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     m_RegWorkingSet.BeforeCallDirect();
@@ -6365,7 +6395,7 @@ void CX86RecompilerOps::SPECIAL_AND()
             ProtectGPR(KnownReg);
             if (KnownReg == m_Opcode.rd)
             {
-                if (Is64Bit(KnownReg) || !g_System->b32BitCore())
+                if (Is64Bit(KnownReg) || !g_System->b32BitCoreForRecompOps())
                 {
                     Map_GPR_64bit(m_Opcode.rd, KnownReg);
                     AndVariableToX86Reg(&_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], GetMipsRegMapHi(m_Opcode.rd));
@@ -6395,7 +6425,7 @@ void CX86RecompilerOps::SPECIAL_AND()
     }
     else
     {
-        if (g_System->b32BitCore())
+        if (g_System->b32BitCoreForRecompOps())
         {
             Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
         }
@@ -6410,6 +6440,11 @@ void CX86RecompilerOps::SPECIAL_AND()
 
 void CX86RecompilerOps::SPECIAL_OR()
 {
+    if (m_CompilePC == 0x80013870 || m_CompilePC == 0x8001387C || m_CompilePC == 0x80013894)
+    {
+		int bp = 1;
+    }
+
     if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs))
     {
         if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
@@ -6516,7 +6551,7 @@ void CX86RecompilerOps::SPECIAL_OR()
             uint64_t Value = Is64Bit(KnownReg) ? GetMipsReg(KnownReg) : GetMipsRegLo_S(KnownReg);
             uint32_t dwValue = (uint32_t)(Value & 0xFFFFFFFF);
 
-            if (g_System->b32BitCore() && Is32Bit(KnownReg))
+            if (g_System->b32BitCoreForRecompOps() && Is32Bit(KnownReg))
             {
                 Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
                 if (dwValue != 0)
@@ -6539,7 +6574,7 @@ void CX86RecompilerOps::SPECIAL_OR()
         }
         else
         {
-            if (g_System->b32BitCore())
+            if (g_System->b32BitCoreForRecompOps())
             {
                 Map_GPR_32bit(m_Opcode.rd, true, KnownReg);
                 OrVariableToX86Reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
@@ -6554,7 +6589,7 @@ void CX86RecompilerOps::SPECIAL_OR()
     }
     else
     {
-        if (g_System->b32BitCore())
+        if (g_System->b32BitCoreForRecompOps())
         {
             Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
             OrVariableToX86Reg(&_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], GetMipsRegMapLo(m_Opcode.rd));
@@ -6706,7 +6741,7 @@ void CX86RecompilerOps::SPECIAL_XOR()
         }
         else
         {
-            if (g_System->b32BitCore())
+            if (g_System->b32BitCoreForRecompOps())
             {
                 Map_GPR_32bit(m_Opcode.rd, true, KnownReg);
                 XorVariableToX86reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
@@ -6719,7 +6754,7 @@ void CX86RecompilerOps::SPECIAL_XOR()
             }
         }
     }
-    else if (g_System->b32BitCore())
+    else if (g_System->b32BitCoreForRecompOps())
     {
         Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
         XorVariableToX86reg(&_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], GetMipsRegMapLo(m_Opcode.rd));
@@ -6837,7 +6872,7 @@ void CX86RecompilerOps::SPECIAL_NOR()
             uint64_t Value = Is64Bit(KnownReg) ? GetMipsReg(KnownReg) : GetMipsRegLo_S(KnownReg);
             uint32_t dwValue = (uint32_t)(Value & 0xFFFFFFFF);
 
-            if (g_System->b32BitCore() && Is32Bit(KnownReg))
+            if (g_System->b32BitCoreForRecompOps() && Is32Bit(KnownReg))
             {
                 Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
                 if (dwValue != 0)
@@ -6860,7 +6895,7 @@ void CX86RecompilerOps::SPECIAL_NOR()
         }
         else
         {
-            if (g_System->b32BitCore())
+            if (g_System->b32BitCoreForRecompOps())
             {
                 Map_GPR_32bit(m_Opcode.rd, true, KnownReg);
                 OrVariableToX86Reg(&_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], GetMipsRegMapLo(m_Opcode.rd));
@@ -6875,7 +6910,7 @@ void CX86RecompilerOps::SPECIAL_NOR()
     }
     else
     {
-        if (g_System->b32BitCore())
+        if (g_System->b32BitCoreForRecompOps())
         {
             Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
             OrVariableToX86Reg(&_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], GetMipsRegMapLo(m_Opcode.rd));
@@ -7495,6 +7530,8 @@ void CX86RecompilerOps::SPECIAL_SLTU()
 
 void CX86RecompilerOps::SPECIAL_DADD()
 {
+    Enforce64Bit();
+
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7557,6 +7594,8 @@ void CX86RecompilerOps::SPECIAL_DADDU()
         return;
     }
 
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
     {
         int64_t ValRs = Is64Bit(m_Opcode.rs) ? GetMipsReg(m_Opcode.rs) : (int64_t)GetMipsRegLo_S(m_Opcode.rs);
@@ -7618,6 +7657,8 @@ void CX86RecompilerOps::SPECIAL_DSUB()
     {
         return;
     }
+
+    Enforce64Bit();
 
     if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
     {
@@ -7683,6 +7724,8 @@ void CX86RecompilerOps::SPECIAL_DSUBU()
         return;
     }
 
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
     {
         if (IsMapped(m_Opcode.rd))
@@ -7746,6 +7789,8 @@ void CX86RecompilerOps::SPECIAL_DSLL()
         return;
     }
 
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rt))
     {
         if (IsMapped(m_Opcode.rd))
@@ -7782,6 +7827,8 @@ void CX86RecompilerOps::SPECIAL_DSRL()
         return;
     }
 
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rt))
     {
         if (IsMapped(m_Opcode.rd))
@@ -7815,6 +7862,8 @@ void CX86RecompilerOps::SPECIAL_DSRA()
     {
         return;
     }
+
+    Enforce64Bit();
 
     if (IsConst(m_Opcode.rt))
     {
@@ -7851,6 +7900,8 @@ void CX86RecompilerOps::SPECIAL_DSLL32()
     {
         return;
     }
+
+    Enforce64Bit();
 
     if (IsConst(m_Opcode.rt))
     {
@@ -7908,6 +7959,8 @@ void CX86RecompilerOps::SPECIAL_DSLL32()
 
 void CX86RecompilerOps::SPECIAL_DSRL32()
 {
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rt))
     {
         if (m_Opcode.rt != m_Opcode.rd)
@@ -7958,6 +8011,8 @@ void CX86RecompilerOps::SPECIAL_DSRL32()
 
 void CX86RecompilerOps::SPECIAL_DSRA32()
 {
+    Enforce64Bit();
+
     if (IsConst(m_Opcode.rt))
     {
         if (m_Opcode.rt != m_Opcode.rd)
@@ -12038,6 +12093,15 @@ void CX86RecompilerOps::ResetMemoryStack()
         AddConstToX86Reg(Reg, (uint32_t)g_MMU->Rdram());
     }
     MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
+}
+
+void CX86RecompilerOps::Enforce64Bit()
+{
+    if (g_System->b64BitCoreForcedRecompOps())
+        return;
+
+    m_RegWorkingSet.WriteBackRegisters();
+    g_System->Force64bitRecompOps();
 }
 
 #endif
