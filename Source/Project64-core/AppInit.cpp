@@ -13,6 +13,7 @@
 #include <Project64-core/N64System/SummerCart.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
 #include <Project64-core/VersionLuna.h>
+#include <Project64-core/Version.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);

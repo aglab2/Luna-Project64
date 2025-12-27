@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SupportEnterCode.h"
 #include <time.h>
+#include <Project64-core/Version.h>
 
 CSupportWindow * CSupportWindow::m_this = nullptr;
 
