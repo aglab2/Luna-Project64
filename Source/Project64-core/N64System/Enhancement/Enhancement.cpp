@@ -159,7 +159,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         size_t Seperator = Pos - Lines[Line].c_str();
         if (Seperator >= Key.size())
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            // g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         Key.resize(Seperator);
 
@@ -185,7 +185,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            // g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
 
@@ -255,7 +255,7 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
 
     if (CurrentLine < Lines.size())
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        // g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     m_Active = CSettingEnhancementActive(m_Name.c_str(), m_Ident.c_str(), m_OnByDefault).Active();
     uint16_t SelectedValue = 0;
