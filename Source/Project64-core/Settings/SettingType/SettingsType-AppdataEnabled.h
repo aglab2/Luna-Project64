@@ -11,7 +11,7 @@ public:
     virtual ~CSettingAppDataEnabledConfig();
 
     virtual bool IndexBasedSetting(void) const { return false; }
-    virtual SettingType GetSettingType(void) const { return SettingType_AppdataPath; }
+    virtual SettingType GetSettingType(void) const { return SettingType_Unknown; }
     virtual bool IsSettingSet(void) const;
 
     // Return the values

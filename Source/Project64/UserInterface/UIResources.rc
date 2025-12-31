@@ -172,7 +172,7 @@ BEGIN
     CONTROL         "Dark theme (Requires emu restart)",IDC_DARKTHEME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,8,206,10
     CONTROL         "Share cheat codes between games",IDC_GLOBAL_CHEATS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,86,206,10
-    CONTROL         "Store configs in Config instead of AppData (requires restart)",IDC_CONFIG_APPDATA,
+    CONTROL         "Store user configs near exe (requires restart)",IDC_CONFIG_APPDATA,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,112,206,10
 END
 

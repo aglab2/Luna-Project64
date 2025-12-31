@@ -15,6 +15,7 @@ enum SettingID
     Cmd_BaseDirectory,
     Cmd_AppdataDirectory,
     Cmd_AppdataDirectoryReal,
+    Cmd_PluginBaseDirectory,
     Cmd_RomFile,
     Cmd_ComboDiskFile,
     Cmd_ShowHelp,
