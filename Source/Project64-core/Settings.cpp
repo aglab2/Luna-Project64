@@ -77,13 +77,27 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
-    char AppdataPath[1024];
+    char AppdataPath[MAX_PATH];
     SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
     PathAppendA(AppdataPath, "Luna-Project64\\");
 
+	CPath CfgAppdataPath(AppdataPath, "disabled.cfg");
+    bool appdataDisabled = CfgAppdataPath.Exists();
+
     // Command settings
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
-    AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(AppdataPath));
+    AddHandler(Cmd_AppdataDirectoryReal, new CSettingTypeTempString(AppdataPath));
+    if (appdataDisabled)
+    {
+		CPath localConfigDir(BaseDirectory);
+		localConfigDir.AppendDirectory("Config_User");
+		localConfigDir.DirectoryCreate();
+        AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(localConfigDir));
+    }
+    else
+    {
+        AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(AppdataPath));
+	}
     AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
     AddHandler(Cmd_RomFile, new CSettingTypeTempString(""));
     AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));

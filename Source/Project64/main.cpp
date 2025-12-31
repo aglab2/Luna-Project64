@@ -24,7 +24,6 @@ extern "C" {
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     HighResTimeStamp::Init();
-    setupExceptionFilters();
     {
         static char currentPath[MAX_PATH_LENGTH];
         if (GetModuleFileNameA(NULL, currentPath, MAX_PATH_LENGTH) == 0) {
@@ -42,6 +41,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         CoInitialize(nullptr);
 		CheckUpdatesGitHub();
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
+        setupExceptionFilters();
 
         if (g_Settings->LoadBool((SettingID)Setting_DarkTheme)) {
             try {

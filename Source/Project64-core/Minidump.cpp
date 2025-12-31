@@ -5,7 +5,10 @@
 #include <Shlobj_core.h>
 #include <shlwapi.h>
 
-static char sMinidumpPath[MAX_PATH] = {};
+#include <Common/path.h>
+#include <Project64-core/Settings.h>
+
+CPath sMinidumpPath;
 
 static void collectMinidump(EXCEPTION_POINTERS* ex)
 {
@@ -28,10 +31,6 @@ static LONG WINAPI unhandledExceptionFilter(EXCEPTION_POINTERS* ex)
 
 void setupExceptionFilters()
 {
-    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, sMinidumpPath);
-    PathAppendA(sMinidumpPath, "Luna-Project64");
-    CreateDirectoryA(sMinidumpPath, nullptr);
-    PathAppendA(sMinidumpPath, "minidump.dmp");
-
+    sMinidumpPath = CPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), "minidump.dmp");
     SetUnhandledExceptionFilter(&unhandledExceptionFilter);
 }
