@@ -483,11 +483,13 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    wchar_t* AppdataPathW[1024];
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, AppdataPathW);
-    PathAppend(*AppdataPathW, L"Luna-Project64\\Scripts");
-    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, *AppdataPathW, SW_SHOWNORMAL);
-    CoTaskMemFree(AppdataPathW);
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
+    FullPath.AppendDirectory("Scripts");
+    if (!FullPath.DirectoryExists()) {
+        // Create scripts dir and properly open it, instantly 500x less confusing
+        FullPath.DirectoryCreate();
+    }
+    ShellExecuteA(NULL, "edit", m_SelectedScriptName.c_str(), NULL, FullPath, SW_SHOWNORMAL);
 }
 
 // Console input
