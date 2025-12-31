@@ -85,6 +85,7 @@ private:
     CScriptList m_ScriptList;
     CStatusBarCtrl m_StatusBar;
     std::string m_SelectedScriptName;
+    std::string m_BaseDir;
 
     HANDLE m_hQuitScriptDirWatchEvent;
     HANDLE m_hScriptDirWatchThread;

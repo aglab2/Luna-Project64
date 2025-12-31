@@ -9,6 +9,10 @@ CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     m_hQuitScriptDirWatchEvent(nullptr),
     m_hScriptDirWatchThread(nullptr)
 {
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
+    FullPath.AppendDirectory("Scripts");
+    FullPath.DirectoryCreate();
+    m_BaseDir = static_cast<const char*>(FullPath);
 }
 
 CDebugScripts::~CDebugScripts(void)
@@ -96,7 +100,9 @@ DWORD WINAPI CDebugScripts::ScriptDirWatchProc(void* ctx)
 
     HANDLE hEvents[2];
 
-    hEvents[0] = FindFirstChangeNotification(L"Scripts", FALSE, FILE_NOTIFY_CHANGE_FILE_NAME);
+    std::string baseDir = _this->m_BaseDir;
+    baseDir.pop_back(); // Remove trailing '\'
+    hEvents[0] = FindFirstChangeNotificationA(baseDir.c_str(), FALSE, FILE_NOTIFY_CHANGE_FILE_NAME);
 
     if (hEvents[0] == INVALID_HANDLE_VALUE)
     {
@@ -203,13 +209,7 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         ConsoleCopy();
         break;
     case IDC_SCRIPTDIR_BTN:
-        CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
-        FullPath.AppendDirectory("Scripts");
-        if (!FullPath.DirectoryExists()) {
-            // Create scripts dir and properly open it, instantly 500x less confusing
-            FullPath.DirectoryCreate();
-        }
-        ShellExecuteA(NULL, "open", FullPath, NULL, NULL, SW_SHOWNORMAL);
+        ShellExecuteA(NULL, "open", m_BaseDir.c_str(), NULL, NULL, SW_SHOWNORMAL);
         break;
     }
     return FALSE;
@@ -237,9 +237,7 @@ void CDebugScripts::RefreshStatus()
 
     stdstr statusText;
 
-    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
-    FullPath.AppendDirectory("Scripts");
-    FullPath.SetName(m_SelectedScriptName.c_str());
+    CPath FullPath(m_BaseDir, m_SelectedScriptName.c_str());
     FullPath.GetFullyQualified(statusText);
     
     if (state == STATE_RUNNING)
@@ -384,7 +382,7 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 {
     int nIndex = m_ScriptList.GetSelectedIndex();
 
-    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory));
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory), "*");
 	FullPath.AppendDirectory("Scripts");
 
     if (!FullPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
@@ -483,13 +481,7 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
-    FullPath.AppendDirectory("Scripts");
-    if (!FullPath.DirectoryExists()) {
-        // Create scripts dir and properly open it, instantly 500x less confusing
-        FullPath.DirectoryCreate();
-    }
-    ShellExecuteA(NULL, "edit", m_SelectedScriptName.c_str(), NULL, FullPath, SW_SHOWNORMAL);
+    ShellExecuteA(NULL, "edit", m_SelectedScriptName.c_str(), NULL, m_BaseDir.c_str(), SW_SHOWNORMAL);
 }
 
 // Console input
