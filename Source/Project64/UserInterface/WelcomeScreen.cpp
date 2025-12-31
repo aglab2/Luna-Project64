@@ -210,16 +210,13 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
             std::string DriveDirectoryStr = PrevDir.GetDriveDirectory();
             char* PrevDirChar = const_cast<char*>(DriveDirectoryStr.c_str());
 
-            char AppdataPath[1024];
-            SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-            PathAppendA(AppdataPath, "Luna-Project64");
-            PathAppendA(AppdataPath, "Save");
+            CPath AppdataPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory));
+            CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory));
+            FullPath.AppendDirectory("Save");
 
             strcat(PrevDirChar, "\\");
-            std::error_code ec;
-
             try {
-                std::filesystem::copy(PrevDirChar, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+                std::filesystem::copy(PrevDirChar, static_cast<const char*>(FullPath), std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
             }
             catch (...) {
                 MessageBox(L"Failed to copy folder.", L"Error", MB_OK);
@@ -235,7 +232,7 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
                 if (ptr != NULL) {
                     PathAppendA(LocalPath, ptr);
                     try {
-                        std::filesystem::copy(LocalPath, AppdataPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing, ec);
+                        std::filesystem::copy(LocalPath, static_cast<const char*>(AppdataPath), std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
                     }
                     catch (...) {
                         MessageBox(L"Failed to copy VirtualStore folder.", L"Error", MB_OK);
@@ -243,7 +240,7 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
                     }
                 }
                 try {
-                    for (auto const& file : std::filesystem::directory_iterator{ AppdataPath }) {
+                    for (auto const& file : std::filesystem::directory_iterator{ static_cast<const char*>(AppdataPath) }) {
                         const std::string oldSaveStateName = ".pj0";
                         const std::string newSaveStateName = ".pj";
                         const size_t pos = file.path().string().find(oldSaveStateName);

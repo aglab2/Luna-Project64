@@ -73,17 +73,49 @@ void CSettings::AddHandler(SettingID TypeID, CSettingType * Handler)
     }
 }
 
+class CSettingTypePluginConfigDir : public CSettingTypeTempString
+{
+	using CSettingTypeTempString::CSettingTypeTempString;
+
+    SettingType GetSettingType(void) const { return SettingType_PluginConfigDir; }
+};
+
 void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
-    char AppdataPath[1024];
+    char AppdataPath[MAX_PATH];
     SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-    PathAppendA(AppdataPath, "Luna-Project64\\");
+
+    size_t len = strlen(AppdataPath);
+    AppdataPath[len + 0] = '\\';
+    AppdataPath[len + 1] = '\0';
+
+    CPath LunaConfigAppdataPath(AppdataPath);
+    LunaConfigAppdataPath.AppendDirectory("Luna-Project64");
+
+    bool appdataDisabled;
+    {
+        CPath CfgAppdataPath(static_cast<const char*>(LunaConfigAppdataPath), "disabled.cfg");
+        appdataDisabled = CfgAppdataPath.Exists();
+    }
 
     // Command settings
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
-    AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(AppdataPath));
+    AddHandler(Cmd_AppdataDirectoryReal, new CSettingTypeTempString(LunaConfigAppdataPath));
+    if (appdataDisabled)
+    {
+		CPath localConfigDir(BaseDirectory);
+		localConfigDir.AppendDirectory("Config_User");
+		localConfigDir.DirectoryCreate();
+        AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(localConfigDir));
+        AddHandler(Cmd_PluginBaseDirectory, new CSettingTypePluginConfigDir(localConfigDir));
+    }
+    else
+    {
+        AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(LunaConfigAppdataPath));
+        AddHandler(Cmd_PluginBaseDirectory, new CSettingTypePluginConfigDir(AppdataPath));
+	}
     AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
     AddHandler(Cmd_RomFile, new CSettingTypeTempString(""));
     AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));
@@ -480,6 +512,18 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
 				g_Notify->BreakPoint(__FILE__, __LINE__);
 			}
 			setting_id = iter->first;
+        }
+        else if (Setting->GetSettingType() == SettingType_PluginConfigDir)
+        {
+            if (_stricmp("Config Base Dir", Name) != 0)
+            {
+                continue;
+            }
+            if (setting_id != 0)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            setting_id = iter->first;
         }
     }
     return setting_id;

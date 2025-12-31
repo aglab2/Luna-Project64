@@ -158,20 +158,22 @@ BEGIN
     CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,73,206,10
     CONTROL         "Enable RetroAchievements integration",IDC_RETROACHIEVEMENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,99,206,10
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,115,208,1
-    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,9,122,145,10
-    EDITTEXT        IDC_REMEMBER,148,120,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,123,31,10
-    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,9,137,145,10
-    EDITTEXT        IDC_REMEMBERDIR,148,135,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,139,34,10
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,124,208,1
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,9,130,145,10
+    EDITTEXT        IDC_REMEMBER,148,128,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,131,31,10
+    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,9,145,145,10
+    EDITTEXT        IDC_REMEMBERDIR,148,143,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,147,34,10
     CONTROL         "Pause emulation when window is minimized",IDC_MINIMIZEDSLEEP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,34,206,10
-    LTEXT           "Input delay in milliseconds:",IDC_INPUTDELAY_TXT,9,158,100,10
-    EDITTEXT        IDC_INPUTDELAY,99,157,41,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Input delay in milliseconds:",IDC_INPUTDELAY_TXT,9,161,100,10
+    EDITTEXT        IDC_INPUTDELAY,99,160,41,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "Dark theme (Requires emu restart)",IDC_DARKTHEME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,8,206,10
     CONTROL         "Share cheat codes between games",IDC_GLOBAL_CHEATS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,86,206,10
+    CONTROL         "Store user configs near exe (requires restart)",IDC_CONFIG_APPDATA,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,112,206,10
 END
 
 IDD_Rom_Information DIALOGEX 0, 0, 239, 207

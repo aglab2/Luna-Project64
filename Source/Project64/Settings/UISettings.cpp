@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UISettings.h"
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
+#include <Project64-core/Settings/SettingType/SettingsType-AppdataEnabled.h>
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationIndex.h>
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationPath.h>
 #include <Project64-core/Settings/SettingType/SettingsType-RelativePath.h>
@@ -35,6 +36,8 @@ void RegisterUISettings (void)
     AddUISetting(Setting_GlobalCheats, new CSettingTypeApplication("Settings", "Global Cheats", (uint32_t)false));
     AddUISetting(Setting_InputDelay, new CSettingTypeApplication("Settings", "Input Delay", (uint32_t)0));
     AddUISetting(Setting_RetroAchievements, new CSettingTypeApplication("Settings", "RetroAchievements", (uint32_t)false));
+
+    AddUISetting(AppData_ConfigAppData, new CSettingAppDataEnabledConfig(g_Settings->LoadStringVal(Cmd_AppdataDirectoryReal).c_str(), "", 0));
 
     // RDB settings
     AddUISetting(Rdb_Status, new CSettingTypeUserNoteDatabase("Status", "Unknown"));

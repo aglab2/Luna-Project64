@@ -4,7 +4,7 @@
 #include "Debugger/ScriptSystem.h"
 #include "DiscordRPC.h"
 #include <Project64-core/N64System/N64Disk.h>
-#include <Project64-core/N64System/Summercart.h>
+#include <Project64-core/N64System/SummerCart.h>
 #include <Project64\UserInterface\About.h>
 #include "SdCardMounter.h"
 #include <comutil.h>
@@ -333,13 +333,9 @@ void CMainMenu::OnSupportProject64(HWND hWnd)
     CSupportWindow(m_Gui->Support()).Show(hWnd, false);
 }
 
-static void invokeDefaultOpenAction(const TCHAR* path)
+static void invokeDefaultOpenAction(const char* path)
 {    
-    ShellExecute(NULL, NULL, path, NULL, NULL, SW_SHOWNORMAL);
-}
-
-static void DebugOutput(const std::wstring& message) {
-    OutputDebugString(message.c_str());
+    ShellExecuteA(NULL, NULL, path, NULL, NULL, SW_SHOWNORMAL);
 }
 
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
@@ -360,12 +356,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 
         if (state == SdCardMounter::VHD)
         {
-
-            MessageBox(hWnd, wGS(MSG_SDCARD_PREPARED).c_str(), wGS(MSG_SDCARD_TITLE).c_str(), MB_ICONEXCLAMATION);
-            wchar_t* AppdataPathW = NULL;
-            SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-            PathAppend(AppdataPathW, L"Luna-Project64");
-            ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
+            // ShellExecuteA(NULL, "open", g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), NULL, NULL, SW_SHOWNORMAL);
         }
         else
         {
@@ -793,10 +784,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
     case ID_HELP_OPEN_APPDATA:
         {
-            wchar_t* AppdataPathW = NULL;
-            SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &AppdataPathW);
-            PathAppend(AppdataPathW, L"Luna-Project64");
-            ShellExecute(NULL, L"open", AppdataPathW, NULL, NULL, SW_SHOWNORMAL);
+            ShellExecuteA(NULL, "open", g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), NULL, NULL, SW_SHOWNORMAL);
         }
         break;
     case ID_DEBUGGER_ENABLE:

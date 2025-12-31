@@ -221,7 +221,6 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 {
     try
     {
-        CSummerCart::MakeInitialImage();
         g_Notify = Notify;
         InitializeLog();
         WriteTrace(TraceAppInit, TraceDebug, "Starting (BaseDirectory: %s)", BaseDirectory ? BaseDirectory : "null");
@@ -251,6 +250,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         }
 #endif
 
+        CSummerCart::MakeInitialImage();
         SetupTrace();
         FixDirectories();
         CMipsMemoryVM::ReserveMemory();

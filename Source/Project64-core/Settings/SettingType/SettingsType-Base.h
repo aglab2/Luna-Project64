@@ -20,9 +20,10 @@ enum SettingType
     SettingType_NumberVariable = 10,
     SettingType_StringVariable = 11,
     SettingType_SelectedDirectory = 12,
-	SettingType_RdbSetting = 13,
-	SettingType_Enhancement = 14,
+    SettingType_RdbSetting = 13,
+    SettingType_Enhancement = 14,
     SettingType_AppdataPath = 15,
+    SettingType_PluginConfigDir = 16,
 };
 
 class CSettingType

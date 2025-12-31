@@ -203,19 +203,13 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         ConsoleCopy();
         break;
     case IDC_SCRIPTDIR_BTN:
-        //g_Settings breaks here for some reason
-        char AppdataPath[1024];
-        SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-        PathAppendA(AppdataPath, "Luna-Project64\\");
-
-        CPath FullPath = (AppdataPath, "");
+        CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
         FullPath.AppendDirectory("Scripts");
         if (!FullPath.DirectoryExists()) {
             // Create scripts dir and properly open it, instantly 500x less confusing
             FullPath.DirectoryCreate();
         }
-        PathAppendA(AppdataPath, "Scripts");
-        ShellExecuteA(NULL, "open", AppdataPath, NULL, NULL, SW_SHOWNORMAL);
+        ShellExecuteA(NULL, "open", FullPath, NULL, NULL, SW_SHOWNORMAL);
         break;
     }
     return FALSE;
@@ -243,13 +237,10 @@ void CDebugScripts::RefreshStatus()
 
     stdstr statusText;
 
-    // Consider making a wchar version of CPath or allow appending sth that isn't a dir, the workarounds I had to use for this are horrendous
-    char AppdataPath[1024];
-    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-    PathAppendA(AppdataPath, "Luna-Project64\\Scripts\\");
-    PathAppendA(AppdataPath, m_SelectedScriptName.c_str());
-
-    CPath(stdstr_f(AppdataPath)).GetFullyQualified(statusText);
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
+    FullPath.AppendDirectory("Scripts");
+    FullPath.SetName(m_SelectedScriptName.c_str());
+    FullPath.GetFullyQualified(statusText);
     
     if (state == STATE_RUNNING)
     {
@@ -393,12 +384,8 @@ LRESULT CDebugScripts::OnRefreshList(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 {
     int nIndex = m_ScriptList.GetSelectedIndex();
 
-    // Consider making a wchar version of CPath or allow appending sth that isn't a dir, the workarounds I had to use for this are horrendous
-    char AppdataPath[1024];
-    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-    PathAppendA(AppdataPath, "Luna-Project64\\Scripts\\");
-
-    CPath FullPath(AppdataPath, "*");
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory));
+	FullPath.AppendDirectory("Scripts");
 
     if (!FullPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
@@ -496,11 +483,13 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    wchar_t* AppdataPathW[1024];
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, AppdataPathW);
-    PathAppend(*AppdataPathW, L"Luna-Project64\\Scripts");
-    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, *AppdataPathW, SW_SHOWNORMAL);
-    CoTaskMemFree(AppdataPathW);
+    CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
+    FullPath.AppendDirectory("Scripts");
+    if (!FullPath.DirectoryExists()) {
+        // Create scripts dir and properly open it, instantly 500x less confusing
+        FullPath.DirectoryCreate();
+    }
+    ShellExecuteA(NULL, "edit", m_SelectedScriptName.c_str(), NULL, FullPath, SW_SHOWNORMAL);
 }
 
 // Console input

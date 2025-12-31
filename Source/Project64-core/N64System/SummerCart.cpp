@@ -20,8 +20,8 @@
 
 #define S8 3
 
-std::wstring CSummerCart::s_SdPath;
-std::wstring CSummerCart::s_VhdPath;
+std::string CSummerCart::s_SdPath;
+std::string CSummerCart::s_VhdPath;
 
 uint8_t* CSummerCart::SDAddr(size_t size)
 {
@@ -45,7 +45,7 @@ uint32_t CSummerCart::Init()
 		m_SdFile = NULL;
 	}
 
-    m_SdFile = _wfopen(s_SdPath.c_str(), L"r+b");
+    m_SdFile = fopen(s_SdPath.c_str(), "r+b");
     if (!m_SdFile)
     {
         if (!m_WarnedFailedToOpen)
@@ -106,7 +106,7 @@ uint32_t CSummerCart::Write()
     return 0;
 }
 
-static void write_fat16_initial_image(const TCHAR* path)
+static void write_fat16_initial_image(const char* path)
 {
     BYTE pt0[] = { 0xEB, 0x3C, 0x90, 0x6D, 0x6B, 0x64, 0x6F, 0x73, 0x66, 0x73, 0x00, 0x00, 0x02, 0x08, 0x01, 0x00
                  , 0x02, 0x00, 0x02, 0x00, 0x00, 0xF8, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -124,7 +124,7 @@ static void write_fat16_initial_image(const TCHAR* path)
     BYTE pt20000[] = { 0xF8, 0xFF, 0xFF, 0xFF };
     BYTE pt3fe00[] = { 0x53, 0x44, 0x43, 0x41, 0x52, 0x44, 0x30, 0x20, 0x20, 0x20, 0x20, 0x08, 0x00, 0x00, 0x44, 0xA8, 0xB4, 0x58, 0xB4, 0x58, 0x00, 0x00, 0x44, 0xA8, 0xB4, 0x58 };
 
-    int fd = _wopen(path, O_CREAT | O_WRONLY | O_BINARY, 0666);
+    int fd = _open(path, O_CREAT | O_WRONLY | O_BINARY, 0666);
 
     _write(fd, pt0, sizeof(pt0));
     _lseek(fd, 0x1FE, SEEK_SET);
@@ -142,30 +142,19 @@ static void write_fat16_initial_image(const TCHAR* path)
 
 void CSummerCart::MakeInitialImage()
 {
-    TCHAR _strPath[1024];
+    CPath isoPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), "AUTO0.iso");
+    CPath vhdPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), "AUTO0.vhd");
 
-    SHGetFolderPath(NULL,
-        CSIDL_APPDATA,
-        NULL,
-        0,
-        _strPath);
+	const char* isoStr = isoPath;
+	const char* vhdStr = vhdPath;
 
-    PathAppend(_strPath, L"Luna-Project64");
-    CreateDirectory(_strPath, NULL); // can fail, ignore errors
-
-    TCHAR strPath2[1024];
-    wcscpy(strPath2, _strPath);
-
-    PathAppend(_strPath, L"AUTO0.iso");
-    PathAppend(strPath2, L"AUTO0.vhd");
-
-    if (_waccess(_strPath, 0) && _waccess(strPath2, 0))
+    if (_access(isoStr, 0) && _access(vhdStr, 0))
     {
-        write_fat16_initial_image(_strPath);
+        write_fat16_initial_image(isoStr);
     };
 
-    s_SdPath = _strPath;
-    s_VhdPath = strPath2;
+    s_SdPath = isoStr;
+    s_VhdPath = vhdStr;
 }
 
 CSummerCart::CSummerCart()

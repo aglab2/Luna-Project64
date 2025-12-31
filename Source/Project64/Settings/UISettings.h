@@ -76,6 +76,8 @@ enum UISettingID
 
     Rdn_NotesUser,
     Rdn_Color,
+
+    AppData_ConfigAppData,
 };
 
 float DPIScale(void);

@@ -41,6 +41,7 @@ void CGeneralOptionsPage::Init()
 	AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), (SettingID)Setting_EnableDiscordRPC);
     AddModCheckBox(GetDlgItem(IDC_GLOBAL_CHEATS), (SettingID)Setting_GlobalCheats);
     AddModCheckBox(GetDlgItem(IDC_RETROACHIEVEMENTS), (SettingID)Setting_RetroAchievements);
+    AddModCheckBox(GetDlgItem(IDC_CONFIG_APPDATA), (SettingID)AppData_ConfigAppData);
 
     CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), (SettingID)File_RecentGameFileCount, false);
     TxtBox->SetTextField(GetDlgItem(IDC_MAXROMS_TXT));

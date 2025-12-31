@@ -142,12 +142,10 @@ void CScriptInstance::StartScriptProc()
 
     if (m_TempPath)
     {
-        char AppdataPath[1024];
-        SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, AppdataPath);
-        PathAppendA(AppdataPath, "Luna-Project64\\Scripts\\");
-        PathAppendA(AppdataPath, m_TempPath);
-        stdstr fullPath = AppdataPath;
-        duk_int_t scriptresult = duk_peval_file(ctx, fullPath.c_str());
+        CPath FullPath(g_Settings->LoadStringVal(Cmd_AppdataDirectory));
+        FullPath.AppendDirectory("Scripts");
+		FullPath.SetName(m_TempPath);
+        duk_int_t scriptresult = duk_peval_file(ctx, FullPath);
         m_TempPath = nullptr;
 
         if (scriptresult != 0)

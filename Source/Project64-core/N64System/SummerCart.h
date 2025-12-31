@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <Common/path.h>
+
 class CSummerCart
 {
 public:
@@ -18,12 +20,12 @@ public:
     uint8_t* Buffer() { return m_Buffer; }
     void Reset();
 
-    static const std::wstring& SdPath() { return s_SdPath; }
-    static const std::wstring& VhdPath() { return s_VhdPath; }
+    static const std::string& SdPath()  { return s_SdPath;  }
+    static const std::string& VhdPath() { return s_VhdPath; }
 
 private:
-    static std::wstring s_SdPath;
-    static std::wstring s_VhdPath;
+    static std::string s_SdPath;
+    static std::string s_VhdPath;
 
     FILE* m_SdFile;
     uint8_t m_Buffer[8192];
