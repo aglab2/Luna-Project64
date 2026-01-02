@@ -29,4 +29,5 @@ private:
     uint32_t  m_BytesPerSecond;
     int32_t   m_CountsPerByte;
     int32_t   m_FramesPerSecond;
+    uint32_t  m_DelayedCarry;
 };

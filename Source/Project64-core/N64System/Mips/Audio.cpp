@@ -14,6 +14,7 @@ CAudio::~CAudio()
 
 void CAudio::Reset()
 {
+	m_DelayedCarry = 0;
     m_SecondBuff = 0;
     m_Status = 0;
     m_BytesPerSecond = 0;
