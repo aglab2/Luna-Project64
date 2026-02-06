@@ -635,23 +635,8 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExt
 
 bool CMipsMemoryVM::LH_NonMemory(uint32_t PAddr, uint32_t* Value, bool/* SignExtend*/)
 {
-    if (PAddr < 0x800000)
-    {
-        *Value = 0;
-        return true;
-    }
-
-    if (PAddr >= 0x10000000 && PAddr < 0x16000000)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    //	switch (PAddr & 0xFFF00000)
-    //	{
-    //	default:
     *Value = 0;
-    return false;
-    //	}
-    //	return true;
+    return true;
 }
 
 bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
