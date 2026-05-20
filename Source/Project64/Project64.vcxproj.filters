@@ -111,6 +111,9 @@
     <ClCompile Include="UserInterface\SettingsConfig.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\SdcardFsUI.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
     <ClCompile Include="Settings\GuiSettings.cpp">
       <Filter>Source Files\Settings Files</Filter>
     </ClCompile>
@@ -267,6 +270,15 @@
     <ClCompile Include="GitHubUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="diskio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ffunicode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -288,6 +300,9 @@
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\SettingsConfig.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\SdcardFsUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\ModifiedCheckBox.h">
@@ -522,6 +537,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GitHubUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ffconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="diskio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

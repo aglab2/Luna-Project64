@@ -6,6 +6,7 @@
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/SummerCart.h>
 #include <Project64\UserInterface\About.h>
+#include "SdcardFsUI.h"
 #include "SdCardMounter.h"
 #include <comutil.h>
 #include <windows.h>
@@ -344,52 +345,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     {
     case ID_FILE_OPEN_ROM: OnOpenRom(hWnd); break;
     case ID_FILE_OPEN_COMBO: OnOpenCombo(hWnd); break;
-    case ID_FILE_MOUNT_SDCARD: 
-    try
-    {
-        SdCardMounter::switchStates();
-        auto state = SdCardMounter::getState();
-        if (state == SdCardMounter::State::VHD)
-        {
-            invokeDefaultOpenAction(CSummerCart::VhdPath().c_str());
-        }
-
-        if (state == SdCardMounter::VHD)
-        {
-            // ShellExecuteA(NULL, "open", g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), NULL, NULL, SW_SHOWNORMAL);
-        }
-        else
-        {
-            MessageBox(hWnd, wGS(MSG_SDCARD_UNMOUNTED).c_str(), wGS(MSG_SDCARD_TITLE).c_str(), MB_OK);
-        }
-        {
-            MENUITEMINFO MenuInfo = { 0 };
-            wchar_t String[256];
-            MenuInfo.cbSize = sizeof(MENUITEMINFO);
-            MenuInfo.fMask = MIIM_TYPE;
-            MenuInfo.fType = MFT_STRING;
-            MenuInfo.fState = MFS_ENABLED;
-            MenuInfo.dwTypeData = String;
-            MenuInfo.cch = 256;
-
-            GetMenuItemInfo(m_MenuHandle, ID_FILE_MOUNT_SDCARD, false /*lookup by identifier*/, &MenuInfo);
-            wcscpy(String, state ? wGS(MENU_UNMOUNT_SDCARD).c_str() : wGS(MENU_MOUNT_SDCARD).c_str());
-            SetMenuItemInfo(m_MenuHandle, ID_FILE_MOUNT_SDCARD, false /*lookup by identifier*/, &MenuInfo);
-        }
-    }
-    catch (...)
-    {
-        auto state = SdCardMounter::getState();
-        if (state == SdCardMounter::State::VHD)
-		{
-            MessageBox(hWnd, wGS(MSG_SDCARD_UNMOUNT_FAILED).c_str(), wGS(MSG_MSGBOX_ERROR_TITLE).c_str(), MB_ICONERROR);
-		}
-        else
-        {
-            MessageBox(hWnd, wGS(MSG_SDCARD_MOUNT_FAILED).c_str(), wGS(MSG_MSGBOX_ERROR_TITLE).c_str(), MB_ICONERROR);
-        }
-    }
-    break;
+    case ID_FILE_MOUNT_SDCARD: CSdcardFsUI().Display(hWnd); break;
     case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://github.com/Luna-Project64/Luna-Project64/issues", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:

@@ -166,6 +166,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="diskio.cpp" />
+    <ClCompile Include="ff.cpp" />
+    <ClCompile Include="ffunicode.cpp" />
     <ClCompile Include="GitHubUpdater.cpp" />
     <ClCompile Include="SdCardMounter.cpp" />
     <ClCompile Include="DarkMode.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="UserInterface\ProjectSupport.cpp" />
     <ClCompile Include="UserInterface\RomBrowser.cpp" />
     <ClCompile Include="UserInterface\RomInformation.cpp" />
+    <ClCompile Include="UserInterface\SdcardFsUI.cpp" />
     <ClCompile Include="UserInterface\SettingsConfig.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp" />
@@ -243,6 +247,9 @@
     <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="diskio.h" />
+    <ClInclude Include="ff.h" />
+    <ClInclude Include="ffconf.h" />
     <ClInclude Include="GitHubUpdater.h" />
     <ClInclude Include="SdCardMounter.h" />
     <ClInclude Include="DarkMode.h" />
@@ -299,6 +306,7 @@
     <ClInclude Include="UserInterface\resource.h" />
     <ClInclude Include="UserInterface\RomBrowser.h" />
     <ClInclude Include="UserInterface\RomInformation.h" />
+    <ClInclude Include="UserInterface\SdcardFsUI.h" />
     <ClInclude Include="UserInterface\SettingsConfig.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-AdvancedOptions.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h" />
