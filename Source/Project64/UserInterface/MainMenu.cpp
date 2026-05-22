@@ -7,7 +7,6 @@
 #include <Project64-core/N64System/SummerCart.h>
 #include <Project64\UserInterface\About.h>
 #include "SdcardFsUI.h"
-#include "SdCardMounter.h"
 #include <comutil.h>
 #include <windows.h>
 #include <commdlg.h>
@@ -1069,14 +1068,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     FileMenu.push_back(Item);
     Item.Reset(ID_FILE_OPEN_COMBO, MENU_OPEN_COMBO, m_ShortCuts.ShortCutString(ID_FILE_OPEN_COMBO, RunningState));
     FileMenu.push_back(Item);
-    if (SdCardMounter::State::VHD == SdCardMounter::getState())
-    {
-        FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_UNMOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
-    }
-    else
+
+    if (!CPURunning)
     {
         FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_MOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
     }
+
     if (!inBasicMode)
     {
         Item.Reset(ID_FILE_ROM_INFO, MENU_ROM_INFO, m_ShortCuts.ShortCutString(ID_FILE_ROM_INFO, RunningState));

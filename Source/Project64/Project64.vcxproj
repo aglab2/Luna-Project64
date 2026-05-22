@@ -170,7 +170,6 @@
     <ClCompile Include="ff.cpp" />
     <ClCompile Include="ffunicode.cpp" />
     <ClCompile Include="GitHubUpdater.cpp" />
-    <ClCompile Include="SdCardMounter.cpp" />
     <ClCompile Include="DarkMode.cpp" />
     <ClCompile Include="DarkModeUtils.cpp" />
     <ClCompile Include="UserInterface\About.cpp" />
@@ -247,11 +246,11 @@
     <ClCompile Include="UserInterface\WTLControls\wtl-BitmapPicture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dirent_compat.h" />
     <ClInclude Include="diskio.h" />
     <ClInclude Include="ff.h" />
     <ClInclude Include="ffconf.h" />
     <ClInclude Include="GitHubUpdater.h" />
-    <ClInclude Include="SdCardMounter.h" />
     <ClInclude Include="DarkMode.h" />
     <ClInclude Include="DarkModeUtils.h" />
     <ClInclude Include="IatHook.h" />

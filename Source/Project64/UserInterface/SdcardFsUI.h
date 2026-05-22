@@ -64,7 +64,7 @@ private:
     void InsertFsEntry(const std::string & parentPath, const FsEntry & entry);
     int ItemFromScreenPoint(POINT pt) const;
     ListItemData * GetItemData(int index) const;
-    ListItemData * GetSelectedItemData() const;
+    std::vector<ListItemData *> GetSelectedItemData() const;
     void NavigateToPath(const std::string & path);
     void NavigateBack();
     void UpdatePathLabel();
@@ -75,9 +75,9 @@ private:
     void OnCreateDirectorySelected();
     void OnDeleteSelected();
 
-    bool FsUploadFile(const std::wstring & hostFilePath, const std::string & fsDestinationPath);
-    bool FsDownloadFile(const std::string & fsSourcePath, const std::wstring & hostDestinationPath);
-    bool FsCreateDirectory(const std::string & fsPath);
+    FF::FRESULT FsUploadFile(const std::wstring & hostFilePath, const std::string & fsDestinationPath, bool canReplace);
+    FF::FRESULT FsDownloadFile(const std::string & fsSourcePath, const std::wstring & hostDestinationPath, bool canReplace);
+    FF::FRESULT FsCreateDirectory(const std::string & fsPath);
 
     static std::wstring ToWide(const std::string & text);
     static std::string JoinFsPath(const std::string & parent, const std::string & name);

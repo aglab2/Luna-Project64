@@ -258,9 +258,6 @@
     <ClCompile Include="UserInterface\RomBrowser.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
-    <ClCompile Include="SdCardMounter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DarkMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -521,9 +518,6 @@
     <ClInclude Include="UserInterface\CheatUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
-    <ClInclude Include="SdCardMounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DarkMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -546,6 +540,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="diskio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dirent_compat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
