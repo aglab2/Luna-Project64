@@ -86,6 +86,9 @@
 #define IDD_Support_RequestCode         216
 #define IDD_Settings_GameDiskDrive      217
 #define IDD_Enhancement_Plugins         218
+#define IDD_SDCARD_FS_UI                226
+#define IDD_SDCARD_NAME_INPUT           227
+#define IDD_SDCARD_REPLACE_CONFIRM      228
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -893,6 +896,15 @@
 #define IDC_GFX_PLUGIN                  1731
 #define IDC_INPUT_PLUGIN                1732
 #define IDC_DARKTHEME                   1732
+#define IDC_SDCARD_LIST                 1733
+#define IDC_SDCARD_PROMPT               1734
+#define IDC_SDCARD_INPUT_NAME           1735
+#define IDC_SDCARD_PATH_LABEL           1736
+#define IDC_SDCARD_REPLACE_MESSAGE      1737
+#define IDC_SDCARD_REPLACE_SKIP         1738
+#define IDC_SDCARD_REPLACE_SKIP_ALL     1739
+#define IDC_SDCARD_REPLACE_REPLACE      1740
+#define IDC_SDCARD_REPLACE_REPLACE_ALL  1741
 #define VERSION_BUILD                   5672
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -960,14 +972,19 @@
 #define ID_POPUP_EDIT                   40162
 #define ID_POPUP_DELETE                 40163
 #define ID_POPUP_ADDENHANCEMENT         40164
+#define ID_SDCARD_UPLOAD                40165
+#define ID_SDCARD_DOWNLOAD              40166
+#define ID_SDCARD_CREATE_DIRECTORY      40167
+#define ID_SDCARD_BACK                  40168
+#define ID_SDCARD_DELETE                40169
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        226
-#define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1733
+#define _APS_NEXT_RESOURCE_VALUE        229
+#define _APS_NEXT_COMMAND_VALUE         40170
+#define _APS_NEXT_CONTROL_VALUE         1742
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
