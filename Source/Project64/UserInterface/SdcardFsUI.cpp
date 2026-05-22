@@ -995,6 +995,7 @@ void CSdcardFsUI::OnDownloadSelected()
                 MessageBoxA(NULL, ("Failed to download the file '" + selected->Path + "'").c_str(), "Download", MB_OK | MB_ICONERROR);
 			}
 
+            MessageBox((L"File '" + FileNameFromFsPath(selected->Path) + L"' was downloaded").c_str(), L"Download", MB_OK | MB_ICONINFORMATION);
             return;
         }
     }
@@ -1159,15 +1160,63 @@ void CSdcardFsUI::OnDeleteSelected()
         return;
     }
 
+    struct Action
+    {
+		std::string Path;
+		bool Retried;
+    };
+
+    std::vector<Action> actions;
+
     for (ListItemData * selected : selectedItems)
     {
-        FF::FRESULT result = FF::f_unlink(selected->Path.c_str());
+		actions.push_back(Action{ selected->Path, false });
+    }
+
+	bool skipPrompts = false;
+    while (!actions.empty())
+    {
+        Action action = actions.back();
+        actions.pop_back();
+
+        FF::FRESULT result = FF::f_unlink(action.Path.c_str());
         if (result == FF::FR_OK)
         {
             continue;
         }
 
+        if ((result == FF::FRESULT::FR_DENIED && action.Retried) || (result != FF::FRESULT::FR_DENIED))
+        {
+			auto decision = PromptForReplacement(m_hWnd, ToWide(action.Path), L"could not be deleted", false);
+            if (decision != ReplaceDecision::Cancel)
+            {
+                break;
+			}
+            if (decision == ReplaceDecision::SkipAll)
+            {
+                skipPrompts = true;
+            }
+        }
+		else // FR_DENIED on first try - dir?
+        {
+            actions.push_back(action);
 
+            FF::DIR dir;
+            FF::FILINFO fi;
+            FF::FRESULT res = FF::f_opendir(&dir, action.Path.c_str());
+            if (res == FF::FRESULT::FR_OK)
+            {
+                while (FF::FR_OK == FF::f_readdir(&dir, &fi) && fi.fname[0] != '\0')
+                {
+                    if (strcmp(fi.fname, ".") == 0 || strcmp(fi.fname, "..") == 0)
+                    {
+                        continue;
+                    }
+                    actions.push_back(Action{ action.Path + "/" + fi.fname, false });
+                }
+                FF::f_closedir(&dir);
+            }
+        }
     }
 
     RefreshCurrentDirectory();
