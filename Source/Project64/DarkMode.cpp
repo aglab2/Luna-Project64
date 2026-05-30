@@ -575,7 +575,7 @@ LRESULT CALLBACK CallWndSubClassProc(HWND hWnd, UINT uMsg, WPARAM wParam,
             case BS_AUTORADIOBUTTON: // 0x9
             case BS_CHECKBOX: // 0x2
             case BS_GROUPBOX: // 0x7
-                // SetWindowTheme(hWnd, L"wstr", L"wstr");
+                SetWindowTheme(hWnd, L"wstr", L"wstr");
                 break;
             case BS_LEFT: // 0x100
             case BS_PUSHBUTTON: // 0x0

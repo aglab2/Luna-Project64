@@ -9,8 +9,8 @@
 // File menu
 #100#  "&Fichier"
 #101#  "&Ouvrir une ROM"
-#111#  "Mount SD Card"
-#112#  "Unmount SD Card"
+#111#  "Mount SD Card..."
+#112#  "Emulation profile.."
 #102#  "&Infos sur la ROM…"
 #103#  "Démarrer l’émulation"
 #104#  "Arrêter l’émulation"

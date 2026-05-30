@@ -1,5 +1,6 @@
 #pragma once
 #include <Project64/Settings/UISettings.h>
+#include "ProfileManager.h"
 
 enum MainMenuID
 {
@@ -74,7 +75,7 @@ enum MainMenuID
     ID_HELP_SUPPORT_PROJECT64, ID_HELP_SUPPORT_LUNA, ID_HELP_DISCORD, ID_HELP_WEBSITE, ID_HELP_ABOUT,
 
     // New stuff
-    ID_FILE_MOUNT_SDCARD, ID_DEBUGGER_ENABLE, ID_DEBUGGER_DISABLE, ID_HELP_OPEN_APPDATA,
+    ID_FILE_MOUNT_SDCARD, ID_FILE_PROFILES, ID_DEBUGGER_ENABLE, ID_DEBUGGER_DISABLE, ID_HELP_OPEN_APPDATA,
 };
 
 class CMainMenu :
@@ -82,7 +83,7 @@ class CMainMenu :
     private CDebugSettings
 {
 public:
-    CMainMenu(CMainGui * Window);
+    CMainMenu(CMainGui* hMainWindow, ProfileManager& profileManager);
     ~CMainMenu();
 
     int ProcessAccelerator(HWND hWnd, void * lpMsg);
@@ -131,4 +132,5 @@ private:
     SettingList m_ChangeSettingList;
     UISettingList m_ChangeUISettingList;
     CriticalSection m_CS;
+    ProfileManager& m_ProfileManager;
 };

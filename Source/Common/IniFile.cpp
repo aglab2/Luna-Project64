@@ -1,4 +1,5 @@
 #include "IniFile.h"
+#include <algorithm>
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -922,6 +923,46 @@ void CIniFileBase::GetVectorOfSections(SectionList & sections)
     {
         sections.insert(iter->first);
     }
+}
+
+std::vector<std::string> CIniFileBase::GetVectorOfSectionsSorted()
+{
+	struct SectionWithPos
+	{
+		std::string name;
+		long pos;
+	};
+
+	std::vector<SectionWithPos> sectionsWithPos;
+
+	CGuard Guard(m_CS);
+	if (!m_File.IsOpen())
+	{
+		return {};
+	}
+
+	{
+		std::string DoesNotExist = FormatStr("DoesNotExist%d%d%d", rand(), rand(), rand());
+		MoveToSectionNameData(DoesNotExist.c_str(), false);
+	}
+
+	for (const auto& [name, pos] : m_SectionsPos)
+	{
+		sectionsWithPos.push_back({ name, pos });
+	}
+
+	std::sort(sectionsWithPos.begin(), sectionsWithPos.end(), [](const SectionWithPos& a, const SectionWithPos& b) {
+		return a.pos < b.pos;
+		});
+
+	std::vector<std::string> sections;
+	sections.reserve(sectionsWithPos.size());
+	for (auto& section : sectionsWithPos)
+	{
+		sections.push_back(std::move(section.name));
+	}
+
+	return sections;
 }
 
 std::string CIniFileBase::FormatStr(const char * strFormat, ...)

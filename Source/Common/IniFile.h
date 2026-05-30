@@ -59,6 +59,7 @@ public:
     void SetCustomSort(SortData SortFunction);
 
     void GetVectorOfSections(SectionList & sections);
+    std::vector<std::string> GetVectorOfSectionsSorted();
     const std::string &GetFileName() { return m_FileName; }
 
     void DropCache(void);

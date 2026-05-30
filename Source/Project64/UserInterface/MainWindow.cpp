@@ -21,8 +21,8 @@ void EnterLogOptions(HWND hwndOwner);
 
 LRESULT CALLBACK MainGui_Proc(HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
 
-CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
-    CRomBrowser(m_hMainWindow, m_hStatusWnd),
+CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle, ProfileManager& profileManager) :
+    CRomBrowser(m_hMainWindow, m_hStatusWnd, profileManager),
     m_ThreadId(GetCurrentThreadId()),
     m_bMainWindow(bMainWindow),
     m_Created(false),
@@ -959,6 +959,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
             if (_this == nullptr) { break; }
+
+            if (_this->RomBrowserVisible() && _this->RomBrowserCommand(wParam))
+                return true;
 
             switch (LOWORD(wParam)) {
             case ID_POPUPMENU_PLAYGAME: 

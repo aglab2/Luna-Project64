@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "SdcardFsUI.h"
+#include "Common/StrKit.h"
 
 #include "dirent_compat.h"
 #include "ff.h"
@@ -55,57 +56,12 @@ namespace
 
     std::wstring FileNameFromFsPath(const std::string & path)
     {
-        auto toWide = [](const std::string & text) -> std::wstring
-        {
-            if (text.empty())
-            {
-                return {};
-            }
-
-            int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, text.c_str(), -1, nullptr, 0);
-            if (sizeNeeded <= 0)
-            {
-                return {};
-            }
-
-            std::wstring wideText((size_t)sizeNeeded, L'\0');
-            MultiByteToWideChar(CP_UTF8, 0, text.c_str(), -1, &wideText[0], sizeNeeded);
-            if (!wideText.empty() && wideText.back() == L'\0')
-            {
-                wideText.pop_back();
-            }
-            return wideText;
-        };
-
         size_t slashPos = path.find_last_of('/');
         if (slashPos == std::string::npos)
         {
-            return toWide(path);
+            return ToWide(path);
         }
-        return toWide(path.substr(slashPos + 1));
-    }
-
-    std::string ToUtf8(const std::wstring & text)
-    {
-        if (text.empty())
-        {
-            return {};
-        }
-
-        int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, text.c_str(), -1, nullptr, 0, nullptr, nullptr);
-        if (sizeNeeded <= 0)
-        {
-            return {};
-        }
-
-        std::string utf8Text((size_t)sizeNeeded, '\0');
-        WideCharToMultiByte(CP_UTF8, 0, text.c_str(), -1, &utf8Text[0], sizeNeeded, nullptr, nullptr);
-
-        if (!utf8Text.empty() && utf8Text.back() == '\0')
-        {
-            utf8Text.pop_back();
-        }
-        return utf8Text;
+        return ToWide(path.substr(slashPos + 1));
     }
 
     void Trim(std::string & text)
@@ -479,10 +435,7 @@ CSdcardFsUI::CSdcardFsUI()
 
 CSdcardFsUI::~CSdcardFsUI()
 {
-    if (m_FileList.m_hWnd != nullptr)
-    {
-        m_FileList.DeleteAllItems();
-    }
+    m_FileList.DeleteAllItems();
     FF::f_unmount("");
 	FF::disk_ioctl(0, CTRL_EJECT, nullptr);
 }
@@ -511,6 +464,8 @@ LRESULT CSdcardFsUI::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
     NavigateToPath("/");
     ResizeControlsToClient();
+
+    DragAcceptFiles(true);
 
     return TRUE;
 }
@@ -630,6 +585,36 @@ LRESULT CSdcardFsUI::OnDeleteCommand(WORD, WORD, HWND, BOOL&)
     return 0;
 }
 
+LRESULT CSdcardFsUI::OnDropFiles(HDROP hDrop)
+{
+	if (hDrop == nullptr)
+	{
+		return 0;
+	}
+
+	std::vector<std::wstring> filePaths;
+
+	UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, nullptr, 0);
+	for (UINT i = 0; i < fileCount; i++)
+	{
+		UINT size = DragQueryFile(hDrop, i, NULL, 0);
+		if (size <= 0)
+		{
+			continue;
+		}
+
+		std::wstring filePath(size + 1, L'\0');
+		size = DragQueryFile(hDrop, i, &filePath[0], size + 1);
+		filePath.resize(size);
+		filePaths.push_back(std::move(filePath));
+	}
+
+	DragFinish(hDrop);
+
+	UploadSelected(filePaths);
+	return 0;
+}
+
 LRESULT CSdcardFsUI::OnListItemActivate(NMHDR * phdr)
 {
     NMITEMACTIVATE * activateInfo = (NMITEMACTIVATE *)phdr;
@@ -657,11 +642,6 @@ LRESULT CSdcardFsUI::OnListItemDeleted(NMHDR * phdr)
 
 void CSdcardFsUI::ResizeControlsToClient()
 {
-    if (m_FileList.m_hWnd == nullptr)
-    {
-        return;
-    }
-
     RECT clientRect;
     GetClientRect(&clientRect);
     const int margin = 8;
@@ -844,9 +824,14 @@ std::string CSdcardFsUI::FormatDisplayPath(const std::string & path)
 
 void CSdcardFsUI::OnUploadSelected()
 {
+    std::vector<std::wstring> selectedHostPaths = ShowOpenFileDialog(m_hWnd);
+    UploadSelected(selectedHostPaths);
+}
+
+void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPaths)
+{
     const std::string& destinationDir = m_CurrentPath;
 
-    std::vector<std::wstring> selectedHostPaths = ShowOpenFileDialog(m_hWnd);
     bool failPrompts = true;
 	bool replacePrompts = true;
 
@@ -1313,29 +1298,6 @@ FF::FRESULT CSdcardFsUI::FsDownloadFile(const std::string & fsSourcePath, const 
     FF::f_close(&fil);
 
     return result;
-}
-
-std::wstring CSdcardFsUI::ToWide(const std::string & text)
-{
-    if (text.empty())
-    {
-        return std::wstring();
-    }
-
-    int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, text.c_str(), -1, nullptr, 0);
-    if (sizeNeeded <= 0)
-    {
-        return std::wstring();
-    }
-
-    std::wstring wideText((size_t)sizeNeeded, L'\0');
-    MultiByteToWideChar(CP_UTF8, 0, text.c_str(), -1, &wideText[0], sizeNeeded);
-
-    if (!wideText.empty() && wideText.back() == L'\0')
-    {
-        wideText.pop_back();
-    }
-    return wideText;
 }
 
 std::string CSdcardFsUI::JoinFsPath(const std::string & parent, const std::string & name)

@@ -15,6 +15,7 @@ public:
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         MESSAGE_HANDLER(WM_SIZE, OnSize)
         MESSAGE_HANDLER(WM_CONTEXTMENU, OnContextMenu)
+        MSG_WM_DROPFILES(OnDropFiles)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseDialog)
         COMMAND_ID_HANDLER(ID_SDCARD_BACK, OnBackSelected)
         COMMAND_ID_HANDLER(ID_SDCARD_UPLOAD, OnUploadCommand)
@@ -56,6 +57,7 @@ private:
     LRESULT OnDownloadCommand(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnCreateDirectoryCommand(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnDeleteCommand(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnDropFiles(HDROP);
     LRESULT OnListItemActivate(NMHDR * phdr);
     LRESULT OnListItemDeleted(NMHDR * phdr);
 
@@ -75,11 +77,12 @@ private:
     void OnCreateDirectorySelected();
     void OnDeleteSelected();
 
+    void UploadSelected(const std::vector<std::wstring>&);
+
     FF::FRESULT FsUploadFile(const std::wstring & hostFilePath, const std::string & fsDestinationPath, bool canReplace);
     FF::FRESULT FsDownloadFile(const std::string & fsSourcePath, const std::wstring & hostDestinationPath, bool canReplace);
     FF::FRESULT FsCreateDirectory(const std::string & fsPath);
 
-    static std::wstring ToWide(const std::string & text);
     static std::string JoinFsPath(const std::string & parent, const std::string & name);
 
     CListViewCtrl m_FileList;

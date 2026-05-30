@@ -7,6 +7,7 @@
 #include <Project64-core/N64System/SummerCart.h>
 #include <Project64\UserInterface\About.h>
 #include "SdcardFsUI.h"
+#include "ProfilesConfigUI.h"
 #include <comutil.h>
 #include <windows.h>
 #include <commdlg.h>
@@ -15,10 +16,11 @@
 #include <Project64-core/RetroAchievements.h>
 #endif
 
-CMainMenu::CMainMenu(CMainGui * hMainWindow) :
+CMainMenu::CMainMenu(CMainGui * hMainWindow, ProfileManager& profileManager) :
     CBaseMenu(),
     m_ResetAccelerators(true),
-    m_Gui(hMainWindow)
+    m_Gui(hMainWindow),
+    m_ProfileManager(profileManager)
 {
     ResetMenu();
 
@@ -345,6 +347,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_FILE_OPEN_ROM: OnOpenRom(hWnd); break;
     case ID_FILE_OPEN_COMBO: OnOpenCombo(hWnd); break;
     case ID_FILE_MOUNT_SDCARD: CSdcardFsUI().Display(hWnd); break;
+    case ID_FILE_PROFILES: CProfilesConfigUI(m_ProfileManager).Display(hWnd); break;
     case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://github.com/Luna-Project64/Luna-Project64/issues", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
@@ -1072,6 +1075,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!CPURunning)
     {
         FileMenu.push_back(MENU_ITEM(ID_FILE_MOUNT_SDCARD, MENU_MOUNT_SDCARD, m_ShortCuts.ShortCutString(ID_FILE_MOUNT_SDCARD, RunningState)));
+        FileMenu.push_back(MENU_ITEM(ID_FILE_PROFILES, MENU_PROFILES, EMPTY_STDSTR));
     }
 
     if (!inBasicMode)

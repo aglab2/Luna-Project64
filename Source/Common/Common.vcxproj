@@ -131,6 +131,7 @@
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="StdString.cpp" />
+    <ClCompile Include="StrKit.cpp" />
     <ClCompile Include="SyncEvent.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="Trace.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="StdString.h" />
+    <ClInclude Include="StrKit.h" />
     <ClInclude Include="SyncEvent.h" />
     <ClInclude Include="Thread.h" />
     <ClInclude Include="Trace.h" />

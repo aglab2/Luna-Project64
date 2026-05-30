@@ -3,6 +3,7 @@
 #include <vector>
 #include <Project64/Settings/UISettings.h>
 #include <Project64-core/RomList/RomList.h>
+#include "ProfileManager.h"
 
 class CMainGui;
 class CPlugins;
@@ -75,7 +76,7 @@ class CRomBrowser :
     public CRomList
 {
 public:
-    CRomBrowser(HWND & hMainWindow, HWND & StatusWindow);
+    CRomBrowser(HWND & hMainWindow, HWND & StatusWindow, ProfileManager & profileManager);
     ~CRomBrowser(void);
     void  HighLightLastRom(void);
     void  HideRomList(void);
@@ -86,6 +87,7 @@ public:
     bool  RomBrowserVisible(void);
     bool  RomListDrawItem(int idCtrl, uint32_t lParam);
     bool  RomListNotify(int idCtrl, uint32_t pnmh);
+    bool  RomBrowserCommand(uint32_t wParam);
     void  SaveRomListColoumnInfo(void);
     void  SelectRomDir(void);
     void  ShowRomList(void);
@@ -95,7 +97,7 @@ public:
     static void GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false);
 
 private:
-    enum { IDC_ROMLIST = 223 };
+    enum { IDC_ROMLIST = 223, IDC_ROMBROWSER_PROFILE_PRESET_COMBO = 224 };
     enum
     {
         RB_FileName = 0, RB_InternalName = 1, RB_GoodName = 2,
@@ -119,8 +121,12 @@ private:
     void  RomAddedToList(int32_t ListPos);
     int   CalcSortPosition(uint32_t lParam);
     void  CreateRomListControl(void);
+    void  CreateProfilePresetControl(void);
     void  DeallocateBrushs(void);
     void  FixRomListWindow(void);
+    void  PopulateProfilePresetCombo(void);
+    void  ResizeProfilePresetControl(WORD nWidth, WORD listHeight);
+    void  ApplyProfilePresetFromCombo(int selectedIndex);
     void  MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut);
     void  RomList_ColoumnSortList(uint32_t pnmh);
     void  RomList_GetDispInfo(uint32_t pnmh);
@@ -148,6 +154,7 @@ private:
     HWND & m_MainWindow;
     HWND & m_StatusWindow;
     HWND m_hRomList;
+    HWND m_hProfilePresetCombo;
     ROMBROWSER_FIELDS_LIST m_Fields;
     FIELD_TYPE_LIST m_FieldType;
     std::string m_SelectedRom;
@@ -158,4 +165,5 @@ private:
     HBRUSH_MAP m_Brushes;
     std::string m_LastRom;
     stdstr m_WatchRomDir;
+    ProfileManager& m_ProfileManager;
 };
