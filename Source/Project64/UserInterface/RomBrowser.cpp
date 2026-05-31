@@ -7,16 +7,18 @@
 
 std::string CRomBrowser::m_UnknownGoodName;
 
-CRomBrowser::CRomBrowser(HWND & MainWindow, HWND & StatusWindow) :
+CRomBrowser::CRomBrowser(HWND & MainWindow, HWND & StatusWindow, ProfileManager& profileManager) :
     m_MainWindow(MainWindow),
     m_StatusWindow(StatusWindow),
     m_ShowingRomBrowser(false),
     m_AllowSelectionLastRom(true),
     m_WatchThreadID(0),
+    m_ProfileManager(profileManager),
     m_WatchThread(nullptr),
     m_WatchStopEvent(nullptr)
 {
     m_hRomList = 0;
+    m_hProfilePresetCombo = 0;
     m_Visible = false;
 
     GetFieldInfo(m_Fields);
@@ -292,8 +294,76 @@ void CRomBrowser::RomListReset(void)
 void CRomBrowser::CreateRomListControl(void)
 {
     m_hRomList = CreateWindow(WC_LISTVIEW, nullptr, WS_TABSTOP | WS_VISIBLE | WS_CHILD | LVS_OWNERDRAWFIXED | LVS_SINGLESEL | LVS_REPORT, 0, 0, 0, 0, m_MainWindow, (HMENU)IDC_ROMLIST, GetModuleHandle(nullptr), nullptr);
+    CreateProfilePresetControl();
     ResetRomBrowserColomuns();
     LoadRomList();
+}
+
+void CRomBrowser::CreateProfilePresetControl(void)
+{
+    m_hProfilePresetCombo = CreateWindow(
+        WC_COMBOBOX,
+        NULL,
+        WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | WS_VSCROLL,
+        0,
+        0,
+        0,
+        0,
+        m_MainWindow,
+        (HMENU)IDC_ROMBROWSER_PROFILE_PRESET_COMBO,
+        GetModuleHandle(nullptr),
+        nullptr);
+
+    // GLideN64 compatibility
+    LONG style = GetWindowLong(m_hProfilePresetCombo, GWL_STYLE);
+    SetWindowLong(m_hProfilePresetCombo, GWL_STYLE, style & ~RBS_VARHEIGHT);
+
+    PopulateProfilePresetCombo();
+}
+
+void CRomBrowser::PopulateProfilePresetCombo(void)
+{
+    SendMessage(m_hProfilePresetCombo, CB_RESETCONTENT, 0, 0);
+	const auto& names = m_ProfileManager.profileNames();
+    for (size_t i = 0; i < names.size(); i++)
+    {
+        SendMessage(m_hProfilePresetCombo, CB_ADDSTRING, 0, (LPARAM) names[i].c_str());
+    }
+    SendMessage(m_hProfilePresetCombo, CB_ADDSTRING, 0, (LPARAM) L"Custom");
+    RefreshProfilePresetIndex();
+}
+
+void CRomBrowser::RefreshProfilePresetIndex(void)
+{
+    int idx = m_ProfileManager.curProfileIndex();
+    const auto& names = m_ProfileManager.profileNames();
+    SendMessage(m_hProfilePresetCombo, CB_SETCURSEL, idx == -1 ? (int)names.size() : idx, 0);
+}
+
+void CRomBrowser::ResizeProfilePresetControl(WORD nWidth, WORD listHeight)
+{
+    if (m_hProfilePresetCombo == nullptr)
+    {
+        return;
+    }
+
+    const int margin = (int)(4 * DPIScale());
+    const int comboHeight = (int)(22 * DPIScale());
+    const int comboY = (int)listHeight + margin;
+    const int comboWidth = std::max(100, (int)nWidth - (margin * 2));
+
+    MoveWindow(m_hProfilePresetCombo, margin, comboY, comboWidth, comboHeight, TRUE);
+}
+
+void CRomBrowser::ApplyProfilePresetFromCombo(int selectedIndex)
+{
+    const auto& profiles = m_ProfileManager.profiles();
+    if (selectedIndex < 0 || selectedIndex >= (int)profiles.size())
+    {
+        return;
+	}
+
+	m_ProfileManager.activate(profiles[selectedIndex].Config);
 }
 
 void CRomBrowser::DeallocateBrushs(void)
@@ -442,7 +512,15 @@ void CRomBrowser::ResizeRomList(WORD nWidth, WORD nHeight)
             GetWindowRect(m_StatusWindow, &rc);
             nHeight -= (WORD)(rc.bottom - rc.top);
         }
-        MoveWindow(m_hRomList, 0, 0, nWidth, nHeight, TRUE);
+
+        WORD listHeight = nHeight;
+        const WORD profileComboSpace = (WORD)(30 * DPIScale());
+        if (listHeight > profileComboSpace)
+        {
+            listHeight -= profileComboSpace;
+        }
+        MoveWindow(m_hRomList, 0, 0, nWidth, listHeight, TRUE);
+        ResizeProfilePresetControl(nWidth, listHeight);
     }
 }
 
@@ -1098,6 +1176,8 @@ void CRomBrowser::ShowRomList(void)
     if (m_hRomList == nullptr) { CreateRomListControl(); }
     EnableWindow(m_hRomList, TRUE);
     ShowWindow(m_hRomList, SW_SHOW);
+    EnableWindow(m_hProfilePresetCombo, TRUE);
+    ShowWindow(m_hProfilePresetCombo, SW_SHOW);
     FixRomListWindow();
     m_AllowSelectionLastRom = true;
 
@@ -1135,6 +1215,8 @@ void CRomBrowser::HideRomList(void)
     // Disable the ROM list
     EnableWindow(m_hRomList, FALSE);
     ShowWindow(m_hRomList, SW_HIDE);
+    EnableWindow(m_hProfilePresetCombo, FALSE);
+    ShowWindow(m_hProfilePresetCombo, SW_HIDE);
 
     if (UISettingsLoadBool(RomBrowser_Maximized)) { ShowWindow(m_MainWindow, SW_RESTORE); }
 
@@ -1158,6 +1240,18 @@ void CRomBrowser::HideRomList(void)
     ShowWindow(m_MainWindow, SW_SHOW);
     BringWindowToTop(m_MainWindow);
     PostMessage(m_MainWindow, WM_MAKE_FOCUS, 0, 0);
+}
+
+bool CRomBrowser::RomBrowserCommand(uint32_t wParam)
+{
+    if (LOWORD(wParam) != IDC_ROMBROWSER_PROFILE_PRESET_COMBO || HIWORD(wParam) != CBN_SELCHANGE)
+    {
+        return false;
+    }
+
+    int selectedIndex = (int)SendMessage(m_hProfilePresetCombo, CB_GETCURSEL, 0, 0);
+    ApplyProfilePresetFromCombo(selectedIndex);
+    return true;
 }
 
 bool CRomBrowser::RomDirNeedsRefresh(void)

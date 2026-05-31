@@ -40,7 +40,7 @@ class CMainGui :
         bool res;
     };
 public:
-    CMainGui(bool bMainWindow, const char * WindowTitle = "");
+    CMainGui(bool bMainWindow, const char * WindowTitle, ProfileManager& profileManager);
     ~CMainGui(void);
 
     WPARAM ProcessAllMessages(void);

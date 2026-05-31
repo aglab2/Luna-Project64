@@ -55,7 +55,8 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         // Create the main window with menu
 		
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
-        CMainGui MainWindow(true, "Luna's Project64 v" VERSION_LUNA VERSION_LUNA_HOTFIX), HiddenWindow(false);
+        ProfileManager profileManager("profiles.ini");
+        CMainGui MainWindow(true, "Luna's Project64 v" VERSION_LUNA VERSION_LUNA_HOTFIX, profileManager), HiddenWindow(false, "", profileManager);
 
 #ifdef RETROACHIEVEMENTS
         bool raInitAsync = true;
@@ -63,7 +64,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             RA_Init(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
 #endif
 
-        CMainMenu MainMenu(&MainWindow);
+        CMainMenu MainMenu(&MainWindow, profileManager);
         CDebuggerUI Debugger;
         g_Debugger = &Debugger;
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);

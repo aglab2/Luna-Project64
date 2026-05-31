@@ -32,7 +32,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_FILE, "&File");
     DEF_STR(MENU_OPEN, "&Open ROM");
     DEF_STR(MENU_MOUNT_SDCARD, "Mount SD Card");
-    DEF_STR(MENU_UNMOUNT_SDCARD, "Unmount SD Card");
+    DEF_STR(MENU_PROFILES, "Profiles...");
     DEF_STR(MENU_ROM_INFO, "ROM &Info...");
     DEF_STR(MENU_START, "Start Emulation");
     DEF_STR(MENU_END, "&End Emulation");
