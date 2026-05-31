@@ -60,6 +60,10 @@ bool CPlugin::Load(const char * FileName)
     _LoadFunction("PluginLoaded", PluginOpened);
     LoadFunction(DllConfig);
     LoadFunction(DllAbout);
+    LoadFunction(LunaLoadConfig);
+	if (!LunaLoadConfig) LunaLoadConfig = [](auto...) { return false; };
+    LoadFunction(LunaSaveConfig);
+	if (!LunaSaveConfig) LunaSaveConfig = [](auto...) { return false; };
 
     LoadFunction(SetPluginNotification);
     if (SetPluginNotification)

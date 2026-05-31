@@ -26,6 +26,8 @@ public:
 
     void(CALL *DllAbout)  (void * hWnd);
     void(CALL *DllConfig) (void * hParent);
+    bool(CALL* LunaLoadConfig)(const char* name, void* out);
+    bool(CALL* LunaSaveConfig)(const char* name, const void* in);
 
     static bool ValidPluginVersion(PLUGIN_INFO & PluginInfo);
 

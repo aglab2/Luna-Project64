@@ -146,6 +146,8 @@ public:
 
     inline bool initilized(void) const { return m_initilized; }
 
+    static void CALL PluginChanged(CPlugins* _this);
+
 private:
     CPlugins(void);
     CPlugins(const CPlugins&);
@@ -155,8 +157,6 @@ private:
     void DestroyAudioPlugin(void);
     void DestroyRspPlugin(void);
     void DestroyControlPlugin(void);
-
-    static void CALL PluginChanged(CPlugins * _this);
 
     RenderWindow * m_MainWindow;
     RenderWindow * m_SyncWindow;

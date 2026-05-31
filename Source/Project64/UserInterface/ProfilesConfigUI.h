@@ -13,7 +13,7 @@ public:
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_HANDLER(IDC_PROFILE_PRESET_COMBO, CBN_SELCHANGE, OnProfilePresetChanged)
         COMMAND_RANGE_HANDLER(IDC_PROFILE_CPU_BASIC, IDC_PROFILE_MEMORY_CUSTOM, OnSelectionChanged)
-        COMMAND_ID_HANDLER(IDOK, OnApplyStub)
+        COMMAND_ID_HANDLER(IDOK, OnApply)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseDialog)
     END_MSG_MAP()
 
@@ -23,17 +23,14 @@ public:
     void Display(void * ParentWindow);
 
 private:
-    static constexpr int CustomProfileIndex = -1;
-
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL & /*bHandled*/);
     LRESULT OnProfilePresetChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
     LRESULT OnSelectionChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
-    LRESULT OnApplyStub(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
+    LRESULT OnApply(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
     LRESULT OnCloseDialog(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL & /*bHandled*/);
 
     int GetSelectedProfileIndex() const;
     const ProfileDefinition & GetSelectedProfile() const;
-    int FindMatchingProfileIndex(const ProfileSelection & selection) const;
     void SyncPresetSelectionFromUi(const ProfileSelection & selection);
     ProfileSelection GetUiSelection() const;
     void ApplySelectionToUi(const ProfileSelection & selection);

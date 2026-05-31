@@ -31,12 +31,20 @@ struct ProfileSelection
         Custom,
     };
 
+    struct GraphicsCfg
+    {
+        GraphicsMode mode;
+        bool ReduceInputDelay;
+        bool RemoveBlackBars;
+        bool EnableZeldaHacks;
+
+        bool operator==(const GraphicsCfg& other) const;
+        bool operator!=(const GraphicsCfg& other) const;
+    };
+
     CpuMode Cpu;
-    GraphicsMode Graphics;
     MemoryMode Memory;
-    bool ReduceInputDelay;
-    bool RemoveBlackBars;
-    bool EnableZeldaHacks;
+    GraphicsCfg Graphics;
 };
 
 struct ProfileDefinition
@@ -54,7 +62,12 @@ public:
 	const auto& profileNames() const { return m_ProfileNames; }
     void activate(ProfileSelection);
 
+    ProfileSelection curSelection() const;
+	int curProfileIndex() const;
+    int profileIndex(const ProfileSelection& selection) const;
+
 private:
+
     std::vector<ProfileDefinition> m_Profiles;
 	std::vector<std::wstring> m_ProfileNames;
 };

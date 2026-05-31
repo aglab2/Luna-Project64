@@ -347,7 +347,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_FILE_OPEN_ROM: OnOpenRom(hWnd); break;
     case ID_FILE_OPEN_COMBO: OnOpenCombo(hWnd); break;
     case ID_FILE_MOUNT_SDCARD: CSdcardFsUI().Display(hWnd); break;
-    case ID_FILE_PROFILES: CProfilesConfigUI(m_ProfileManager).Display(hWnd); break;
+    case ID_FILE_PROFILES: CProfilesConfigUI(m_ProfileManager).Display(hWnd); m_Gui->RefreshProfilePresetIndex(); break;
     case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://github.com/Luna-Project64/Luna-Project64/issues", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:

@@ -27,9 +27,12 @@ LRESULT CProfilesConfigUI::OnInitDialog(UINT, WPARAM, LPARAM, BOOL &)
         m_ProfilePreset.AddString(names[i].c_str());
     }
     m_ProfilePreset.AddString(g_CustomProfileName);
-    m_ProfilePreset.SetCurSel(0);
 
-    ApplySelectionToUi(GetSelectedProfile().Config);
+	auto selection = m_ProfileManager.curSelection();
+	auto selectedProfileIndex = m_ProfileManager.profileIndex(selection);
+    m_ProfilePreset.SetCurSel(selectedProfileIndex == -1 ? (int)profiles.size() : selectedProfileIndex);
+
+    ApplySelectionToUi(selection);
     UpdateUiState();
 
     return TRUE;
@@ -38,7 +41,7 @@ LRESULT CProfilesConfigUI::OnInitDialog(UINT, WPARAM, LPARAM, BOOL &)
 LRESULT CProfilesConfigUI::OnProfilePresetChanged(WORD, WORD, HWND, BOOL &)
 {
     int selectedProfileIndex = GetSelectedProfileIndex();
-    if (selectedProfileIndex != CustomProfileIndex)
+    if (selectedProfileIndex != -1)
     {
         ApplySelectionToUi(GetSelectedProfile().Config);
     }
@@ -53,7 +56,7 @@ LRESULT CProfilesConfigUI::OnSelectionChanged(WORD, WORD, HWND, BOOL &)
     return 0;
 }
 
-LRESULT CProfilesConfigUI::OnApplyStub(WORD, WORD, HWND, BOOL &)
+LRESULT CProfilesConfigUI::OnApply(WORD, WORD, HWND, BOOL &)
 {
     const int selectedProfileIndex = GetSelectedProfileIndex();
 	m_ProfileManager.activate(GetUiSelection());
@@ -77,7 +80,7 @@ int CProfilesConfigUI::GetSelectedProfileIndex() const
     const auto& profiles = m_ProfileManager.profiles();
     if (selectedIndex >= (int)profiles.size())
     {
-        return CustomProfileIndex;
+        return -1;
     }
     return selectedIndex;
 }
@@ -85,38 +88,18 @@ int CProfilesConfigUI::GetSelectedProfileIndex() const
 const ProfileDefinition & CProfilesConfigUI::GetSelectedProfile() const
 {
     int selectedIndex = GetSelectedProfileIndex();
-    if (selectedIndex == CustomProfileIndex)
+    if (selectedIndex == -1)
     {
         selectedIndex = 0;
     }
     return m_ProfileManager.profiles()[selectedIndex];
 }
 
-int CProfilesConfigUI::FindMatchingProfileIndex(const ProfileSelection & selection) const
-{
-	const auto& profiles = m_ProfileManager.profiles();
-    for (size_t i = 0; i < profiles.size(); i++)
-    {
-        const ProfileSelection & recommended = profiles[i].Config;
-        if (selection.Cpu != recommended.Cpu ||
-            selection.Graphics != recommended.Graphics ||
-            selection.Memory != recommended.Memory ||
-            selection.ReduceInputDelay != recommended.ReduceInputDelay ||
-            selection.RemoveBlackBars != recommended.RemoveBlackBars ||
-            selection.EnableZeldaHacks != recommended.EnableZeldaHacks)
-        {
-            continue;
-        }
-        return (int)i;
-    }
-    return CustomProfileIndex;
-}
-
 void CProfilesConfigUI::SyncPresetSelectionFromUi(const ProfileSelection & selection)
 {
-    int matchedIndex = FindMatchingProfileIndex(selection);
+    int matchedIndex = m_ProfileManager.profileIndex(selection);
 	const auto& profiles = m_ProfileManager.profiles();
-    int desiredIndex = matchedIndex == CustomProfileIndex ? (int)profiles.size() : matchedIndex;
+    int desiredIndex = matchedIndex == -1 ? (int)profiles.size() : matchedIndex;
     if (m_ProfilePreset.GetCurSel() != desiredIndex)
     {
         m_ProfilePreset.SetCurSel(desiredIndex);
@@ -150,23 +133,23 @@ ProfileSelection CProfilesConfigUI::GetUiSelection() const
 
     if (IsDlgButtonChecked(IDC_PROFILE_GFX_CUSTOM) == BST_CHECKED)
     {
-        selection.Graphics = ProfileSelection::GraphicsMode::Custom;
+        selection.Graphics.mode = ProfileSelection::GraphicsMode::Custom;
     }
     else if (IsDlgButtonChecked(IDC_PROFILE_GFX_FRAMEBUFFER) == BST_CHECKED)
     {
-        selection.Graphics = ProfileSelection::GraphicsMode::Framebuffer;
+        selection.Graphics.mode = ProfileSelection::GraphicsMode::Framebuffer;
     }
     else if (IsDlgButtonChecked(IDC_PROFILE_GFX_FRAMEBUFFER_DEPTH) == BST_CHECKED)
     {
-        selection.Graphics = ProfileSelection::GraphicsMode::FramebufferDepth;
+        selection.Graphics.mode = ProfileSelection::GraphicsMode::FramebufferDepth;
     }
     else if (IsDlgButtonChecked(IDC_PROFILE_GFX_LLE) == BST_CHECKED)
     {
-        selection.Graphics = ProfileSelection::GraphicsMode::LLE;
+        selection.Graphics.mode = ProfileSelection::GraphicsMode::LLE;
     }
     else
     {
-        selection.Graphics = ProfileSelection::GraphicsMode::Basic;
+        selection.Graphics.mode = ProfileSelection::GraphicsMode::Basic;
     }
 
     if (IsDlgButtonChecked(IDC_PROFILE_MEMORY_CUSTOM) == BST_CHECKED)
@@ -186,9 +169,9 @@ ProfileSelection CProfilesConfigUI::GetUiSelection() const
         selection.Memory = ProfileSelection::MemoryMode::Basic;
     }
 
-    selection.ReduceInputDelay = IsDlgButtonChecked(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY) == BST_CHECKED;
-    selection.RemoveBlackBars = IsDlgButtonChecked(IDC_PROFILE_GFX_REMOVE_BLACK_BARS) == BST_CHECKED;
-    selection.EnableZeldaHacks = IsDlgButtonChecked(IDC_PROFILE_GFX_ENABLE_ZELDA_HACKS) == BST_CHECKED;
+    selection.Graphics.ReduceInputDelay = IsDlgButtonChecked(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY) == BST_CHECKED;
+    selection.Graphics.RemoveBlackBars = IsDlgButtonChecked(IDC_PROFILE_GFX_REMOVE_BLACK_BARS) == BST_CHECKED;
+    selection.Graphics.EnableZeldaHacks = IsDlgButtonChecked(IDC_PROFILE_GFX_ENABLE_ZELDA_HACKS) == BST_CHECKED;
 
     return selection;
 }
@@ -208,7 +191,7 @@ void CProfilesConfigUI::ApplySelectionToUi(const ProfileSelection & selection)
     CheckRadioButton(IDC_PROFILE_CPU_BASIC, IDC_PROFILE_CPU_CUSTOM, cpuRadioId);
 
     int gfxRadioId = IDC_PROFILE_GFX_BASIC;
-    switch (selection.Graphics)
+    switch (selection.Graphics.mode)
     {
     case ProfileSelection::GraphicsMode::Framebuffer: gfxRadioId = IDC_PROFILE_GFX_FRAMEBUFFER; break;
     case ProfileSelection::GraphicsMode::FramebufferDepth: gfxRadioId = IDC_PROFILE_GFX_FRAMEBUFFER_DEPTH; break;
@@ -230,9 +213,9 @@ void CProfilesConfigUI::ApplySelectionToUi(const ProfileSelection & selection)
     }
     CheckRadioButton(IDC_PROFILE_MEMORY_BASIC, IDC_PROFILE_MEMORY_CUSTOM, memoryRadioId);
 
-    CheckDlgButton(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY, selection.ReduceInputDelay ? BST_CHECKED : BST_UNCHECKED);
-    CheckDlgButton(IDC_PROFILE_GFX_REMOVE_BLACK_BARS, selection.RemoveBlackBars ? BST_CHECKED : BST_UNCHECKED);
-    CheckDlgButton(IDC_PROFILE_GFX_ENABLE_ZELDA_HACKS, selection.EnableZeldaHacks ? BST_CHECKED : BST_UNCHECKED);
+    CheckDlgButton(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY, selection.Graphics.ReduceInputDelay ? BST_CHECKED : BST_UNCHECKED);
+    CheckDlgButton(IDC_PROFILE_GFX_REMOVE_BLACK_BARS, selection.Graphics.RemoveBlackBars ? BST_CHECKED : BST_UNCHECKED);
+    CheckDlgButton(IDC_PROFILE_GFX_ENABLE_ZELDA_HACKS, selection.Graphics.EnableZeldaHacks ? BST_CHECKED : BST_UNCHECKED);
 }
 
 void CProfilesConfigUI::UpdateUiState()
@@ -244,7 +227,7 @@ void CProfilesConfigUI::UpdateUiState()
 
 void CProfilesConfigUI::UpdateGraphicsCheckboxState(const ProfileSelection & selection)
 {
-    const bool enable = IsGraphicsHleFb(selection.Graphics);
+    const bool enable = IsGraphicsHleFb(selection.Graphics.mode);
 
     GetDlgItem(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY).EnableWindow(enable ? TRUE : FALSE);
     GetDlgItem(IDC_PROFILE_GFX_REMOVE_BLACK_BARS).EnableWindow(enable ? TRUE : FALSE);

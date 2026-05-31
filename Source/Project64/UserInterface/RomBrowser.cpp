@@ -329,7 +329,15 @@ void CRomBrowser::PopulateProfilePresetCombo(void)
     {
         SendMessage(m_hProfilePresetCombo, CB_ADDSTRING, 0, (LPARAM) names[i].c_str());
     }
-    SendMessage(m_hProfilePresetCombo, CB_SETCURSEL, 0, 0);
+    SendMessage(m_hProfilePresetCombo, CB_ADDSTRING, 0, (LPARAM) L"Custom");
+    RefreshProfilePresetIndex();
+}
+
+void CRomBrowser::RefreshProfilePresetIndex(void)
+{
+    int idx = m_ProfileManager.curProfileIndex();
+    const auto& names = m_ProfileManager.profileNames();
+    SendMessage(m_hProfilePresetCombo, CB_SETCURSEL, idx == -1 ? (int)names.size() : idx, 0);
 }
 
 void CRomBrowser::ResizeProfilePresetControl(WORD nWidth, WORD listHeight)

@@ -92,6 +92,7 @@ public:
     void  SelectRomDir(void);
     void  ShowRomList(void);
     bool  ShowingRomBrowser(void) { return m_ShowingRomBrowser; }
+    void  RefreshProfilePresetIndex();
     const char * CurrentedSelectedRom(void) { return m_SelectedRom.c_str(); }
 
     static void GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault = false);
