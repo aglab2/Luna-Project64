@@ -126,19 +126,13 @@ struct PinnedConfig
 };
 
 static const PinnedConfig sCpuPinnedSettings[] = {
-    { Game_UseTlb                 , true, true },
-    { Game_DelayDP                , true, true },
-    { Game_DelaySI                , true, false },
-    { Game_FuncLookupMode         , false, FuncFind_PhysicalLookup },
-    { Game_RspAudioSignal         , true, false },
-    { Game_UseHleAudio            , true, false },
-    { Game_AiCountPerBytes        , false, 0 },
-    { Game_AudioResetOnLoad       , true, false },
-    { Game_AllowROMWrites         , true, false },
-    { Game_CRC_Recalc             , true, false },
-    { Game_RandomizeSIPIInterrupts, true, true },
-    { Game_UnalignedDMA           , true, true },
-	{ Game_DiskSeekTiming         , false, DiskSeek_Turbo },
+    { Default_UseTlb                 , true, true },
+    { Default_AiCountPerBytes        , false, 0 },
+    { Default_RandomizeSIPIInterrupts, true, true },
+    { Default_UnalignedDMA           , true, true },
+	{ Default_DiskSeekTiming         , false, DiskSeek_Turbo },
+    { Default_SyncViaAudio           , true, true },
+    { Default_FixedAudio             , true, true },
 };
 
 static void applyCpuPinnedSettings()
@@ -182,10 +176,10 @@ static void apply(const CpuConfig& config)
 {
     g_Settings->SaveBool(Setting_ForceInterpreterCPU, config.ForceInterpreterCPU);
     g_Settings->SaveBool(Debugger_Enabled, config.DebuggerEnabled);
-    g_Settings->SaveBool(Game_32Bit, config.Game32Bit);
-    g_Settings->SaveBool(Game_RegCache, !config.SlowRecompiler);
-    g_Settings->SaveBool(Game_BlockLinking, !config.SlowRecompiler);
-    g_Settings->SaveBool(Game_FastSP, !config.SlowRecompiler);
+    g_Settings->SaveBool(Default_32Bit, config.Game32Bit);
+    g_Settings->SaveBool(Default_RegCache, !config.SlowRecompiler);
+    g_Settings->SaveBool(Default_BlockLinking, !config.SlowRecompiler);
+    g_Settings->SaveBool(Default_FastSP, !config.SlowRecompiler);
 
 	applyCpuPinnedSettings();
     // g_Settings->SaveDword(Game_LoadRomToMemory, false); // double check
@@ -200,9 +194,9 @@ static ProfileSelection::CpuMode curCpuMode()
         return ProfileSelection::CpuMode::Custom;
 	}
 
-	bool regCache = g_Settings->LoadBool(Game_RegCache);
-	bool blockLinking = g_Settings->LoadBool(Game_BlockLinking);
-	bool fastSP = g_Settings->LoadBool(Game_FastSP);
+	bool regCache = g_Settings->LoadBool(Default_RegCache);
+	bool blockLinking = g_Settings->LoadBool(Default_BlockLinking);
+	bool fastSP = g_Settings->LoadBool(Default_FastSP);
 
     bool slowRecompiler;
     if (regCache && blockLinking && fastSP)
@@ -220,16 +214,16 @@ static ProfileSelection::CpuMode curCpuMode()
 
     bool forceInterpreterCPU = g_Settings->LoadBool(Setting_ForceInterpreterCPU);
     bool debuggerEnabled = g_Settings->LoadBool(Debugger_Enabled);
-    bool game32Bit = g_Settings->LoadBool(Game_32Bit);
-    if (!forceInterpreterCPU && !debuggerEnabled && !game32Bit && !slowRecompiler)
+    bool game32Bit = g_Settings->LoadBool(Default_32Bit);
+    if (!forceInterpreterCPU && !debuggerEnabled && game32Bit && !slowRecompiler)
     {
         return ProfileSelection::CpuMode::Basic;
     }
-    if (!forceInterpreterCPU && !debuggerEnabled && game32Bit && !slowRecompiler)
+    if (!forceInterpreterCPU && !debuggerEnabled && !game32Bit && !slowRecompiler)
     {
         return ProfileSelection::CpuMode::HighAccuracy;
     }
-    if (!forceInterpreterCPU && !debuggerEnabled && game32Bit && slowRecompiler)
+    if (!forceInterpreterCPU && !debuggerEnabled && !game32Bit && slowRecompiler)
     {
         return ProfileSelection::CpuMode::HighAccuracyNoRecompiler;
     }
@@ -247,12 +241,11 @@ static void apply(ProfileSelection::CpuMode mode)
     switch (mode)
     {
         case ProfileSelection::CpuMode::Basic:
+            cfg.Game32Bit = true;
             break;
         case ProfileSelection::CpuMode::HighAccuracy:
-			cfg.Game32Bit = true;
             break;
         case ProfileSelection::CpuMode::HighAccuracyNoRecompiler:
-            cfg.Game32Bit = true;
 			cfg.SlowRecompiler = true;
             break;
         case ProfileSelection::CpuMode::Interpreter:
@@ -276,11 +269,11 @@ struct MemoryConfig
 
 static void apply(const MemoryConfig& config)
 {
-    g_Settings->SaveBool(Game_SMM_Cache, config.Cache);
-    g_Settings->SaveBool(Game_SMM_PIDMA, config.PIDMA);
-    g_Settings->SaveBool(Game_SMM_ValidFunc, config.ValidFunc);
-    g_Settings->SaveBool(Game_SMM_TLB, config.TLB);
-    g_Settings->SaveBool(Game_SMM_Protect, config.Protect);
+    g_Settings->SaveBool(Default_SMM_Cache, config.Cache);
+    g_Settings->SaveBool(Default_SMM_PIDMA, config.PIDMA);
+    g_Settings->SaveBool(Default_SMM_ValidFunc, config.ValidFunc);
+    g_Settings->SaveBool(Default_SMM_TLB, config.TLB);
+    g_Settings->SaveBool(Default_SMM_Protect_Memory, config.Protect);
 }
 
 static void apply(ProfileSelection::MemoryMode mode)
@@ -312,11 +305,11 @@ static void apply(ProfileSelection::MemoryMode mode)
 
 static ProfileSelection::MemoryMode curMemoryMode()
 {
-    bool cache = g_Settings->LoadBool(Game_SMM_Cache);
-    bool protect = g_Settings->LoadBool(Game_SMM_Protect);
-    bool validFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
-    bool pidma = g_Settings->LoadBool(Game_SMM_PIDMA);
-    bool tlb = g_Settings->LoadBool(Game_SMM_TLB);
+    bool cache = g_Settings->LoadBool(Default_SMM_Cache);
+    bool protect = g_Settings->LoadBool(Default_SMM_Protect_Memory);
+    bool validFunc = g_Settings->LoadBool(Default_SMM_ValidFunc);
+    bool pidma = g_Settings->LoadBool(Default_SMM_PIDMA);
+    bool tlb = g_Settings->LoadBool(Default_SMM_TLB);
     if (cache && !protect && validFunc && pidma && tlb)
     {
         return ProfileSelection::MemoryMode::Basic;
@@ -348,7 +341,7 @@ static ProfileSelection::GraphicsCfg curGraphicsMode()
 {
     ProfileSelection::GraphicsCfg cfg;
 
-    bool useHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
+    bool useHleGfx = g_Settings->LoadBool(Plugin_UseHleGfx);
     std::string gfxPlugin = g_Settings->LoadStringVal(Plugin_GFX_Current);
     if (useHleGfx)
     {
@@ -405,11 +398,11 @@ static void apply(ProfileSelection::GraphicsCfg cfg)
     case ProfileSelection::GraphicsMode::Basic:
     case ProfileSelection::GraphicsMode::Framebuffer:
     case ProfileSelection::GraphicsMode::FramebufferDepth:
-        g_Settings->SaveBool(Game_UseHleGfx, true);
+        g_Settings->SaveBool(Plugin_UseHleGfx, true);
         g_Settings->SaveString(Plugin_GFX_Current, "GFX\\GLideN64.dll");
         break;
     case ProfileSelection::GraphicsMode::LLE:
-        g_Settings->SaveBool(Game_UseHleGfx, false);
+        g_Settings->SaveBool(Plugin_UseHleGfx, false);
         g_Settings->SaveString(Plugin_GFX_Current, "GFX\\pj64-parallel-rdp.dll");
         break;
     case ProfileSelection::GraphicsMode::Custom:

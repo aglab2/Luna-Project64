@@ -78,6 +78,13 @@ enum SettingID
 	Default_RandomizeSIPIInterrupts,
 	Default_SMM_Protect_Memory,
     Default_DiskSeekTiming,
+    Default_SMM_Cache,
+    Default_SMM_ValidFunc,
+    Default_SMM_PIDMA,
+    Default_SMM_TLB,
+    Default_RegCache,
+	Default_BlockLinking,
+    Default_FastSP,
 
     // RDB settings
     Rdb_GoodName,

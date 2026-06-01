@@ -180,6 +180,13 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
 	AddHandler(Default_UnalignedDMA, new CSettingTypeApplication("Defaults", "Unaligned DMA", true));
 	AddHandler(Default_RandomizeSIPIInterrupts, new CSettingTypeApplication("Defaults", "Randomize SI/PI Interrupts", true));
 	AddHandler(Default_SMM_Protect_Memory, new CSettingTypeApplication("Defaults", "SMM-Protect", false));
+    AddHandler(Default_SMM_Cache, new CSettingTypeApplication("Defaults", "SMM-Cache", true));
+    AddHandler(Default_SMM_ValidFunc, new CSettingTypeApplication("Defaults", "SMM-ValidFunc", true));
+    AddHandler(Default_SMM_PIDMA, new CSettingTypeApplication("Defaults", "SMM-PIDMA", true));
+    AddHandler(Default_SMM_TLB, new CSettingTypeApplication("Defaults", "SMM-TLB", true));
+    AddHandler(Default_RegCache, new CSettingTypeApplication("Defaults", "RegCache", true));
+    AddHandler(Default_BlockLinking, new CSettingTypeApplication("Defaults", "BlockLinking", true));
+    AddHandler(Default_FastSP, new CSettingTypeApplication("Defaults", "FastSP", true));
     AddHandler(Default_DiskSeekTiming, new CSettingTypeApplication("Defaults", "Disk Seek Timing", (uint32_t)DiskSeek_Turbo));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
@@ -192,7 +199,7 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));
     AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
     AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", Default_32Bit));
-    AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", true));
+    AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", Default_FastSP));
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", Default_FixedAudio));
     AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Audio-Sync Audio", Default_SyncViaAudio));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
@@ -204,14 +211,14 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     AddHandler(Rdb_LoadRomToMemory, new CSettingTypeRomDatabase("Rom In Memory", false));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
-	AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
-	AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
-    AddHandler(Rdb_RegCache, new CSettingTypeRomDatabase("Reg Cache", true));
+	AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", Default_BlockLinking));
+	AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", Default_SMM_Cache));
+    AddHandler(Rdb_RegCache, new CSettingTypeRomDatabase("Reg Cache", Default_RegCache));
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
-    AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
-    AddHandler(Rdb_SMM_TLB, new CSettingTypeRomDatabase("SMM-TLB", true));
+    AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", Default_SMM_PIDMA));
+    AddHandler(Rdb_SMM_TLB, new CSettingTypeRomDatabase("SMM-TLB", Default_SMM_TLB));
     AddHandler(Rdb_SMM_Protect, new CSettingTypeRomDatabase("SMM-Protect", Default_SMM_Protect_Memory));
-    AddHandler(Rdb_SMM_ValidFunc, new CSettingTypeRomDatabase("SMM-FUNC", true));
+    AddHandler(Rdb_SMM_ValidFunc, new CSettingTypeRomDatabase("SMM-FUNC", Default_SMM_ValidFunc));
     AddHandler(Rdb_ViRefreshRate, new CSettingTypeRomDatabase("ViRefresh", Default_ViRefreshRate));
     AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", Default_AiCountPerBytes));
     AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
