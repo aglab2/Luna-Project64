@@ -340,7 +340,7 @@ static void invokeDefaultOpenAction(const char* path)
     ShellExecuteA(NULL, NULL, path, NULL, NULL, SW_SHOWNORMAL);
 }
 
-bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
+bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID, DWORD lparam)
 {
     switch (MenuID)
     {
@@ -755,6 +755,15 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_DISABLE:
         g_Settings->SaveBool(Debugger_Enabled, 0);
         ResetMenu();
+        break;
+    case ID_LUNA_CREATE_RENDER_HWND:
+    {
+        HWND* phwnd = (HWND*)lparam;
+        *phwnd = CreateWindowExW(0, L"Static", nullptr, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 1, 1, m_Gui->MainWindow(), NULL, GetModuleHandle(NULL), NULL);
+    }
+        break;
+    case ID_LUNA_DESTROY_RENDER_HWND:
+		DestroyWindow((HWND)lparam);
         break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)

@@ -36,6 +36,12 @@ CGfxPlugin::~CGfxPlugin()
     WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
 }
 
+struct LunaRenderApi
+{
+	HWND (*CreateRenderWindow)(HWND);
+	void (*DestroyRenderWindow)(HWND, HWND);
+};
+
 bool CGfxPlugin::LoadFunctions(void)
 {
     // Find entries for functions in DLL
@@ -49,6 +55,7 @@ bool CGfxPlugin::LoadFunctions(void)
     LoadFunction(ViStatusChanged);
     LoadFunction(ViWidthChanged);
     LoadFunction(SoftReset);
+    LoadFunction(LunaRegisterRenderWindowApi);
 
     // Version 0x104 functions
     _LoadFunction("DrawFullScreenStatus", DrawStatus);
@@ -90,6 +97,25 @@ bool CGfxPlugin::LoadFunctions(void)
     {
         GetDebugInfo(&m_GFXDebug);
     }
+
+    if (LunaRegisterRenderWindowApi)
+    {
+        LunaRenderApi rapi;
+        rapi.CreateRenderWindow = [](HWND parent) -> HWND
+        {
+            HWND result;
+            SendMessage(parent, WM_COMMAND, MAKEWPARAM(4339 /*ID_LUNA_CREATE_RENDER_HWND*/, 0), (LPARAM)&result);
+            return result;
+		};
+
+        rapi.DestroyRenderWindow = [](HWND parent, HWND window)
+        {
+			SendMessage(parent, WM_COMMAND, MAKEWPARAM(4340 /*ID_LUNA_DESTROY_RENDER_HWND*/, 0), (LPARAM)window);
+		};
+
+		LunaRegisterRenderWindowApi(&rapi);
+    }
+
     return true;
 }
 

@@ -76,6 +76,7 @@ enum MainMenuID
 
     // New stuff
     ID_FILE_MOUNT_SDCARD, ID_FILE_PROFILES, ID_DEBUGGER_ENABLE, ID_DEBUGGER_DISABLE, ID_HELP_OPEN_APPDATA,
+	ID_LUNA_CREATE_RENDER_HWND, ID_LUNA_DESTROY_RENDER_HWND,
 };
 
 class CMainMenu :
@@ -87,7 +88,7 @@ public:
     ~CMainMenu();
 
     int ProcessAccelerator(HWND hWnd, void * lpMsg);
-    bool ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID);
+    bool ProcessMessage(HWND hWnd, DWORD wNotifyCode, DWORD wID, DWORD lParam);
     void ResetMenu(void);
     void ResetAccelerators(void) { m_ResetAccelerators = true; }
 

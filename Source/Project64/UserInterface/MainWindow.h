@@ -74,6 +74,7 @@ public:
     void * GetModuleInstance(void) const;
 
     inline CProjectSupport & Support(void) { return m_Support; }
+	inline HWND MainWindow(void) const { return m_hMainWindow; }
 
 private:
     CMainGui(void);

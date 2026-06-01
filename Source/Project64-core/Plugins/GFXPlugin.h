@@ -57,6 +57,7 @@ public:
     void(CALL *ViStatusChanged) (void);
     void(CALL *ViWidthChanged)  (void);
     void(CALL *SoftReset)       (void);
+	void(CALL* LunaRegisterRenderWindowApi)(void* RenderWindowApi);
 
     // ROM browser
     void *(CALL * GetRomBrowserMenu)(void); // Items should have an ID between 4101 and 4200
