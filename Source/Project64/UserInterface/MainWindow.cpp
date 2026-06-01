@@ -1106,7 +1106,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         RA_InvokeDialog(LOWORD(wParam));
                         return 0;
                     }
-                    else if (_this->m_Menu->ProcessMessage(hWnd, HIWORD(wParam), LOWORD(wParam)))
+                    else if (_this->m_Menu->ProcessMessage(hWnd, HIWORD(wParam), LOWORD(wParam), lParam))
                     {
                         return true;
                     }
