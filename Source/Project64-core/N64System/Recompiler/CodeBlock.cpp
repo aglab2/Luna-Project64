@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <string.h>
+#include <Common/SipHash.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
@@ -761,7 +762,7 @@ bool CCodeBlock::Compile()
 
     uint32_t PAddr;
     g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
-    MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
+    m_Hash = siphashAsMd5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4);
 
     return true;
 }
