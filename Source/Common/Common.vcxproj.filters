@@ -68,6 +68,9 @@
     <ClCompile Include="StrKit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SipHash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriticalSection.h">
@@ -128,6 +131,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StrKit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SipHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

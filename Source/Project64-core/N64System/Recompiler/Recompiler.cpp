@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/SipHash.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
@@ -956,8 +957,7 @@ CCompiledFunc * CRecompiler::CompileCode()
             uint32_t PAddr;
             if (m_MMU.TranslateVaddr(Func->MinPC(), PAddr))
             {
-                MD5Digest Hash;
-                MD5(m_MMU.Rdram() + PAddr, (Func->MaxPC() - Func->MinPC()) + 4).get_digest(Hash);
+                MD5Digest Hash = siphashAsMd5(m_MMU.Rdram() + PAddr, (Func->MaxPC() - Func->MinPC()) + 4);
                 if (memcmp(Hash.digest, Func->Hash().digest, sizeof(Hash.digest)) == 0)
                 {
                     WriteTrace(TraceRecompiler, TraceInfo, "Using existing compiled code (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
