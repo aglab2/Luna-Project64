@@ -2,6 +2,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/Mips/Register.h>
+#include <Project64/MenuId.h>
 #include "ControllerPlugin.h"
 
 CControl_Plugin::CControl_Plugin(void) :
@@ -26,7 +27,7 @@ CControl_Plugin::~CControl_Plugin()
 bool CControl_Plugin::LoadFunctions(void)
 {
     // Find entries for functions in DLL
-    void(CALL *InitiateControllers)(void);
+    void(CALL * InitiateControllers)(void);
     LoadFunction(InitiateControllers);
     LoadFunction(ControllerCommand);
     LoadFunction(GetKeys);
@@ -34,6 +35,7 @@ bool CControl_Plugin::LoadFunctions(void)
     LoadFunction(WM_KeyDown);
     LoadFunction(WM_KeyUp);
     LoadFunction(RumbleCommand);
+    LoadFunction(LunaSetExCommandHandler);
 
     // Make sure DLL had all needed functions
     if (InitiateControllers == nullptr) { UnloadPlugin(); return false; }
@@ -52,7 +54,7 @@ bool CControl_Plugin::LoadFunctions(void)
     return true;
 }
 
-bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
+bool CControl_Plugin::Initiate(CN64System* System, RenderWindow* Window)
 {
     static uint8_t Buffer[100];
 
@@ -67,7 +69,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
     if (m_PluginInfo.Version == 0x0100)
     {
         // Get function from DLL
-        void(CALL *InitiateControllers_1_0)(void * hMainWindow, CONTROL Controls[4]);
+        void(CALL * InitiateControllers_1_0)(void* hMainWindow, CONTROL Controls[4]);
         _LoadFunction("InitiateControllers", InitiateControllers_1_0);
         if (InitiateControllers_1_0 == nullptr) { return false; }
 #ifdef _WIN32
@@ -94,7 +96,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         if (m_PluginInfo.Version == 0x0101)
         {
             // Get function from DLL
-            void(CALL *InitiateControllers_1_1)(CONTROL_INFO ControlInfo);
+            void(CALL * InitiateControllers_1_1)(CONTROL_INFO ControlInfo);
             _LoadFunction("InitiateControllers", InitiateControllers_1_1);
             if (InitiateControllers_1_1 == nullptr) { return false; }
 
@@ -104,7 +106,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         else if (m_PluginInfo.Version >= 0x0102)
         {
             // Get function from DLL
-            void(CALL *InitiateControllers_1_2)(CONTROL_INFO * ControlInfo);
+            void(CALL * InitiateControllers_1_2)(CONTROL_INFO * ControlInfo);
             _LoadFunction("InitiateControllers", InitiateControllers_1_2);
             if (InitiateControllers_1_2 == nullptr) { return false; }
 
@@ -112,6 +114,30 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
             m_Initialized = true;
         }
     }
+
+    if (LunaSetExCommandHandler)
+    {
+        LunaSetExCommandHandler([](HWND hwnd, LunaExCommand cmd)
+            {
+                switch (cmd)
+                {
+                case LUNA_EXCMD_LOAD_STATE:
+                    PostMessage(hwnd, WM_COMMAND, MAKEWPARAM(ID_SYSTEM_RESTORE, 0), 0);
+                    break;
+                case LUNA_EXCMD_SAVE_STATE:
+                    PostMessage(hwnd, WM_COMMAND, MAKEWPARAM(ID_SYSTEM_SAVE, 0), 0);
+                    break;
+                case LUNA_EXCMD_UNLOCK_FPS:
+                    PostMessage(hwnd, WM_COMMAND, MAKEWPARAM(ID_LUNA_UNLIMIT_FPS, 0), 0);
+                    break;
+                case LUNA_EXCMD_LOCK_FPS:
+                    PostMessage(hwnd, WM_COMMAND, MAKEWPARAM(ID_LUNA_LIMIT_FPS, 0), 0);
+                    break;
+                }
+            });
+    }
+
+
     return m_Initialized;
 }
 
@@ -152,7 +178,7 @@ void CControl_Plugin::UpdateKeys(void)
     if (ReadController) { ReadController(-1, nullptr); }
 }
 
-void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
+void CControl_Plugin::SetControl(CControl_Plugin const* const Plugin)
 {
     if (m_AllocatedControllers)
     {
@@ -169,7 +195,7 @@ void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
     }
 }
 
-CCONTROL::CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType) :
+CCONTROL::CCONTROL(int32_t& Present, int32_t& RawData, int32_t& PlugType) :
     m_Present(Present), m_RawData(RawData), m_PlugType(PlugType)
 {
     m_Buttons.Value = 0;

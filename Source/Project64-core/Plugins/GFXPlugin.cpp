@@ -5,6 +5,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/N64System.h>
+#include <Project64/MenuId.h>
 #include "GFXPlugin.h"
 
 CGfxPlugin::CGfxPlugin() :
@@ -104,13 +105,13 @@ bool CGfxPlugin::LoadFunctions(void)
         rapi.CreateRenderWindow = [](HWND parent) -> HWND
         {
             HWND result;
-            SendMessage(parent, WM_COMMAND, MAKEWPARAM(4339 /*ID_LUNA_CREATE_RENDER_HWND*/, 0), (LPARAM)&result);
+            SendMessage(parent, WM_COMMAND, MAKEWPARAM(ID_LUNA_CREATE_RENDER_HWND, 0), (LPARAM)&result);
             return result;
 		};
 
         rapi.DestroyRenderWindow = [](HWND parent, HWND window)
         {
-			SendMessage(parent, WM_COMMAND, MAKEWPARAM(4340 /*ID_LUNA_DESTROY_RENDER_HWND*/, 0), (LPARAM)window);
+			SendMessage(parent, WM_COMMAND, MAKEWPARAM(ID_LUNA_DESTROY_RENDER_HWND, 0), (LPARAM)window);
 		};
 
 		LunaRegisterRenderWindowApi(&rapi);

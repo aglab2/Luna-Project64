@@ -16,7 +16,7 @@
 #include <Project64-core/RetroAchievements.h>
 #endif
 
-CMainMenu::CMainMenu(CMainGui * hMainWindow, ProfileManager& profileManager) :
+CMainMenu::CMainMenu(CMainGui* hMainWindow, ProfileManager& profileManager) :
     CBaseMenu(),
     m_ResetAccelerators(true),
     m_Gui(hMainWindow),
@@ -90,12 +90,12 @@ CMainMenu::~CMainMenu()
     }
 }
 
-void CALL CMainMenu::SettingsChanged(CMainMenu * _this)
+void CALL CMainMenu::SettingsChanged(CMainMenu* _this)
 {
     _this->ResetMenu();
 }
 
-int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
+int CMainMenu::ProcessAccelerator(HWND hWnd, void* lpMsg)
 {
     if (m_ResetAccelerators)
     {
@@ -109,7 +109,7 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
 std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 {
     CPath FileName;
-    const char * Filter = "N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64\0All files (*.*)\0*.*\0";
+    const char* Filter = "N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64\0All files (*.*)\0*.*\0";
     if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
         return FileName;
@@ -120,7 +120,7 @@ std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 std::string CMainMenu::ChooseROMFileToOpen(HWND hParent)
 {
     CPath FileName;
-    const char * Filter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+    const char* Filter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
     if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
         return FileName;
@@ -131,7 +131,7 @@ std::string CMainMenu::ChooseROMFileToOpen(HWND hParent)
 std::string CMainMenu::ChooseDiskFileToOpen(HWND hParent)
 {
     CPath FileName;
-    const char * Filter = "N64DD disk images (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
+    const char* Filter = "N64DD disk images (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
     if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
         return FileName;
@@ -164,7 +164,7 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     {
         return;
     }
-    
+
     stdstr ext = CPath(File).GetExtension();
     if ((_stricmp(ext.c_str(), "ndd") != 0) && (_stricmp(ext.c_str(), "d64") != 0))
     {
@@ -222,10 +222,10 @@ void CMainMenu::OnEndEmulation(void)
     }
     m_Gui->SaveWindowLoc();
 
-	if (UISettingsLoadBool(Setting_EnableDiscordRPC))
-	{
-		CDiscord::Update(false);
-	}
+    if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+    {
+        CDiscord::Update(false);
+    }
 }
 
 void CMainMenu::OnScreenShot(void)
@@ -291,10 +291,10 @@ void CMainMenu::OnLodState(HWND hWnd)
     UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
 
     CPath SaveFile;
-    const char * Filter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    const char* Filter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
     if (SaveFile.SelectFile(hWnd, Directory, Filter, false))
     {
-        g_Settings->SaveString(GameRunning_InstantSaveFile, (const char *)SaveFile);
+        g_Settings->SaveString(GameRunning_InstantSaveFile, (const char*)SaveFile);
         if (!SaveFile.DirectoryExists())
         {
             SaveFile.DirectoryCreate();
@@ -336,7 +336,7 @@ void CMainMenu::OnSupportProject64(HWND hWnd)
 }
 
 static void invokeDefaultOpenAction(const char* path)
-{    
+{
     ShellExecuteA(NULL, NULL, path, NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -741,10 +741,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
     case ID_HELP_OPEN_APPDATA:
-        {
-            ShellExecuteA(NULL, "open", g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), NULL, NULL, SW_SHOWNORMAL);
-        }
-        break;
+    {
+        ShellExecuteA(NULL, "open", g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), NULL, NULL, SW_SHOWNORMAL);
+    }
+    break;
     case ID_DEBUGGER_ENABLE:
         if (g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_ENABLE_DEBUGGER_MSG).c_str()))
         {
@@ -761,9 +761,15 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         HWND* phwnd = (HWND*)lparam;
         *phwnd = CreateWindowExW(0, L"Static", nullptr, WS_CHILD | WS_VISIBLE, 0, 0, 1, 1, m_Gui->MainWindow(), NULL, GetModuleHandle(NULL), NULL);
     }
-        break;
+    break;
     case ID_LUNA_DESTROY_RENDER_HWND:
-		DestroyWindow((HWND)lparam);
+        DestroyWindow((HWND)lparam);
+        break;
+    case ID_LUNA_LIMIT_FPS:
+        g_Settings->SaveBool(GameRunning_LimitFPS, true);
+        break;
+    case ID_LUNA_UNLIMIT_FPS:
+        g_Settings->SaveBool(GameRunning_LimitFPS, false);
         break;
     default:
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
@@ -818,7 +824,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     return true;
 }
 
-stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
+stdstr CMainMenu::GetFileLastMod(const CPath& FileName)
 {
     HANDLE hFile = CreateFileA(FileName, GENERIC_READ, FILE_SHARE_READ, nullptr,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, nullptr);

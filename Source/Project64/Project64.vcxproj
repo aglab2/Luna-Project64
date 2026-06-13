@@ -256,6 +256,7 @@
     <ClInclude Include="DarkMode.h" />
     <ClInclude Include="DarkModeUtils.h" />
     <ClInclude Include="IatHook.h" />
+    <ClInclude Include="MenuId.h" />
     <ClInclude Include="ProfileManager.h" />
     <ClInclude Include="UAHMenuBar.h" />
     <ClInclude Include="UserInterface\About.h" />
