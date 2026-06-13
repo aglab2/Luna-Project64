@@ -43,12 +43,12 @@ typedef struct
 
 typedef struct
 {
-    void * hMainWindow;
-    void * hinst;
+    void* hMainWindow;
+    void* hinst;
 
     int32_t MemoryBswaped;  // Memory in client or server-native endian
-    uint8_t * HEADER;   // The ROM header (first 40h bytes of the ROM)
-    CONTROL * Controls; // Pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
+    uint8_t* HEADER;   // The ROM header (first 40h bytes of the ROM)
+    CONTROL* Controls; // Pointer to array of 4 controllers, i.e.:  CONTROL Controls[4];
 } CONTROL_INFO;
 
 enum PluginType
@@ -65,16 +65,16 @@ class CControl_Plugin;
 class CCONTROL
 {
 public:
-    CCONTROL(int32_t &Present, int32_t &RawData, int32_t &PlugType);
+    CCONTROL(int32_t& Present, int32_t& RawData, int32_t& PlugType);
     inline bool Present(void) const { return m_Present != 0; }
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }
 private:
     friend class CControl_Plugin;
 
-    int32_t & m_Present;
-    int32_t & m_RawData;
-    int32_t & m_PlugType;
+    int32_t& m_Present;
+    int32_t& m_RawData;
+    int32_t& m_PlugType;
     BUTTONS m_Buttons;
 
     CCONTROL(void);
@@ -88,19 +88,30 @@ public:
     CControl_Plugin(void);
     ~CControl_Plugin();
 
-    bool Initiate(CN64System * System, RenderWindow * Window);
-    void SetControl(CControl_Plugin const * const Plugin);
+    bool Initiate(CN64System* System, RenderWindow* Window);
+    void SetControl(CControl_Plugin const* const Plugin);
     void UpdateKeys(void);
 
-    void(CALL *WM_KeyDown) (uint32_t wParam, uint32_t lParam);
-    void(CALL *WM_KeyUp) (uint32_t wParam, uint32_t lParam);
-    void(CALL *RumbleCommand) (int32_t Control, int32_t bRumble);
-    void(CALL *GetKeys) (int32_t Control, BUTTONS * Keys);
-    void(CALL *ReadController) (int32_t Control, uint8_t * Command);
-    void(CALL *ControllerCommand) (int32_t Control, uint8_t * Command);
+    void(CALL* WM_KeyDown) (uint32_t wParam, uint32_t lParam);
+    void(CALL* WM_KeyUp) (uint32_t wParam, uint32_t lParam);
+    void(CALL* RumbleCommand) (int32_t Control, int32_t bRumble);
+    void(CALL* GetKeys) (int32_t Control, BUTTONS* Keys);
+    void(CALL* ReadController) (int32_t Control, uint8_t* Command);
+    void(CALL* ControllerCommand) (int32_t Control, uint8_t* Command);
 
-    inline CCONTROL const * Controller(int32_t control) { return m_Controllers[control]; }
-    inline CONTROL * PluginControllers(void) { return m_PluginControllers; }
+    enum LunaExCommand
+    {
+        LUNA_EXCMD_LOAD_STATE,
+        LUNA_EXCMD_SAVE_STATE,
+        LUNA_EXCMD_UNLOCK_FPS,
+        LUNA_EXCMD_LOCK_FPS,
+    };
+
+    typedef void(CALL* LunaExCommandFn)(HWND, LunaExCommand);
+    void(CALL* LunaSetExCommandHandler)(LunaExCommandFn);
+
+    inline CCONTROL const* Controller(int32_t control) { return m_Controllers[control]; }
+    inline CONTROL* PluginControllers(void) { return m_PluginControllers; }
 
 private:
     CControl_Plugin(const CControl_Plugin&);
@@ -115,5 +126,5 @@ private:
     bool m_AllocatedControllers;
 
     CONTROL m_PluginControllers[4];
-    CCONTROL * m_Controllers[4];
+    CCONTROL* m_Controllers[4];
 };

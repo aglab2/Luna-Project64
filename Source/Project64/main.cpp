@@ -21,9 +21,22 @@ extern "C" {
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
+bool g_IsWine = false;
+
+static bool isWine(void)
+{
+    HMODULE ntdll = GetModuleHandle(L"ntdll.dll");
+    if (!ntdll)
+        return false;
+
+    return NULL != GetProcAddress(ntdll, "wine_get_version");
+}
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     HighResTimeStamp::Init();
+    g_IsWine = isWine();
+
     {
         static char currentPath[MAX_PATH_LENGTH];
         if (GetModuleFileNameA(NULL, currentPath, MAX_PATH_LENGTH) == 0) {
@@ -39,7 +52,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     try
     {
         CoInitialize(nullptr);
-		CheckUpdatesGitHub();
+        CheckUpdatesGitHub();
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         setupExceptionFilters();
 
@@ -53,7 +66,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         }
 
         // Create the main window with menu
-		
+
         WriteTrace(TraceUserInterface, TraceDebug, "Create main window");
         ProfileManager profileManager("profiles.ini");
         CMainGui MainWindow(true, "Luna's Project64 v" VERSION_LUNA VERSION_LUNA_HOTFIX, profileManager), HiddenWindow(false, "", profileManager);
@@ -135,7 +148,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         }
 
         if (raInitAsync)
-			RA_AttemptLogin(false);
+            RA_AttemptLogin(false);
 
         WriteTrace(TraceUserInterface, TraceDebug, "Entering message loop");
         MainWindow.ProcessAllMessages();

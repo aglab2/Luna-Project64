@@ -554,6 +554,9 @@
     <ClInclude Include="ProfileManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MenuId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\divider.cur">

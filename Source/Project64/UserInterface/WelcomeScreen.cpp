@@ -6,16 +6,6 @@ WelcomeScreen::WelcomeScreen()
 {
 }
 
-
-static bool isWine(void)
-{
-    HMODULE ntdll = GetModuleHandle(L"ntdll.dll");
-    if (!ntdll)
-        return false;
-
-    return NULL != GetProcAddress(ntdll, "wine_get_version");
-}
-
 void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
