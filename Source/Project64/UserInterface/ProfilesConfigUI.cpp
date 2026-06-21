@@ -227,14 +227,10 @@ void CProfilesConfigUI::UpdateUiState()
 
 void CProfilesConfigUI::UpdateGraphicsCheckboxState(const ProfileSelection & selection)
 {
-    const bool enable = IsGraphicsHleFb(selection.Graphics.mode);
+    bool wantFBTweaks = ProfileSelection::GraphicsMode::Basic != selection.Graphics.mode;
+    bool wantGLideN64Tweaks = selection.Graphics.mode == ProfileSelection::GraphicsMode::Framebuffer || selection.Graphics.mode == ProfileSelection::GraphicsMode::FramebufferDepth;
 
-    GetDlgItem(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY).EnableWindow(enable ? TRUE : FALSE);
-    GetDlgItem(IDC_PROFILE_GFX_REMOVE_BLACK_BARS).EnableWindow(enable ? TRUE : FALSE);
-    GetDlgItem(IDC_PROFILE_GFX_ENABLE_ZELDA_HACKS).EnableWindow(enable ? TRUE : FALSE);
-}
-
-bool CProfilesConfigUI::IsGraphicsHleFb(ProfileSelection::GraphicsMode mode) const
-{
-    return mode == ProfileSelection::GraphicsMode::Framebuffer || mode == ProfileSelection::GraphicsMode::FramebufferDepth;
+    GetDlgItem(IDC_PROFILE_GFX_REDUCE_INPUT_DELAY).EnableWindow(wantFBTweaks ? TRUE : FALSE);
+    GetDlgItem(IDC_PROFILE_GFX_REMOVE_BLACK_BARS).EnableWindow(wantFBTweaks ? TRUE : FALSE);
+    GetDlgItem(IDC_PROFILE_GFX_ENABLE_ZELDA_HACKS).EnableWindow(wantGLideN64Tweaks ? TRUE : FALSE);
 }
