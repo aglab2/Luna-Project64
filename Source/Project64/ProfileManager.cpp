@@ -37,7 +37,7 @@ static ProfileSelection::MemoryMode toMemoryMode(const std::string& name)
     {
         return ProfileSelection::MemoryMode::Unchecked;
     }
-    if (name == "protected")
+    if (name == "protect")
     {
         return ProfileSelection::MemoryMode::Protected;
     }

@@ -277,6 +277,11 @@ void CRegisters::Reset()
     m_GfxIntrReg = 0;
     m_RspIntrReg = 0;
 
+    if (auto rspYieldedOnSemaphore = g_Plugins->RSP()->m_RspYieldedOnSemaphore)
+    {
+        *rspYieldedOnSemaphore = 0;
+    }
+
     FixFpuLocations();
 }
 

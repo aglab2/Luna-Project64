@@ -1722,8 +1722,20 @@ void CMipsMemoryVM::Write32SPRegisters(void)
         }
         //}
         break;
-    case 0x0404001C: g_Reg->SP_SEMAPHORE_REG = 0; break;
-    case 0x04080000: g_Reg->SP_PC_REG = m_MemLookupValue.UW[0] & 0xFFC; break;
+    case 0x0404001C:
+        if (g_Plugins->RSP()->m_RspYieldedOnSemaphore)
+        {
+            CN64System::ResumeRSP();
+        }
+        else
+        {
+            g_Reg->SP_SEMAPHORE_REG = 0;
+        }
+        break;
+    case 0x04080000:
+        g_Reg->SP_PC_REG = m_MemLookupValue.UW[0] & 0xFFC;
+        if (auto y = g_Plugins->RSP()->m_RspYieldedOnSemaphore) *y = 0;
+        break;
     default:
         if (HaveDebugger())
         {

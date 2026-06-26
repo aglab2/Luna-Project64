@@ -2469,6 +2469,26 @@ void CN64System::RunRSP()
     WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", m_Reg.SP_STATUS_REG);
 }
 
+void CN64System::ResumeRSP()
+{
+    uint32_t prevValue = g_Reg->SP_SEMAPHORE_REG;
+    g_Reg->SP_SEMAPHORE_REG = 0;
+    if (prevValue && *g_Plugins->RSP()->m_RspYieldedOnSemaphore)
+    {
+        __except_try()
+        {
+            WriteTrace(TraceRSP, TraceDebug, "Resume cycles - starting");
+            g_Plugins->RSP()->DoRspCycles(0xffffffff);
+            WriteTrace(TraceRSP, TraceDebug, "Resume cycles - done");
+        }
+        __except_catch()
+        {
+            WriteTrace(TraceRSP, TraceError, "Exception generated");
+            g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stopping");
+        }
+    }
+}
+
 void CN64System::RefreshScreen()
 {
     PROFILE_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;

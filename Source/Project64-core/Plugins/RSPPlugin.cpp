@@ -36,6 +36,7 @@ bool CRSP_Plugin::LoadFunctions(void)
     _LoadFunction("GetRspDebugInfo", GetDebugInfo);
     _LoadFunction("InitiateRSPDebugger", InitiateDebugger);
     LoadFunction(EnableDebugging);
+    LoadFunction(LunaGetRspYieldedOnSemaphore);
     if (EnableDebugging == nullptr) { EnableDebugging = DummyFunc1; }
 
     // Make sure DLL had all needed functions
@@ -343,6 +344,14 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         InitiateRSP(Info, &m_CycleCount);
     }
 
+#if 0
+    if (LunaGetRspYieldedOnSemaphore)
+        m_RspYieldedOnSemaphore = LunaGetRspYieldedOnSemaphore();
+    else
+        m_RspYieldedOnSemaphore = nullptr;
+#endif
+
+    if (m_RspYieldedOnSemaphore) *m_RspYieldedOnSemaphore = 0;
     m_Initialized = true;
 
     WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");

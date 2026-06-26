@@ -10908,8 +10908,24 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 m_RegWorkingSet.AfterCallDirect();
             }
             break;
-        case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
-        case 0x04080000: MoveConstToVariable(Value & 0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG"); break;
+        case 0x0404001C:
+            if (g_Plugins->RSP()->m_RspYieldedOnSemaphore)
+            {
+                // Offload to a special function that is capable of resuming the RSP on yielded semaphore.
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&CN64System::ResumeRSP), "CPlugins::RSPYieldOnSemaphore");
+                m_RegWorkingSet.AfterCallDirect();
+            }
+            else
+            {
+                MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
+            }
+            break;
+        case 0x04080000:
+            MoveConstToVariable(Value & 0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG");
+            if (auto y = g_Plugins->RSP()->m_RspYieldedOnSemaphore) MoveConstToVariable(0, y, "SP Yield");
+
+            break;
         default:
             if (ShowUnhandledMemory())
             {
@@ -11454,10 +11470,23 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             Call_Direct((void *)CMipsMemoryVM::ChangeSpStatus, "CMipsMemoryVM::ChangeSpStatus");
             m_RegWorkingSet.AfterCallDirect();
             break;
-        case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
+        case 0x0404001C:
+            if (g_Plugins->RSP()->m_RspYieldedOnSemaphore)
+            {
+                // Offload to a special function that is capable of resuming the RSP on yielded semaphore.
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&CN64System::ResumeRSP), "CPlugins::RSPYieldOnSemaphore");
+                m_RegWorkingSet.AfterCallDirect();
+            }
+            else
+            {
+                MoveX86regToVariable(Reg, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
+            }
+            break;
         case 0x04080000:
             MoveX86regToVariable(Reg, &g_Reg->SP_PC_REG, "SP_PC_REG");
             AndConstToVariable(0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG");
+            if (auto y = g_Plugins->RSP()->m_RspYieldedOnSemaphore) MoveConstToVariable(0, y, "SP Yield");
             break;
         default:
             if (PAddr < 0x04002000)
