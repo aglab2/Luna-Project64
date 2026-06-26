@@ -44,9 +44,12 @@ public:
 
     uint32_t(CALL *DoRspCycles)(uint32_t);
     void(CALL *EnableDebugging)(int32_t Enable);
+    uint32_t* (CALL* LunaGetRspYieldedOnSemaphore)(void);
 
     void * GetDebugMenu(void) { return m_RSPDebug.hRSPMenu; }
     void ProcessMenuItem(int32_t id);
+
+    uint32_t* m_RspYieldedOnSemaphore = nullptr;
 
 private:
     CRSP_Plugin(const CRSP_Plugin&);

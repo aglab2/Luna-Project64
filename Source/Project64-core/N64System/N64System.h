@@ -70,6 +70,7 @@ public:
 
     void   Pause();
     void   RunRSP();
+    static void ResumeRSP();
     bool   SaveState();
     bool   LoadState(const char * FileName);
     bool   LoadState();
