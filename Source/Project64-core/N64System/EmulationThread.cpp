@@ -23,7 +23,7 @@ void CN64System::StartEmulationThread(CThread * thread)
         SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
     }
 
-    CoInitialize(nullptr);
+    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
     EmulationStarting(thread);
 

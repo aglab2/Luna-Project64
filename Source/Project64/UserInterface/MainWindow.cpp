@@ -979,9 +979,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 }
             case ID_POPUPMENU_PLAYGAMEWITHDISK:
                 {
-                    std::string path = WinEscape::Utf8::OpenFileDialog(hWnd, {
-                        { L"N64DD Disk Image (*.ndd, *.d64)", L"*.ndd;*.d64" },
-                        { L"LAll files (*.*)", L"*.*" }
+                    std::string path = WinEscape::Utf8::OpenFileDialog(hWnd, true, {
+                        { "N64DD Disk Image (*.ndd, *.d64)", "*.ndd;*.d64" },
+                        { "LAll files (*.*)", "*.*" }
                     }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
                     if (!path.empty())
                     {

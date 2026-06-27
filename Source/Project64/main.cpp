@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <Common/HighResTimeStamp.h>
+#include <Common/WinEscape.h>
 #include <Project64-core/AppInit.h>
 #include <Project64-core/VersionLuna.h>
 #include "UserInterface/WelcomeScreen.h"
@@ -21,21 +22,11 @@ extern "C" {
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
-bool g_IsWine = false;
-
-static bool isWine(void)
-{
-    HMODULE ntdll = GetModuleHandle(L"ntdll.dll");
-    if (!ntdll)
-        return false;
-
-    return NULL != GetProcAddress(ntdll, "wine_get_version");
-}
-
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
+    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     HighResTimeStamp::Init();
-    g_IsWine = isWine();
+    WinEscape::Init();
 
     {
         static char currentPath[MAX_PATH_LENGTH];
@@ -51,7 +42,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
     try
     {
-        CoInitialize(nullptr);
         CheckUpdatesGitHub();
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         setupExceptionFilters();

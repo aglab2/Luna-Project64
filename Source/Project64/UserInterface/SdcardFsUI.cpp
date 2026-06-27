@@ -365,8 +365,8 @@ LRESULT CSdcardFsUI::OnContextMenu(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
     CMenu menu;
     menu.CreatePopupMenu();
-    menu.AppendMenu(MF_STRING, ID_SDCARD_UPLOAD, L"Upload...");
-    menu.AppendMenu(MF_STRING, ID_SDCARD_DOWNLOAD, L"Download...");
+    menu.AppendMenu(MF_STRING, ID_SDCARD_UPLOAD, L"Import...");
+    menu.AppendMenu(MF_STRING, ID_SDCARD_DOWNLOAD, L"Export...");
     menu.AppendMenu(MF_STRING, ID_SDCARD_CREATE_DIRECTORY, L"Create directory");
     menu.AppendMenu(MF_STRING, ID_SDCARD_DELETE, L"Delete");
 
@@ -667,7 +667,7 @@ std::string CSdcardFsUI::FormatDisplayPath(const std::string & path)
 
 void CSdcardFsUI::OnUploadSelected()
 {
-    std::vector<std::wstring> selectedHostPaths = WinEscape::OpenFilesDialog(m_hWnd);
+    std::vector<std::wstring> selectedHostPaths = WinEscape::Wide::OpenFilesDialog(m_hWnd);
     UploadSelected(selectedHostPaths);
 }
 
@@ -755,7 +755,7 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
                 }
                 else if (failPrompts && res != FF::FR_OK)
                 {
-                    whatHappened = L"failed to upload";
+                    whatHappened = L"failed to import";
 				}
 
                 ReplaceDecision decision = PromptForReplacement(m_hWnd, selectedFileName, whatHappened);
@@ -771,7 +771,7 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
                     FF::FRESULT resx = FsUploadFile(selectedHostPath, destinationFile, true);
                     if (failPrompts && resx != FF::FR_OK)
                     {
-                        decision = PromptForReplacement(m_hWnd, selectedFileName, L"failed to upload", false /*showReplace*/);
+                        decision = PromptForReplacement(m_hWnd, selectedFileName, L"failed to import", false /*showReplace*/);
                         if (ReplaceDecision::Cancel == decision)
                             break;
                         if (ReplaceDecision::SkipAll == decision)
@@ -790,7 +790,7 @@ void CSdcardFsUI::OnDownloadSelected()
     std::vector<ListItemData *> selectedItems = GetSelectedItemData();
     if (selectedItems.empty())
     {
-        MessageBox(L"Select one or more file items to download.", L"Download", MB_OK | MB_ICONINFORMATION);
+        MessageBox(L"Select one or more file items to export.", L"Export", MB_OK | MB_ICONINFORMATION);
         return;
     }
 
@@ -804,29 +804,29 @@ void CSdcardFsUI::OnDownloadSelected()
         if (!(fi.fattrib & AM_DIR))
         {
             std::wstring defaultName = FileNameFromFsPath(selected->Path);
-            std::wstring destinationHostPath = WinEscape::SaveFileDialog(m_hWnd, {}, defaultName.c_str());
+            std::wstring destinationHostPath = WinEscape::Wide::SaveFileDialog(m_hWnd, {}, defaultName.c_str());
             if (destinationHostPath.empty())
                 return;
 
             auto res = FsDownloadFile(selected->Path, destinationHostPath, false);
             if (res == FF::FR_EXIST)
             {
-				bool replace = IDYES == MessageBoxA(NULL, ("A file named '" + ToUtf8(destinationHostPath) + "' already exists.").c_str(), "Download", MB_YESNO | MB_ICONWARNING);
+				bool replace = IDYES == MessageBoxA(NULL, ("A file named '" + ToUtf8(destinationHostPath) + "' already exists.").c_str(), "Export", MB_YESNO | MB_ICONWARNING);
                 if (replace)
                     res = FsDownloadFile(selected->Path, destinationHostPath, true);
 			}
 
             if (res != FF::FR_OK)
             {
-                MessageBoxA(NULL, ("Failed to download the file '" + selected->Path + "'").c_str(), "Download", MB_OK | MB_ICONERROR);
+                MessageBoxA(NULL, ("Failed to export the file '" + selected->Path + "'").c_str(), "Export", MB_OK | MB_ICONERROR);
 			}
 
-            MessageBox((L"File '" + FileNameFromFsPath(selected->Path) + L"' was downloaded").c_str(), L"Download", MB_OK | MB_ICONINFORMATION);
+            MessageBox((L"File '" + FileNameFromFsPath(selected->Path) + L"' was exported").c_str(), L"Export", MB_OK | MB_ICONINFORMATION);
             return;
         }
     }
 
-    std::wstring destinationFolder = WinEscape::ChooseDirectory(m_hWnd);
+    std::wstring destinationFolder = WinEscape::Wide::ChooseDirectory(m_hWnd);
     if (destinationFolder.empty())
     {
         return;
@@ -941,7 +941,7 @@ void CSdcardFsUI::OnDownloadSelected()
         }
     }
 
-    MessageBox(L"Download was finished", L"Download", MB_OK | MB_ICONINFORMATION);
+    MessageBox(L"Export was finished", L"Export", MB_OK | MB_ICONINFORMATION);
 }
 
 void CSdcardFsUI::OnCreateDirectorySelected()

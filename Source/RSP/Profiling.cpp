@@ -8,6 +8,7 @@ extern "C" {
 #include <Common/StdString.h>
 #include <Common/File.h>
 #include <Common/Log.h>
+#include <Common/WinEscape.h>
 #include <map>
 #include <vector>
 
@@ -158,7 +159,7 @@ public:
 			}
 		}
 
-		ShellExecute(NULL,"open",LogFileName.c_str(),NULL,NULL,SW_SHOW);
+		WinEscape::Utf8::OpenNativeFor(LogFileName.c_str());
 		ResetCounters();
 	}
 };

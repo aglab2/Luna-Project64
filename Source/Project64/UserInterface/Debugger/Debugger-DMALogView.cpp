@@ -128,9 +128,9 @@ void CDebugDMALogView::RefreshList()
 
 void CDebugDMALogView::Export(void)
 {
-    auto filePath = WinEscape::SaveFileDialog(m_hWnd, {
-        { L"Comma separated values (*.csv)", L"*.csv" },
-        { L"Plain text (*.txt)", L"*.txt" }
+    auto filePath = WinEscape::Utf8::SaveFileDialog(m_hWnd, {
+        { "Comma separated values (*.csv)", "*.csv" },
+        { "Plain text (*.txt)", "*.txt" }
     });
     if (filePath.empty())
     {

@@ -67,18 +67,18 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         int CurrentFormatSel = m_FormatList.GetCurSel();
         DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
 
-        std::vector<WinEscape::Filter> filters;
+        std::vector<WinEscape::Utf8::Filter> filters;
         if (Format == RawBigEndian)
         {
-            filters = { { L"Binary file (*.bin)", L"*.bin" }, { L"All files (*.*)", L"*.*" } };
+            filters = { { "Binary file (*.bin)", "*.bin" }, { "All files (*.*)", "*.*" } };
         }
         else if (Format == DisassemblyWithPC)
         {
-            filters = { { L"Text file (*.txt)", L"*.txt" }, { L"All files (*.*)", L"*.*" } };
+            filters = { { "Text file (*.txt)", "*.txt" }, { "All files (*.*)", "*.*" } };
         }
         else
         {
-            filters = { { L"All files (*.*)", L"*.*" } };
+            filters = { { "All files (*.*)", "*.*" } };
         }
 
         std::string filePath = WinEscape::Utf8::SaveFileDialog(m_hWnd, std::move(filters));

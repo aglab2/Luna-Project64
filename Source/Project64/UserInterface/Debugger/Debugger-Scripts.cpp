@@ -3,6 +3,8 @@
 #include "DebuggerUI.h"
 #include "DarkModeUtils.h"
 
+#include <Common/WinEscape.h>
+
 CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger),
     CToolTipDialog<CDebugScripts>(),
@@ -209,7 +211,7 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         ConsoleCopy();
         break;
     case IDC_SCRIPTDIR_BTN:
-        ShellExecuteA(NULL, "open", m_BaseDir.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        WinEscape::Utf8::OpenNativeFor(m_BaseDir.c_str());
         break;
     }
     return FALSE;

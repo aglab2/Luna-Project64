@@ -108,25 +108,25 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void* lpMsg)
 
 std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 {
-    return WinEscape::Utf8::OpenFileDialog(hParent, {
-        { L"N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)", L"*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64" },
-        { L"LAll files (*.*)", L"*.*" }
+    return WinEscape::Utf8::OpenFileDialog(hParent, true, {
+        { "N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)", "*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64" },
+        { "LAll files (*.*)", "*.*" }
     }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 }
 
 std::string CMainMenu::ChooseROMFileToOpen(HWND hParent)
 {
-    return WinEscape::Utf8::OpenFileDialog(hParent, {
-        { L"N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)", L"*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal" },
-        { L"All files (*.*)", L"*.*" }
+    return WinEscape::Utf8::OpenFileDialog(hParent, true, {
+        { "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)", "*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal" },
+        { "All files (*.*)", "*.*" }
     }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 }
 
 std::string CMainMenu::ChooseDiskFileToOpen(HWND hParent)
 {
-    return WinEscape::Utf8::OpenFileDialog(hParent, {
-        { L"N64DD disk images (*.ndd, *.d64)", L"*.ndd;*.d64" },
-        { L"All files (*.*)", L"*.*" }
+    return WinEscape::Utf8::OpenFileDialog(hParent, true, {
+        { "N64DD disk images (*.ndd, *.d64)", "*.ndd;*.d64" },
+        { "All files (*.*)", "*.*" }
     }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 }
 
@@ -232,11 +232,11 @@ void CMainMenu::OnSaveAs(HWND hWnd)
     char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
     char SaveFile[MAX_PATH];
 
+    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
     std::string savePath = WinEscape::Utf8::SaveFileDialog(
-        hWnd, { { L"Project64 saves (*.zip, *.pj)", L"*.pj?;*.pj;*.zip" } }, nullptr,
+        hWnd, { { "Project64 saves (*.zip, *.pj)", "*.pj?;*.pj;*.zip" } }, nullptr,
         UISettingsLoadStringVal(Directory_LastSave).c_str());
 
-    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
     if (!savePath.empty())
     {
         // TODO: Rewrite to be more sane
@@ -272,7 +272,7 @@ void CMainMenu::OnLodState(HWND hWnd)
     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 
     std::string loadPath = WinEscape::Utf8::OpenFileDialog(
-        hWnd, { { L"Project64 saves (*.zip, *.pj)", L"*.pj?;*.pj;*.zip" } },
+        hWnd, false, { { "Project64 saves (*.zip, *.pj)", "*.pj?;*.pj;*.zip" } },
         UISettingsLoadStringVal(Directory_LastSave).c_str());
 
     if (!loadPath.empty())
@@ -332,7 +332,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_FILE_OPEN_COMBO: OnOpenCombo(hWnd); break;
     case ID_FILE_MOUNT_SDCARD: CSdcardFsUI().Display(hWnd); break;
     case ID_FILE_PROFILES: CProfilesConfigUI(m_ProfileManager).Display(hWnd); m_Gui->RefreshProfilePresetIndex(); break;
-    case ID_HELP_SUPPORT_LUNA: ShellExecute(nullptr, L"open", L"https://github.com/Luna-Project64/Luna-Project64/issues", nullptr, nullptr, SW_SHOWMAXIMIZED); break;
+    case ID_HELP_SUPPORT_LUNA: WinEscape::Utf8::OpenNativeFor("https://github.com/Luna-Project64/Luna-Project64/issues"); break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
@@ -726,7 +726,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_HELP_SUPPORT_PROJECT64: OnSupportProject64(hWnd); break;
     case ID_HELP_OPEN_APPDATA:
     {
-        ShellExecuteA(NULL, "open", g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str(), NULL, NULL, SW_SHOWNORMAL);
+        WinEscape::Utf8::OpenNativeFor(g_Settings->LoadStringVal(Cmd_AppdataDirectory).c_str());
     }
     break;
     case ID_DEBUGGER_ENABLE:
