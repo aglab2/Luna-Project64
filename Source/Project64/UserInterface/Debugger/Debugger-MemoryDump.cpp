@@ -67,7 +67,7 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         int CurrentFormatSel = m_FormatList.GetCurSel();
         DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
 
-        std::vector<WinEscape::Utf8Filter> filters;
+        std::vector<WinEscape::Utf8::Filter> filters;
         if (Format == RawBigEndian)
         {
             filters = { { "Binary file (*.bin)", "*.bin" }, { "All files (*.*)", "*.*" } };

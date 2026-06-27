@@ -667,7 +667,7 @@ std::string CSdcardFsUI::FormatDisplayPath(const std::string & path)
 
 void CSdcardFsUI::OnUploadSelected()
 {
-    std::vector<std::wstring> selectedHostPaths = WinEscape::OpenFilesDialog(m_hWnd);
+    std::vector<std::wstring> selectedHostPaths = WinEscape::Wide::OpenFilesDialog(m_hWnd);
     UploadSelected(selectedHostPaths);
 }
 
@@ -804,7 +804,7 @@ void CSdcardFsUI::OnDownloadSelected()
         if (!(fi.fattrib & AM_DIR))
         {
             std::wstring defaultName = FileNameFromFsPath(selected->Path);
-            std::wstring destinationHostPath = WinEscape::SaveFileDialog(m_hWnd, {}, defaultName.c_str());
+            std::wstring destinationHostPath = WinEscape::Wide::SaveFileDialog(m_hWnd, {}, defaultName.c_str());
             if (destinationHostPath.empty())
                 return;
 
@@ -826,7 +826,7 @@ void CSdcardFsUI::OnDownloadSelected()
         }
     }
 
-    std::wstring destinationFolder = WinEscape::ChooseDirectory(m_hWnd);
+    std::wstring destinationFolder = WinEscape::Wide::ChooseDirectory(m_hWnd);
     if (destinationFolder.empty())
     {
         return;

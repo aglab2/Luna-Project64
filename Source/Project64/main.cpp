@@ -24,6 +24,7 @@ extern "C" {
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
+    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     HighResTimeStamp::Init();
     WinEscape::Init();
 
@@ -41,7 +42,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
     try
     {
-        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
         CheckUpdatesGitHub();
         AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         setupExceptionFilters();
