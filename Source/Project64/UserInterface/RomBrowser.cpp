@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/WinEscape.h>
 #include <Project64/Settings/UISettings.h>
 #include "DarkModeUtils.h"
 
@@ -1068,63 +1069,26 @@ void CRomBrowser::SaveRomListColoumnInfo(void)
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t /*lp*/, uint32_t lpData)
-{
-    switch (uMsg)
-    {
-    case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path
-        // It would be FALSE if you were passing a PIDL
-        if (lpData)
-        {
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
-            SetWindowText(hwnd, wGS(DIR_SELECT_ROM).c_str());
-        }
-        break;
-    }
-    return 0;
-}
-
 void CRomBrowser::SelectRomDir(void)
 {
-    wchar_t SelectedDir[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
-
-    std::wstring title = wGS(SELECT_ROM_DIR);
-
     WriteTrace(TraceUserInterface, TraceDebug, "1");
-    stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir).c_str();
-    bi.hwndOwner = m_MainWindow;
-    bi.pidlRoot = nullptr;
-    bi.pszDisplayName = SelectedDir;
-    bi.lpszTitle = title.c_str();
-    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
-    bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
-    bi.lParam = (uint32_t)RomDir.c_str();
+    stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir);
     WriteTrace(TraceUserInterface, TraceDebug, "2");
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    std::string directory = WinEscape::Utf8::ChooseDirectory(m_MainWindow, wGS(SELECT_ROM_DIR).c_str(), RomDir.c_str());
+    WriteTrace(TraceUserInterface, TraceDebug, "3");
+    if (!directory.empty())
     {
-        WriteTrace(TraceUserInterface, TraceDebug, "3");
-        char Directory[_MAX_PATH];
-        if (SHGetPathFromIDListA(pidl, Directory))
+        if (directory.back() != '\\')
         {
-            int32_t len = strlen(Directory);
-
-            WriteTrace(TraceUserInterface, TraceDebug, "4");
-            if (Directory[len - 1] != '\\')
-            {
-                strcat(Directory, "\\");
-            }
-            WriteTrace(TraceUserInterface, TraceDebug, "5");
-            WriteTrace(TraceUserInterface, TraceDebug, "6");
-            g_Settings->SaveString(RomList_GameDir, Directory);
-            WriteTrace(TraceUserInterface, TraceDebug, "7");
-            Notify().AddRecentDir(Directory);
-            WriteTrace(TraceUserInterface, TraceDebug, "8");
-            RefreshRomList();
-            WriteTrace(TraceUserInterface, TraceDebug, "9");
+            directory += '\\';
         }
+        WriteTrace(TraceUserInterface, TraceDebug, "6");
+        g_Settings->SaveString(RomList_GameDir, directory.c_str());
+        WriteTrace(TraceUserInterface, TraceDebug, "7");
+        Notify().AddRecentDir(directory.c_str());
+        WriteTrace(TraceUserInterface, TraceDebug, "8");
+        RefreshRomList();
+        WriteTrace(TraceUserInterface, TraceDebug, "9");
     }
 }
 

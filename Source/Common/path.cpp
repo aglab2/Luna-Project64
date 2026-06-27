@@ -980,39 +980,6 @@ bool CPath::Exists() const
 #endif
 }
 
-#ifdef _WIN32
-bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist)
-{
-    CPath CurrentDir(CURRENT_DIRECTORY);
-
-    OPENFILENAMEA openfilename;
-    char FileName[MAX_PATH];
-    memset(&FileName, 0, sizeof(FileName));
-    memset(&openfilename, 0, sizeof(openfilename));
-
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)hwndOwner;
-    openfilename.lpstrFilter = FileFilter;
-    openfilename.lpstrFile = FileName;
-    openfilename.lpstrInitialDir = InitialDir;
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_HIDEREADONLY | (FileMustExist ? OFN_FILEMUSTEXIST : 0);
-
-    bool res = GetOpenFileNameA(&openfilename) != 0;
-    if (CPath(CURRENT_DIRECTORY) != CurrentDir)
-    {
-        CurrentDir.ChangeDirectory();
-    }
-    if (!res)
-    {
-        return false;
-    }
-    m_strPath = FileName;
-    cleanPathString(m_strPath);
-    return true;
-}
-#endif
-
 // Post: Return TRUE on success
 // Task: Delete file
 

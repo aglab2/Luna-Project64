@@ -46,7 +46,6 @@ private:
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
     LRESULT OnListNotify(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-    static int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
 
     CBitmapPicture m_Logo;
 };

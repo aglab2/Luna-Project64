@@ -2,6 +2,7 @@
 
 #include "SdcardFsUI.h"
 #include "Common/StrKit.h"
+#include "Common/WinEscape.h"
 
 #include "dirent_compat.h"
 #include "ff.h"
@@ -9,17 +10,9 @@
 
 #include <algorithm>
 #include <cwctype>
-#include <shobjidl.h>
 
 namespace
 {
-    enum class FileDialogMode
-    {
-        OpenFiles,
-        SaveFile,
-        SelectFolder,
-    };
-
     struct TextInputState
     {
         std::string Title;
@@ -275,156 +268,6 @@ namespace
         return path.substr(0, slash);
     }
 
-    void AppendShellItemPath(IShellItem * item, std::vector<std::wstring> & outputPaths)
-    {
-        if (item == nullptr)
-        {
-            return;
-        }
-
-        PWSTR selectedPath = nullptr;
-        if (SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, &selectedPath)) && selectedPath != nullptr)
-        {
-            outputPaths.emplace_back(selectedPath);
-            CoTaskMemFree(selectedPath);
-        }
-    }
-
-    // TODO: I think it was a bad idea to merge them together... Maybe refactor to split those functions back?
-    bool ShowFileDialogInternal(HWND owner, FileDialogMode mode, const std::wstring & suggestedName, std::vector<std::wstring> & outputPaths)
-    {
-        IFileDialog * dialog = nullptr;
-        HRESULT hr = E_FAIL;
-
-        if (mode == FileDialogMode::SaveFile)
-        {
-            IFileSaveDialog * saveDialog = nullptr;
-            hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&saveDialog));
-            dialog = saveDialog;
-        }
-        else
-        {
-            IFileOpenDialog * openDialog = nullptr;
-            hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&openDialog));
-            dialog = openDialog;
-        }
-
-        if (FAILED(hr) || dialog == nullptr)
-        {
-            return false;
-        }
-
-        DWORD options = 0;
-        if (SUCCEEDED(dialog->GetOptions(&options)))
-        {
-            options |= FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST;
-            if (mode == FileDialogMode::OpenFiles)
-            {
-                options |= FOS_FILEMUSTEXIST | FOS_ALLOWMULTISELECT;
-            }
-            else if (mode == FileDialogMode::SaveFile)
-            {
-                options |= FOS_OVERWRITEPROMPT;
-            }
-            else
-            {
-                options |= FOS_PICKFOLDERS;
-            }
-            dialog->SetOptions(options);
-        }
-
-        if (mode != FileDialogMode::SelectFolder)
-        {
-            const COMDLG_FILTERSPEC filters[] =
-            {
-                { L"All files (*.*)", L"*.*" },
-            };
-            dialog->SetFileTypes(_countof(filters), filters);
-        }
-
-        if (mode == FileDialogMode::SaveFile && !suggestedName.empty())
-        {
-            IFileSaveDialog * saveDialog = static_cast<IFileSaveDialog *>(dialog);
-            saveDialog->SetFileName(suggestedName.c_str());
-        }
-
-        hr = dialog->Show(owner);
-        if (FAILED(hr))
-        {
-            dialog->Release();
-            return false;
-        }
-
-        if (mode == FileDialogMode::OpenFiles)
-        {
-            IFileOpenDialog * openDialog = static_cast<IFileOpenDialog *>(dialog);
-            IShellItemArray * resultArray = nullptr;
-            hr = openDialog->GetResults(&resultArray);
-            if (SUCCEEDED(hr) && resultArray != nullptr)
-            {
-                DWORD count = 0;
-                if (SUCCEEDED(resultArray->GetCount(&count)))
-                {
-                    for (DWORD i = 0; i < count; ++i)
-                    {
-                        IShellItem * item = nullptr;
-                        if (SUCCEEDED(resultArray->GetItemAt(i, &item)))
-                        {
-                            AppendShellItemPath(item, outputPaths);
-                            item->Release();
-                        }
-                    }
-                }
-                resultArray->Release();
-            }
-        }
-        else
-        {
-            IShellItem * resultItem = nullptr;
-            hr = dialog->GetResult(&resultItem);
-            if (SUCCEEDED(hr) && resultItem != nullptr)
-            {
-                AppendShellItemPath(resultItem, outputPaths);
-                resultItem->Release();
-            }
-        }
-
-        dialog->Release();
-        return !outputPaths.empty();
-    }
-
-    std::vector<std::wstring> ShowOpenFileDialog(HWND owner)
-    {
-        std::vector<std::wstring> filePaths;
-        ShowFileDialogInternal(owner, FileDialogMode::OpenFiles, std::wstring(), filePaths);
-        return filePaths;
-    }
-
-    bool ShowSaveFileDialog(HWND owner, const std::wstring & suggestedName, std::wstring & filePath)
-    {
-        std::vector<std::wstring> paths;
-
-        if (!ShowFileDialogInternal(owner, FileDialogMode::SaveFile, suggestedName, paths))
-        {
-            return false;
-        }
-
-        filePath = paths[0];
-        return true;
-    }
-
-    bool ShowSelectFolderDialog(HWND owner, std::wstring & folderPath)
-    {
-        std::vector<std::wstring> paths;
-
-        if (!ShowFileDialogInternal(owner, FileDialogMode::SelectFolder, std::wstring(), paths))
-        {
-            return false;
-        }
-
-        folderPath = paths[0];
-        return true;
-    }
 }
 
 CSdcardFsUI::CSdcardFsUI()
@@ -824,7 +667,7 @@ std::string CSdcardFsUI::FormatDisplayPath(const std::string & path)
 
 void CSdcardFsUI::OnUploadSelected()
 {
-    std::vector<std::wstring> selectedHostPaths = ShowOpenFileDialog(m_hWnd);
+    std::vector<std::wstring> selectedHostPaths = WinEscape::OpenFilesDialog(m_hWnd);
     UploadSelected(selectedHostPaths);
 }
 
@@ -961,11 +804,9 @@ void CSdcardFsUI::OnDownloadSelected()
         if (!(fi.fattrib & AM_DIR))
         {
             std::wstring defaultName = FileNameFromFsPath(selected->Path);
-            std::wstring destinationHostPath;
-            if (!ShowSaveFileDialog(m_hWnd, defaultName, destinationHostPath))
-            {
+            std::wstring destinationHostPath = WinEscape::SaveFileDialog(m_hWnd, {}, defaultName.c_str());
+            if (destinationHostPath.empty())
                 return;
-            }
 
             auto res = FsDownloadFile(selected->Path, destinationHostPath, false);
             if (res == FF::FR_EXIST)
@@ -985,8 +826,8 @@ void CSdcardFsUI::OnDownloadSelected()
         }
     }
 
-    std::wstring destinationFolder;
-    if (!ShowSelectFolderDialog(m_hWnd, destinationFolder))
+    std::wstring destinationFolder = WinEscape::ChooseDirectory(m_hWnd);
+    if (destinationFolder.empty())
     {
         return;
     }

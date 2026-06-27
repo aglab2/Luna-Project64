@@ -2,6 +2,7 @@
 
 #include "DebuggerUI.h"
 
+#include <Common/WinEscape.h>
 #include <Project64-core/N64System/Mips/OpCodeName.h>
 
 CDumpMemory::CDumpMemory(CDebuggerUI * debugger) :
@@ -66,21 +67,24 @@ LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
         int CurrentFormatSel = m_FormatList.GetCurSel();
         DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
 
-        const char* FileFilter = "All files (*.*)\0*.*\0";
-
+        std::vector<WinEscape::Filter> filters;
         if (Format == RawBigEndian)
         {
-            FileFilter = "Binary file (*.bin)\0*.bin;\0All files (*.*)\0*.*\0";
+            filters = { { L"Binary file (*.bin)", L"*.bin" }, { L"All files (*.*)", L"*.*" } };
         }
         else if (Format == DisassemblyWithPC)
         {
-            FileFilter = "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0";
+            filters = { { L"Text file (*.txt)", L"*.txt" }, { L"All files (*.*)", L"*.*" } };
+        }
+        else
+        {
+            filters = { { L"All files (*.*)", L"*.*" } };
         }
 
-        CPath FileName;
-        
-        if (FileName.SelectFile(m_hWnd, CPath(CPath::MODULE_DIRECTORY), FileFilter, false))
+        std::string filePath = WinEscape::Utf8::SaveFileDialog(m_hWnd, std::move(filters));
+        if (!filePath.empty())
         {
+            CPath FileName(filePath.c_str());
             if (FileName.GetExtension().length() == 0)
             {
                 FileName.SetExtension(Format == RawBigEndian ? "bin" : "txt");

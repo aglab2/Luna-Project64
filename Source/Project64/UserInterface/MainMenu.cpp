@@ -10,7 +10,7 @@
 #include "ProfilesConfigUI.h"
 #include <comutil.h>
 #include <windows.h>
-#include <commdlg.h>
+#include <Common/WinEscape.h>
 
 #ifdef RETROACHIEVEMENTS
 #include <Project64-core/RetroAchievements.h>
@@ -108,35 +108,26 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void* lpMsg)
 
 std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 {
-    CPath FileName;
-    const char* Filter = "N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64\0All files (*.*)\0*.*\0";
-    if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-    {
-        return FileName;
-    }
-    return "";
+    return WinEscape::Utf8::OpenFileDialog(hParent, {
+        { L"N64 ROMs and disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)", L"*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64" },
+        { L"LAll files (*.*)", L"*.*" }
+    }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 }
 
 std::string CMainMenu::ChooseROMFileToOpen(HWND hParent)
 {
-    CPath FileName;
-    const char* Filter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-    if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-    {
-        return FileName;
-    }
-    return "";
+    return WinEscape::Utf8::OpenFileDialog(hParent, {
+        { L"N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)", L"*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal" },
+        { L"All files (*.*)", L"*.*" }
+    }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 }
 
 std::string CMainMenu::ChooseDiskFileToOpen(HWND hParent)
 {
-    CPath FileName;
-    const char* Filter = "N64DD disk images (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
-    if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-    {
-        return FileName;
-    }
-    return "";
+    return WinEscape::Utf8::OpenFileDialog(hParent, {
+        { L"N64DD disk images (*.ndd, *.d64)", L"*.ndd;*.d64" },
+        { L"All files (*.*)", L"*.*" }
+    }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 }
 
 void CMainMenu::SetTraceModuleSetttings(SettingID Type)
@@ -239,25 +230,18 @@ void CMainMenu::OnScreenShot(void)
 void CMainMenu::OnSaveAs(HWND hWnd)
 {
     char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-    char Directory[255], SaveFile[255];
-    OPENFILENAMEA openfilename;
+    char SaveFile[MAX_PATH];
 
-    memset(&SaveFile, 0, sizeof(SaveFile));
-    memset(&openfilename, 0, sizeof(openfilename));
-
-    UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
-
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)hWnd;
-    openfilename.lpstrFilter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-    openfilename.lpstrFile = SaveFile;
-    openfilename.lpstrInitialDir = Directory;
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_HIDEREADONLY;
+    std::string savePath = WinEscape::Utf8::SaveFileDialog(
+        hWnd, { { L"Project64 saves (*.zip, *.pj)", L"*.pj?;*.pj;*.zip" } }, nullptr,
+        UISettingsLoadStringVal(Directory_LastSave).c_str());
 
     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
-    if (GetSaveFileNameA(&openfilename))
+    if (!savePath.empty())
     {
+        // TODO: Rewrite to be more sane
+        strcpy_s(SaveFile, savePath.c_str());
+
         _splitpath(SaveFile, drive, dir, fname, ext);
         if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
         {
@@ -287,13 +271,13 @@ void CMainMenu::OnLodState(HWND hWnd)
 
     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 
-    char Directory[255];
-    UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+    std::string loadPath = WinEscape::Utf8::OpenFileDialog(
+        hWnd, { { L"Project64 saves (*.zip, *.pj)", L"*.pj?;*.pj;*.zip" } },
+        UISettingsLoadStringVal(Directory_LastSave).c_str());
 
-    CPath SaveFile;
-    const char* Filter = "Project64 saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-    if (SaveFile.SelectFile(hWnd, Directory, Filter, false))
+    if (!loadPath.empty())
     {
+        CPath SaveFile(loadPath.c_str());
         g_Settings->SaveString(GameRunning_InstantSaveFile, (const char*)SaveFile);
         if (!SaveFile.DirectoryExists())
         {

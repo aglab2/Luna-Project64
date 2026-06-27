@@ -120,9 +120,6 @@ public:
     // File information
     bool IsFile() const { return !IsDirectory(); }
     bool Exists() const;
-#ifdef _WIN32
-    bool SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist);
-#endif
 
     // Directory operations
     bool DirectoryCreate(bool bCreateIntermediates = true);
