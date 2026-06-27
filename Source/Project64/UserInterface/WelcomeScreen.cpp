@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/WinEscape.h>
 #include "WelcomeScreen.h"
 #include "resource.h"
 
@@ -8,58 +9,26 @@ WelcomeScreen::WelcomeScreen()
 
 void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
-
-    stdstr InitialDir = g_Settings->LoadStringVal(RomList_GameDir);
-    std::wstring wTitle = L"Select Game Directory";
-    bi.hwndOwner = m_hWnd;
-    bi.pidlRoot = nullptr;
-    bi.pszDisplayName = Buffer;
-    bi.lpszTitle = wTitle.c_str();
-    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    std::string directory = WinEscape::Utf8::ChooseDirectory(m_hWnd, L"Select Game Directory", g_Settings->LoadStringVal(RomList_GameDir).c_str());
+    if (!directory.empty())
     {
-        if (SHGetPathFromIDList(pidl, Directory))
+        CPath SelectedDir(directory, "");
+        if (SelectedDir.DirectoryExists())
         {
-            stdstr path;
-            CPath SelectedDir(path.FromUTF16(Directory), "");
-            if (SelectedDir.DirectoryExists())
-            {
-                GetDlgItem(IDC_GAME_DIR).SetWindowText(Directory);
-            }
+            GetDlgItem(IDC_GAME_DIR).SetWindowText(stdstr(directory).ToUTF16().c_str());
         }
     }
 }
 
 void WelcomeScreen::SelectPrevDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
-    wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
-
-    stdstr InitialDir = g_Settings->LoadStringVal(RomList_GameDir);
-    std::wstring wTitle = L"Select your previous Project64 folder";
-    bi.hwndOwner = m_hWnd;
-    bi.pidlRoot = nullptr;
-    bi.pszDisplayName = Buffer;
-    bi.lpszTitle = wTitle.c_str();
-    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    std::string directory = WinEscape::Utf8::ChooseDirectory(m_hWnd, L"Select your previous Project64 folder", g_Settings->LoadStringVal(RomList_GameDir).c_str());
+    if (!directory.empty())
     {
-        if (SHGetPathFromIDList(pidl, Directory))
+        CPath SelectedDir(directory, "");
+        if (SelectedDir.DirectoryExists())
         {
-            stdstr path;
-            CPath SelectedDir(path.FromUTF16(Directory), "");
-            if (SelectedDir.DirectoryExists())
-            {
-                GetDlgItem(IDC_PREV_DIR).SetWindowText(Directory);
-            }
+            GetDlgItem(IDC_PREV_DIR).SetWindowText(stdstr(directory).ToUTF16().c_str());
         }
     }
 }
@@ -299,18 +268,3 @@ LRESULT WelcomeScreen::OnListNotify(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lPa
     return FALSE;
 }
 
-int CALLBACK WelcomeScreen::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
-{
-    switch (uMsg)
-    {
-    case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path
-        // It would be FALSE if you were passing a PIDL
-        if (lpData)
-        {
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
-        }
-        break;
-    }
-    return 0;
-}

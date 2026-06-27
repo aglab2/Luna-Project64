@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <Common/WinEscape.h>
+
 #include "SettingsPage.h"
 
 COptionsDirectoriesPage::COptionsDirectoriesPage(HWND hParent, const RECT & rcDispay) :
@@ -53,50 +55,19 @@ void COptionsDirectoriesPage::Init()
     UpdatePageSettings();
 }
 
-int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
-{
-    switch (uMsg)
-    {
-    case BFFM_INITIALIZED:
-        // WParam is true since you are passing a path
-        // It would be false if you were passing a PIDL
-        if (lpData)
-        {
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
-        }
-        break;
-    }
-    return 0;
-}
-
 void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedEditBox & EditBox, CModifiedButton & Default, CModifiedButton & selected)
 {
-    wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
-
     std::string InitialDir = GetCWindowText(EditBox);
-    std::wstring wTitle = wGS(Title);
-    bi.hwndOwner = m_hWnd;
-    bi.pidlRoot = nullptr;
-    bi.pszDisplayName = Buffer;
-    bi.lpszTitle = wTitle.c_str();
-    bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (DWORD)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    std::string directory = WinEscape::Utf8::ChooseDirectory(m_hWnd, wGS(Title).c_str(), InitialDir.c_str());
+    if (!directory.empty())
     {
-        if (SHGetPathFromIDList(pidl, Directory))
-        {
-            stdstr path;
-            CPath SelectedDir(path.FromUTF16(Directory), "");
-            EditBox.SetChanged(true);
-            EditBox.SetWindowText(stdstr((const char *)SelectedDir).ToUTF16().c_str());
-            Default.SetChanged(true);
-            Default.SetCheck(BST_UNCHECKED);
-            selected.SetCheck(BM_SETCHECK);
-            SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-        }
+        CPath SelectedDir(directory, "");
+        EditBox.SetChanged(true);
+        EditBox.SetWindowText(stdstr((const char *)SelectedDir).ToUTF16().c_str());
+        Default.SetChanged(true);
+        Default.SetCheck(BST_UNCHECKED);
+        selected.SetCheck(BM_SETCHECK);
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
     }
 }
 

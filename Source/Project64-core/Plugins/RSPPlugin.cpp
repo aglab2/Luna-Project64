@@ -344,7 +344,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         InitiateRSP(Info, &m_CycleCount);
     }
 
-#if 0
+#if 1
     if (LunaGetRspYieldedOnSemaphore)
         m_RspYieldedOnSemaphore = LunaGetRspYieldedOnSemaphore();
     else

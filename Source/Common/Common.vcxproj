@@ -117,6 +117,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="WinEscape.cpp" />
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="DynamicLibrary.cpp" />
@@ -160,5 +161,6 @@
     <ClInclude Include="Trace.h" />
     <ClInclude Include="TraceModulesCommon.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="WinEscape.h" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/WinEscape.h>
 
 #include "SettingsPage.h"
 
@@ -145,13 +146,14 @@ void CDiskDrivePage::UpdatePageSettings(void)
 
 void CDiskDrivePage::SelectFile(LanguageStringID /*Title*/, CModifiedEditBox & EditBox)
 {
-    const char * Filter = "64DD IPL ROM image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-
-    CPath FileName;
-    if (FileName.SelectFile(m_hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+    std::string path = WinEscape::Utf8::OpenFileDialog(m_hWnd, {
+        { L"64DD IPL ROM image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)", L"*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal" },
+        { L"All files (*.*)", L"*.*" }
+    }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
+    if (!path.empty())
     {
         EditBox.SetChanged(true);
-        EditBox.SetWindowText(stdstr((const char *)FileName).ToUTF16().c_str());
+        EditBox.SetWindowText(stdstr(path).ToUTF16().c_str());
         SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
     }
 }

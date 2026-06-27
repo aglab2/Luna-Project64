@@ -7,6 +7,7 @@
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/VersionLuna.h>
 #include "DiscordRPC.h"
+#include <Common/WinEscape.h>
 
 #include "DarkModeUtils.h"
 
@@ -978,11 +979,13 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 }
             case ID_POPUPMENU_PLAYGAMEWITHDISK:
                 {
-                    CPath FileName;
-                    const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
-                    if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+                    std::string path = WinEscape::Utf8::OpenFileDialog(hWnd, {
+                        { L"N64DD Disk Image (*.ndd, *.d64)", L"*.ndd;*.d64" },
+                        { L"LAll files (*.*)", L"*.*" }
+                    }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
+                    if (!path.empty())
                     {
-                        g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName);
+                        g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), path.c_str());
                     }
                 }
                 break;

@@ -3,6 +3,7 @@
 #include "CPULog.h"
 
 #include "Debugger-CPULogView.h"
+#include <Common/WinEscape.h>
 #include <Project64-core/N64System/Mips/OpCodeName.h>
 
 CDebugCPULogView* CDebugCPULogView::_this = nullptr;
@@ -390,25 +391,10 @@ void CDebugCPULogView::Export(void)
         return;
     }
 
-    OPENFILENAMEA openfilename;
-    char filePath[255];
-    
-    memset(&filePath, 0, sizeof(filePath));
-    memset(&openfilename, 0, sizeof(openfilename));
-
-    sprintf(filePath, "CPULOG.txt");
-
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)m_hWnd;
-    openfilename.lpstrFilter = "CPU Log (*.*)\0*.*;\0";
-    openfilename.lpstrFile = filePath;
-    openfilename.lpstrInitialDir = "Logs";
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_HIDEREADONLY;
-
-    if (GetSaveFileNameA(&openfilename))
+    std::string path = WinEscape::Utf8::SaveFileDialog(m_hWnd, { { L"CPU Log (*.*)", L"*.*" } }, "CPULOG.txt");
+    if (!path.empty())
     {
-        m_CPULogCopy->DumpToFile(filePath);
+        m_CPULogCopy->DumpToFile(path.c_str());
     }
 }
 

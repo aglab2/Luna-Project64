@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/WinEscape.h>
 #include "DebuggerUI.h"
 #include "DMALog.h"
 #include <fstream>
@@ -127,61 +128,36 @@ void CDebugDMALogView::RefreshList()
 
 void CDebugDMALogView::Export(void)
 {
-    OPENFILENAME openfilename;
-    TCHAR filePath[_MAX_PATH];
-
-    memset(&filePath, 0, sizeof(filePath));
-    memset(&openfilename, 0, sizeof(openfilename));
-    
-    wsprintf(filePath, L"*.csv");
-
-    const TCHAR* filters = (
-        /*1*/ L"Comma separated values (*.csv)\0*.csv;\0"
-        /*2*/ L"Plain text (*.txt)\0*.txt;\0"
-    );
-
-    const char *extensions[] = { "", ".csv", ".txt" };
-
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)m_hWnd;
-    openfilename.lpstrFilter = filters;
-    openfilename.lpstrFile = filePath;
-    openfilename.lpstrInitialDir = L".";
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_HIDEREADONLY;
-
-    if (GetSaveFileName(&openfilename))
+    auto filePath = WinEscape::SaveFileDialog(m_hWnd, {
+        { L"Comma separated values (*.csv)", L"*.csv" },
+        { L"Plain text (*.txt)", L"*.txt" }
+    });
+    if (filePath.empty())
     {
-        stdstr path;
-        path.FromUTF16(filePath);
-
-        if (openfilename.nFileExtension == 0)
-        {
-            path += extensions[openfilename.nFilterIndex];
-        }
-
-        std::ofstream file;
-        file.open(path, std::ios::out | std::ios::binary);
-
-        if (!file.is_open())
-        {
-            return;
-        }
-
-        file << "ROM Address,RAM Address,Length\r\n";
-
-        size_t numEntries = m_DMALog->GetNumEntries();
-
-        for (size_t nEntry = 0; nEntry < numEntries; nEntry++)
-        {
-            DMALOGENTRY* entry = m_DMALog->GetEntryByIndex(nEntry);
-
-            file << stdstr_f("0x%08X,0x%08X,0x%08X\r\n",
-                entry->romAddr, entry->ramAddr, entry->length);
-        }
-
-        file.close();
+        return;
     }
+
+    std::ofstream file;
+    file.open(filePath, std::ios::out | std::ios::binary);
+
+    if (!file.is_open())
+    {
+        return;
+    }
+
+    file << "ROM Address,RAM Address,Length\r\n";
+
+    size_t numEntries = m_DMALog->GetNumEntries();
+
+    for (size_t nEntry = 0; nEntry < numEntries; nEntry++)
+    {
+        DMALOGENTRY* entry = m_DMALog->GetEntryByIndex(nEntry);
+
+        file << stdstr_f("0x%08X,0x%08X,0x%08X\r\n",
+            entry->romAddr, entry->ramAddr, entry->length);
+    }
+
+    file.close();
 }
 
 LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
