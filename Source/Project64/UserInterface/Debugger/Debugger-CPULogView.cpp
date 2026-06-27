@@ -391,7 +391,7 @@ void CDebugCPULogView::Export(void)
         return;
     }
 
-    std::string path = WinEscape::Utf8::SaveFileDialog(m_hWnd, { { L"CPU Log (*.*)", L"*.*" } }, "CPULOG.txt");
+    std::string path = WinEscape::Utf8::SaveFileDialog(m_hWnd, { { "CPU Log (*.*)", "*.*" } }, "CPULOG.txt");
     if (!path.empty())
     {
         m_CPULogCopy->DumpToFile(path.c_str());

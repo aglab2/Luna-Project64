@@ -146,9 +146,9 @@ void CDiskDrivePage::UpdatePageSettings(void)
 
 void CDiskDrivePage::SelectFile(LanguageStringID /*Title*/, CModifiedEditBox & EditBox)
 {
-    std::string path = WinEscape::Utf8::OpenFileDialog(m_hWnd, {
-        { L"64DD IPL ROM image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)", L"*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal" },
-        { L"All files (*.*)", L"*.*" }
+    std::string path = WinEscape::Utf8::OpenFileDialog(m_hWnd, true, {
+        { "64DD IPL ROM image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)", "*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal" },
+        { "All files (*.*)", "*.*" }
     }, g_Settings->LoadStringVal(RomList_GameDir).c_str());
     if (!path.empty())
     {

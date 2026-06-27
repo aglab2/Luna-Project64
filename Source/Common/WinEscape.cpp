@@ -2,16 +2,52 @@
 
 #include <windows.h>
 #include <shellapi.h>
-#include "WinEscape.h"
-#include <Windows.h>
 #include <ShObjIdl.h>
+#include <commdlg.h>
 
 #include "StrKit.h"
+
+static bool g_IsWine;
 
 namespace WinEscape
 {
     namespace
     {
+        typedef void (*OpenNativeForFn)(const wchar_t* path);
+        typedef void (*FreeFn)(void* ptr);
+        typedef wchar_t* (*OpenFileDialogFn)(void* hwndOwner, Filter* filters, int filtersCount, const wchar_t* initialDir);
+        struct Files
+        {
+            wchar_t** paths;
+            int count;
+        };
+        typedef void(*OpenFilesDialogFn)(void* hwndOwner, Filter* filters, int filtersCount, const wchar_t* initialDir, struct Files*);
+        typedef wchar_t* (*SaveFileDialogFn)(void* hwndOwner, Filter* filters, int filtersCount, const wchar_t* defaultName, const wchar_t* initialDir);
+        typedef wchar_t* (*ChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const wchar_t* initialDir);
+
+        typedef void (*Utf8OpenNativeForFn)(const char* path);
+        typedef char* (*Utf8OpenFileDialogFn)(void* hwndOwner, Filter* filters, int filtersCount, const char* initialDir);
+        struct Utf8Files
+        {
+            char** paths;
+            int count;
+        };
+        typedef void(*Utf8OpenFilesDialogFn)(void* hwndOwner, Filter* filters, int filtersCount, const char* initialDir, struct Files*);
+        typedef char* (*Utf8SaveFileDialogFn)(void* hwndOwner, Filter* filters, int filtersCount, const char* defaultName, const char* initialDir);
+        typedef char* (*Utf8ChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const char* initialDir);
+
+        static OpenNativeForFn gOpenNativeFor = nullptr;
+        static FreeFn gFree = nullptr;
+        static OpenFileDialogFn gOpenFileDialog = nullptr;
+        static OpenFilesDialogFn gOpenFilesDialog = nullptr;
+        static SaveFileDialogFn gSaveFileDialog = nullptr;
+        static ChooseDirectoryFn gChooseDirectory = nullptr;
+        static Utf8OpenNativeForFn gUtf8OpenNativeFor = nullptr;
+        static Utf8OpenFileDialogFn gUtf8OpenFileDialog = nullptr;
+        static Utf8OpenFilesDialogFn gUtf8OpenFilesDialog = nullptr;
+        static Utf8SaveFileDialogFn gUtf8SaveFileDialog = nullptr;
+        static Utf8ChooseDirectoryFn gUtf8ChooseDirectory = nullptr;
+
         static const COMDLG_FILTERSPEC kAllFiles[] = { { L"All files (*.*)", L"*.*" } };
 
         void ApplyFilter(IFileDialog* dialog, const std::vector<Filter>& filters)
@@ -102,30 +138,6 @@ namespace WinEscape
         ShellExecuteW(nullptr, L"open", path, nullptr, nullptr, SW_SHOWNORMAL);
     }
 
-    std::wstring OpenFileDialog(void* hwndOwner, std::vector<Filter> filters, const wchar_t* initialDir)
-    {
-        IFileOpenDialog* od = nullptr;
-        if (FAILED(CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&od))) || od == nullptr)
-        {
-            return {};
-        }
-        DWORD options = 0;
-        if (SUCCEEDED(od->GetOptions(&options)))
-        {
-            od->SetOptions(options | FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST);
-        }
-        ApplyFilter(od, filters);
-        ApplyFolder(od, initialDir);
-
-        std::wstring result;
-        if (SUCCEEDED(od->Show(static_cast<HWND>(hwndOwner))))
-        {
-            result = SingleResult(od);
-        }
-        od->Release();
-        return result;
-    }
-
     std::vector<std::wstring> OpenFilesDialog(void* hwndOwner, std::vector<Filter> filters, const wchar_t* initialDir)
     {
         IFileOpenDialog* od = nullptr;
@@ -152,30 +164,41 @@ namespace WinEscape
 
     std::wstring SaveFileDialog(void* hwndOwner, std::vector<Filter> filters, const wchar_t* defaultName, const wchar_t* initialDir)
     {
-        IFileSaveDialog* sd = nullptr;
-        if (FAILED(CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&sd))) || sd == nullptr)
+        OPENFILENAMEW openfilename = {};
+
+        wchar_t filePath[MAX_PATH];
+        if (defaultName == nullptr)
         {
-            return {};
+            filePath[0] = L'\0';
         }
-        DWORD options = 0;
-        if (SUCCEEDED(sd->GetOptions(&options)))
+        else
         {
-            sd->SetOptions(options | FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_OVERWRITEPROMPT);
-        }
-        ApplyFilter(sd, filters);
-        ApplyFolder(sd, initialDir);
-        if (defaultName != nullptr)
-        {
-            sd->SetFileName(defaultName);
+            wsprintf(filePath, defaultName);
         }
 
-        std::wstring result;
-        if (SUCCEEDED(sd->Show(static_cast<HWND>(hwndOwner))))
+        std::wstring filter;
+        if (!filters.empty())
         {
-            result = SingleResult(sd);
+            for (const auto& f : filters)
+            {
+                filter += f.name;
+                filter += L'\0';
+                filter += f.extensions;
+                filter += L'\0';
+            }
+            filter += L'\0';
         }
-        sd->Release();
-        return result;
+
+        openfilename.lStructSize = sizeof(openfilename);
+        openfilename.hwndOwner = (HWND)hwndOwner;
+        openfilename.lpstrFilter = filters.empty() ? L"All files (*.*)\0*.*\0\0" : filter.c_str();
+        openfilename.lpstrFile = filePath;
+        openfilename.lpstrInitialDir = initialDir;
+        openfilename.nMaxFile = MAX_PATH;
+        openfilename.Flags = OFN_HIDEREADONLY;
+
+        bool res = GetSaveFileNameW(&openfilename) != 0;
+        return res ? filePath : std::wstring();
     }
 
     std::wstring ChooseDirectory(void* hwndOwner, const wchar_t* title, const wchar_t* initialDir)
@@ -205,16 +228,81 @@ namespace WinEscape
         return result;
     }
 
+    static bool isWine(void)
+    {
+        HMODULE ntdll = GetModuleHandle(L"ntdll.dll");
+        if (!ntdll)
+            return false;
+
+        return NULL != GetProcAddress(ntdll, "wine_get_version");
+    }
+
+    void Init()
+    {
+        g_IsWine = isWine();
+        if (!g_IsWine)
+            return;
+
+        HMODULE hWinEscape = LoadLibrary(L"wine_xdg_portal.dll");
+        if (!hWinEscape)
+            return;
+
+        gOpenNativeFor = (OpenNativeForFn)GetProcAddress(hWinEscape, "wine_portal_open_native_for");
+        gFree = (FreeFn)GetProcAddress(hWinEscape, "wine_portal_free");
+        gOpenFileDialog = (OpenFileDialogFn)GetProcAddress(hWinEscape, "wine_portal_open_file_dialog");
+        gOpenFilesDialog = (OpenFilesDialogFn)GetProcAddress(hWinEscape, "wine_portal_open_files_dialog");
+        gSaveFileDialog = (SaveFileDialogFn)GetProcAddress(hWinEscape, "wine_portal_save_file_dialog");
+        gChooseDirectory = (ChooseDirectoryFn)GetProcAddress(hWinEscape, "wine_portal_choose_directory");
+        gUtf8OpenNativeFor = (Utf8OpenNativeForFn)GetProcAddress(hWinEscape, "wine_portal_utf8_open_native_for");
+        gUtf8OpenFileDialog = (Utf8OpenFileDialogFn)GetProcAddress(hWinEscape, "wine_portal_utf8_open_file_dialog");
+        gUtf8OpenFilesDialog = (Utf8OpenFilesDialogFn)GetProcAddress(hWinEscape, "wine_portal_utf8_open_files_dialog");
+        gUtf8SaveFileDialog = (Utf8SaveFileDialogFn)GetProcAddress(hWinEscape, "wine_portal_utf8_save_file_dialog");
+        gUtf8ChooseDirectory = (Utf8ChooseDirectoryFn)GetProcAddress(hWinEscape, "wine_portal_utf8_choose_directory");
+    }
+
     namespace Utf8
     {
-        std::string OpenFileDialog(void* hwndOwner, std::vector<Filter> filters, const char* initialDir)
+        void OpenNativeFor(const char* path)
         {
-            return ToUtf8(WinEscape::OpenFileDialog(hwndOwner, std::move(filters), ToWide(initialDir).c_str()));
+            ShellExecuteA(nullptr, "open", path, nullptr, nullptr, SW_SHOWNORMAL);
         }
 
-        std::vector<std::string> OpenFilesDialog(void* hwndOwner, std::vector<Filter> filters, const char* initialDir)
+        std::string OpenFileDialog(void* hwndOwner, bool fileMustExist, std::vector<Utf8Filter> filters, const char* initialDir)
         {
-            std::vector<std::wstring> wpaths = WinEscape::OpenFilesDialog(hwndOwner, std::move(filters), ToWide(initialDir).c_str());
+            OPENFILENAMEA openfilename = {};
+            char FileName[MAX_PATH] = {};
+            std::string filter;
+            if (!filters.empty())
+            {
+                for (const auto& f : filters)
+                {
+                    filter += f.name;
+                    filter += '\0';
+                    filter += f.extensions;
+                    filter += '\0';
+                }
+                filter += '\0';
+            }
+
+            openfilename.lStructSize = sizeof(openfilename);
+            openfilename.hwndOwner = (HWND)hwndOwner;
+            openfilename.lpstrFilter = filters.empty() ? "All files (*.*)\0*.*\0\0" : filter.c_str();
+            openfilename.lpstrFile = FileName;
+            openfilename.lpstrInitialDir = initialDir;
+            openfilename.nMaxFile = MAX_PATH;
+            openfilename.Flags = OFN_HIDEREADONLY | (fileMustExist ? OFN_FILEMUSTEXIST : 0);
+
+            bool res = GetOpenFileNameA(&openfilename) != 0;
+            return res ? FileName : std::string();
+        }
+
+        std::vector<std::string> OpenFilesDialog(void* hwndOwner, std::vector<Filter> filters, const char* _initialDir)
+        {
+            std::wstring initialDir;
+            if (_initialDir != nullptr)
+                initialDir = ToWide(_initialDir);
+
+            std::vector<std::wstring> wpaths = WinEscape::OpenFilesDialog(hwndOwner, std::move(filters), _initialDir ? initialDir.c_str() : nullptr);
             std::vector<std::string> result;
             result.reserve(wpaths.size());
             for (const auto& wp : wpaths)
@@ -224,14 +312,48 @@ namespace WinEscape
             return result;
         }
 
-        std::string SaveFileDialog(void* hwndOwner, std::vector<Filter> filters, const char* defaultName, const char* initialDir)
+        std::string SaveFileDialog(void* hwndOwner, std::vector<Utf8Filter> filters, const char* defaultName, const char* initialDir)
         {
-            return ToUtf8(WinEscape::SaveFileDialog(hwndOwner, std::move(filters), ToWide(defaultName).c_str(), ToWide(initialDir).c_str()));
+            OPENFILENAMEA openfilename = {};
+
+            char filePath[MAX_PATH];
+            if (defaultName)
+                sprintf(filePath, defaultName);
+            else
+                filePath[0] = '\0';
+
+            std::string filter;
+            if (!filters.empty())
+            {
+                for (const auto& f : filters)
+                {
+                    filter += f.name;
+                    filter += '\0';
+                    filter += f.extensions;
+                    filter += '\0';
+                }
+                filter += '\0';
+            }
+
+            openfilename.lStructSize = sizeof(openfilename);
+            openfilename.hwndOwner = (HWND)hwndOwner;
+            openfilename.lpstrFilter = filters.empty() ? "All files (*.*)\0*.*\0\0" : filter.c_str();
+            openfilename.lpstrFile = filePath;
+            openfilename.lpstrInitialDir = initialDir;
+            openfilename.nMaxFile = MAX_PATH;
+            openfilename.Flags = OFN_HIDEREADONLY;
+
+            bool res = GetSaveFileNameA(&openfilename) != 0;
+            return res ? filePath : std::string();
         }
 
-        std::string ChooseDirectory(void* hwndOwner, const wchar_t* title, const char* initialDir)
+        std::string ChooseDirectory(void* hwndOwner, const wchar_t* title, const char* _initialDir)
         {
-            return ToUtf8(WinEscape::ChooseDirectory(hwndOwner, title, ToWide(initialDir).c_str()));
+            std::wstring initialDir;
+            if (_initialDir != nullptr)
+                initialDir = ToWide(_initialDir);
+
+            return ToUtf8(WinEscape::ChooseDirectory(hwndOwner, title, _initialDir ? initialDir.c_str() : nullptr));
         }
     }
 }
