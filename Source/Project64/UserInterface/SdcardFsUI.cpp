@@ -746,7 +746,7 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
         else
         {
 			FF::FRESULT res = FsUploadFile(selectedHostPath, destinationFile, !replacePrompts /*canReplace*/);
-            if ((replacePrompts && res == FF::FR_EXIST) || (failPrompts && res != FF::FR_OK))
+            if ((replacePrompts && res == FF::FR_EXIST) || (failPrompts && res != FF::FR_OK && res != FF::FR_EXIST))
             {
                 const wchar_t* whatHappened = nullptr;
                 if (replacePrompts && res == FF::FR_EXIST)
@@ -905,7 +905,7 @@ void CSdcardFsUI::OnDownloadSelected()
         else
         {
             FF::FRESULT resx = FsDownloadFile(filePath, destinationFile, !replacePrompts /*canReplace*/);
-            if ((replacePrompts && resx == FF::FR_EXIST) || (failPrompts && resx != FF::FR_OK))
+            if ((replacePrompts && resx == FF::FR_EXIST) || (failPrompts && resx != FF::FR_OK && res != FF::FR_EXIST))
             {
                 const wchar_t* whatHappened = L"broken?";
                 if (replacePrompts && resx == FF::FR_EXIST)
