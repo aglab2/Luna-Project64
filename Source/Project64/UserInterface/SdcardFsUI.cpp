@@ -907,12 +907,12 @@ void CSdcardFsUI::OnDownloadSelected()
             FF::FRESULT resx = FsDownloadFile(filePath, destinationFile, !replacePrompts /*canReplace*/);
             if ((replacePrompts && resx == FF::FR_EXIST) || (failPrompts && resx != FF::FR_OK))
             {
-                const wchar_t* whatHappened = nullptr;
-                if (replacePrompts && res == FF::FR_EXIST)
+                const wchar_t* whatHappened = L"broken?";
+                if (replacePrompts && resx == FF::FR_EXIST)
                 {
                     whatHappened = L"already exists";
                 }
-                else if (failPrompts && res != FF::FR_OK)
+                else if (failPrompts && resx != FF::FR_OK)
                 {
                     whatHappened = L"failed to upload";
                 }
