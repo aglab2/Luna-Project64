@@ -37,7 +37,7 @@ namespace
         bool ShowReplace = true;
     };
 
-    std::wstring FileNameFromPath(const std::wstring & path)
+    std::wstring FileNameFromPath(const std::wstring& path)
     {
         size_t slashPos = path.find_last_of(L"\\/");
         if (slashPos == std::wstring::npos)
@@ -47,7 +47,7 @@ namespace
         return path.substr(slashPos + 1);
     }
 
-    std::wstring FileNameFromFsPath(const std::string & path)
+    std::wstring FileNameFromFsPath(const std::string& path)
     {
         size_t slashPos = path.find_last_of('/');
         if (slashPos == std::string::npos)
@@ -57,7 +57,7 @@ namespace
         return ToWide(path.substr(slashPos + 1));
     }
 
-    void Trim(std::string & text)
+    void Trim(std::string& text)
     {
         while (!text.empty() && isspace(text.front()))
         {
@@ -75,7 +75,7 @@ namespace
         {
         case WM_INITDIALOG:
         {
-            TextInputState * state = reinterpret_cast<TextInputState *>(lParam);
+            TextInputState* state = reinterpret_cast<TextInputState*>(lParam);
             SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(state));
 
             if (state != nullptr)
@@ -91,7 +91,7 @@ namespace
         {
             if (LOWORD(wParam) == IDOK)
             {
-                TextInputState * state = reinterpret_cast<TextInputState *>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+                TextInputState* state = reinterpret_cast<TextInputState*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
                 if (state != nullptr)
                 {
                     char inputBuffer[260] = { 0 };
@@ -120,7 +120,7 @@ namespace
         {
         case WM_INITDIALOG:
         {
-            ReplacePromptState * state = reinterpret_cast<ReplacePromptState *>(lParam);
+            ReplacePromptState* state = reinterpret_cast<ReplacePromptState*>(lParam);
             SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(state));
 
             if (state != nullptr)
@@ -135,15 +135,15 @@ namespace
                     HWND hSkip = GetDlgItem(hWnd, IDC_SDCARD_REPLACE_SKIP);
                     HWND hSkipAll = GetDlgItem(hWnd, IDC_SDCARD_REPLACE_SKIP_ALL);
 
-                    auto GetClientTopLeft = [&](HWND btn, int & x, int & y)
-                    {
-                        RECT rc;
-                        GetWindowRect(btn, &rc);
-                        POINT pt = {rc.left, rc.top};
-                        ScreenToClient(hWnd, &pt);
-                        x = pt.x;
-                        y = pt.y;
-                    };
+                    auto GetClientTopLeft = [&](HWND btn, int& x, int& y)
+                        {
+                            RECT rc;
+                            GetWindowRect(btn, &rc);
+                            POINT pt = { rc.left, rc.top };
+                            ScreenToClient(hWnd, &pt);
+                            x = pt.x;
+                            y = pt.y;
+                        };
 
                     int rx, ry, rax, ray;
                     GetClientTopLeft(hReplace, rx, ry);
@@ -159,7 +159,7 @@ namespace
         }
         case WM_COMMAND:
         {
-            ReplacePromptState * state = reinterpret_cast<ReplacePromptState *>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+            ReplacePromptState* state = reinterpret_cast<ReplacePromptState*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
             switch (LOWORD(wParam))
             {
             case IDC_SDCARD_REPLACE_SKIP:
@@ -175,11 +175,11 @@ namespace
                 EndDialog(hWnd, IDOK);
                 return TRUE;
             case IDC_SDCARD_REPLACE_REPLACE_ALL:
-				state->Decision = ReplaceDecision::ReplaceAll;
+                state->Decision = ReplaceDecision::ReplaceAll;
                 EndDialog(hWnd, IDOK);
                 return TRUE;
             case IDCANCEL:
-				state->Decision = ReplaceDecision::Cancel;
+                state->Decision = ReplaceDecision::Cancel;
                 EndDialog(hWnd, IDCANCEL);
                 return TRUE;
             default:
@@ -193,7 +193,7 @@ namespace
         return FALSE;
     }
 
-    bool PromptForText(HWND owner, const char * title, const char * prompt, const char * initialValue, std::string & value)
+    bool PromptForText(HWND owner, const char* title, const char* prompt, const char* initialValue, std::string& value)
     {
         TextInputState state;
         state.Title = title != nullptr ? title : "";
@@ -222,7 +222,7 @@ namespace
         return true;
     }
 
-    ReplaceDecision PromptForReplacement(HWND owner, const std::wstring & fileName, const std::wstring& reason, bool showReplace = true)
+    ReplaceDecision PromptForReplacement(HWND owner, const std::wstring& fileName, const std::wstring& reason, bool showReplace = true)
     {
         ReplacePromptState state;
         state.Title = showReplace ? L"Replace file?" : L"Proceed?";
@@ -243,7 +243,7 @@ namespace
         return state.Decision;
     }
 
-    bool IsDirectory(const std::wstring & hostPath)
+    bool IsDirectory(const std::wstring& hostPath)
     {
         DWORD attrs = GetFileAttributesW(hostPath.c_str());
         if (attrs == INVALID_FILE_ATTRIBUTES)
@@ -253,7 +253,7 @@ namespace
         return (attrs & FILE_ATTRIBUTE_DIRECTORY) != 0;
     }
 
-    std::string ParentPathOf(const std::string & path)
+    std::string ParentPathOf(const std::string& path)
     {
         if (path.empty() || path == "/")
         {
@@ -273,17 +273,17 @@ namespace
 CSdcardFsUI::CSdcardFsUI()
     : m_CurrentPath("/")
 {
-	FF::f_mount(&m_Fs, "", 1);
+    FF::f_mount(&m_Fs, "", 1);
 }
 
 CSdcardFsUI::~CSdcardFsUI()
 {
     m_FileList.DeleteAllItems();
     FF::f_unmount("");
-	FF::disk_ioctl(0, CTRL_EJECT, nullptr);
+    FF::disk_ioctl(0, CTRL_EJECT, nullptr);
 }
 
-void CSdcardFsUI::Display(void * ParentWindow)
+void CSdcardFsUI::Display(void* ParentWindow)
 {
     BOOL result = m_thunk.Init(nullptr, nullptr);
     if (result)
@@ -430,43 +430,43 @@ LRESULT CSdcardFsUI::OnDeleteCommand(WORD, WORD, HWND, BOOL&)
 
 LRESULT CSdcardFsUI::OnDropFiles(HDROP hDrop)
 {
-	if (hDrop == nullptr)
-	{
-		return 0;
-	}
+    if (hDrop == nullptr)
+    {
+        return 0;
+    }
 
-	std::vector<std::wstring> filePaths;
+    std::vector<std::wstring> filePaths;
 
-	UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, nullptr, 0);
-	for (UINT i = 0; i < fileCount; i++)
-	{
-		UINT size = DragQueryFile(hDrop, i, NULL, 0);
-		if (size <= 0)
-		{
-			continue;
-		}
+    UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, nullptr, 0);
+    for (UINT i = 0; i < fileCount; i++)
+    {
+        UINT size = DragQueryFile(hDrop, i, NULL, 0);
+        if (size <= 0)
+        {
+            continue;
+        }
 
-		std::wstring filePath(size + 1, L'\0');
-		size = DragQueryFile(hDrop, i, &filePath[0], size + 1);
-		filePath.resize(size);
-		filePaths.push_back(std::move(filePath));
-	}
+        std::wstring filePath(size + 1, L'\0');
+        size = DragQueryFile(hDrop, i, &filePath[0], size + 1);
+        filePath.resize(size);
+        filePaths.push_back(std::move(filePath));
+    }
 
-	DragFinish(hDrop);
+    DragFinish(hDrop);
 
-	UploadSelected(filePaths);
-	return 0;
+    UploadSelected(filePaths);
+    return 0;
 }
 
-LRESULT CSdcardFsUI::OnListItemActivate(NMHDR * phdr)
+LRESULT CSdcardFsUI::OnListItemActivate(NMHDR* phdr)
 {
-    NMITEMACTIVATE * activateInfo = (NMITEMACTIVATE *)phdr;
+    NMITEMACTIVATE* activateInfo = (NMITEMACTIVATE*)phdr;
     if (activateInfo == nullptr || activateInfo->iItem < 0)
     {
         return 0;
     }
 
-    ListItemData * itemData = GetItemData(activateInfo->iItem);
+    ListItemData* itemData = GetItemData(activateInfo->iItem);
     if (itemData != nullptr && itemData->IsDirectory)
     {
         NavigateToPath(itemData->Path);
@@ -475,10 +475,10 @@ LRESULT CSdcardFsUI::OnListItemActivate(NMHDR * phdr)
     return 0;
 }
 
-LRESULT CSdcardFsUI::OnListItemDeleted(NMHDR * phdr)
+LRESULT CSdcardFsUI::OnListItemDeleted(NMHDR* phdr)
 {
-    NMLISTVIEW * listView = (NMLISTVIEW *)phdr;
-    ListItemData * itemData = (ListItemData *)listView->lParam;
+    NMLISTVIEW* listView = (NMLISTVIEW*)phdr;
+    ListItemData* itemData = (ListItemData*)listView->lParam;
     delete itemData;
     return 0;
 }
@@ -520,7 +520,7 @@ void CSdcardFsUI::ResizeControlsToClient()
     m_FileList.SetColumnWidth(0, std::max(120, contentWidth));
 }
 
-void CSdcardFsUI::RefreshCurrentDirectory(const std::string & selectPath /* = std::string() */)
+void CSdcardFsUI::RefreshCurrentDirectory(const std::string& selectPath /* = std::string() */)
 {
     m_FileList.DeleteAllItems();
 
@@ -532,23 +532,23 @@ void CSdcardFsUI::RefreshCurrentDirectory(const std::string & selectPath /* = st
     {
         UpdatePathLabel();
         return;
-	}
+    }
 
-	FF::FILINFO entry;
-	while (FF::FR_OK == FF::f_readdir(&dir, &entry) && entry.fname[0] != '\0')
+    FF::FILINFO entry;
+    while (FF::FR_OK == FF::f_readdir(&dir, &entry) && entry.fname[0] != '\0')
     {
         entries.push_back(FsEntry{ entry.fname, (entry.fattrib & AM_DIR) != 0 });
     }
-	FF::f_closedir(&dir);
+    FF::f_closedir(&dir);
 
-    std::sort(entries.begin(), entries.end(), [](const FsEntry & left, const FsEntry & right)
-    {
-        if (left.IsDirectory != right.IsDirectory)
+    std::sort(entries.begin(), entries.end(), [](const FsEntry& left, const FsEntry& right)
         {
-            return left.IsDirectory > right.IsDirectory;
-        }
-        return _stricmp(left.Name.c_str(), right.Name.c_str()) < 0;
-    });
+            if (left.IsDirectory != right.IsDirectory)
+            {
+                return left.IsDirectory > right.IsDirectory;
+            }
+            return _stricmp(left.Name.c_str(), right.Name.c_str()) < 0;
+        });
 
     int selectedIndex = -1;
     for (size_t i = 0; i < entries.size(); i++)
@@ -558,7 +558,7 @@ void CSdcardFsUI::RefreshCurrentDirectory(const std::string & selectPath /* = st
 
         if (!selectPath.empty())
         {
-            ListItemData * data = GetItemData(newIndex);
+            ListItemData* data = GetItemData(newIndex);
             if (data != nullptr && data->Path == selectPath)
             {
                 selectedIndex = newIndex;
@@ -575,9 +575,9 @@ void CSdcardFsUI::RefreshCurrentDirectory(const std::string & selectPath /* = st
     ::EnableWindow(GetDlgItem(ID_SDCARD_BACK), m_CurrentPath != "/");
 }
 
-void CSdcardFsUI::InsertFsEntry(const std::string & parentPath, const FsEntry & entry)
+void CSdcardFsUI::InsertFsEntry(const std::string& parentPath, const FsEntry& entry)
 {
-    ListItemData * itemData = new ListItemData;
+    ListItemData* itemData = new ListItemData;
     itemData->Path = JoinFsPath(parentPath, entry.Name);
     itemData->IsDirectory = entry.IsDirectory;
 
@@ -612,24 +612,24 @@ int CSdcardFsUI::ItemFromScreenPoint(POINT pt) const
     return m_FileList.SubItemHitTest(&hitInfo);
 }
 
-CSdcardFsUI::ListItemData * CSdcardFsUI::GetItemData(int index) const
+CSdcardFsUI::ListItemData* CSdcardFsUI::GetItemData(int index) const
 {
     if (index < 0)
     {
         return nullptr;
     }
 
-    return (ListItemData *)m_FileList.GetItemData(index);
+    return (ListItemData*)m_FileList.GetItemData(index);
 }
 
-std::vector<CSdcardFsUI::ListItemData *> CSdcardFsUI::GetSelectedItemData() const
+std::vector<CSdcardFsUI::ListItemData*> CSdcardFsUI::GetSelectedItemData() const
 {
-    std::vector<ListItemData *> selectedItems;
+    std::vector<ListItemData*> selectedItems;
 
     int index = -1;
     while ((index = m_FileList.GetNextItem(index, LVNI_SELECTED)) >= 0)
     {
-        ListItemData * itemData = GetItemData(index);
+        ListItemData* itemData = GetItemData(index);
         if (itemData != nullptr)
         {
             selectedItems.push_back(itemData);
@@ -639,7 +639,7 @@ std::vector<CSdcardFsUI::ListItemData *> CSdcardFsUI::GetSelectedItemData() cons
     return selectedItems;
 }
 
-void CSdcardFsUI::NavigateToPath(const std::string & path)
+void CSdcardFsUI::NavigateToPath(const std::string& path)
 {
     m_CurrentPath = path.empty() ? "/" : path;
     RefreshCurrentDirectory();
@@ -660,7 +660,7 @@ void CSdcardFsUI::UpdatePathLabel()
     SetWindowTextA(m_PathLabel, FormatDisplayPath(m_CurrentPath).c_str());
 }
 
-std::string CSdcardFsUI::FormatDisplayPath(const std::string & path)
+std::string CSdcardFsUI::FormatDisplayPath(const std::string& path)
 {
     return "sdcard:" + path;
 }
@@ -676,7 +676,8 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
     const std::string& destinationDir = m_CurrentPath;
 
     bool failPrompts = true;
-	bool replacePrompts = true;
+    bool replacePrompts = true;
+    bool canReplace = false;
 
     struct Action
     {
@@ -695,28 +696,28 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
         Action action = std::move(actions.back());
         actions.pop_back();
 
-		const auto& selectedHostPath = action.from;
+        const auto& selectedHostPath = action.from;
         std::wstring selectedFileName = FileNameFromPath(selectedHostPath);
         std::string destinationFile = JoinFsPath(action.to, ToUtf8(selectedFileName));
 
         // TODO: This is a pretty crazy overkill. I do not believe it is actually possible to select host directory....
         if (IsDirectory(selectedHostPath))
         {
-			FF::FRESULT res = FF::f_mkdir(destinationFile.c_str());
+            FF::FRESULT res = FF::f_mkdir(destinationFile.c_str());
             if (res != FF::FR_OK && res != FF::FR_EXIST)
             {
                 if (failPrompts)
                 {
-					auto resx = PromptForReplacement(m_hWnd, selectedHostPath, false);
+                    auto resx = PromptForReplacement(m_hWnd, selectedHostPath, false);
                     if (resx == ReplaceDecision::Cancel)
                         break;
                     if (resx == ReplaceDecision::SkipAll)
-						failPrompts = false;
+                        failPrompts = false;
                 }
             }
             else
             {
-				DIR* dir = _wopendir(selectedHostPath.c_str());
+                DIR* dir = _wopendir(selectedHostPath.c_str());
                 if (!dir)
                 {
                     if (failPrompts)
@@ -727,7 +728,7 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
                         if (resx == ReplaceDecision::SkipAll)
                             failPrompts = false;
                     }
-					continue;
+                    continue;
                 }
 
                 while (auto entry = readdir(dir))
@@ -745,10 +746,10 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
         }
         else
         {
-			FF::FRESULT res = FsUploadFile(selectedHostPath, destinationFile, !replacePrompts /*canReplace*/);
+            FF::FRESULT res = FsUploadFile(selectedHostPath, destinationFile, canReplace);
             if ((replacePrompts && res == FF::FR_EXIST) || (failPrompts && res != FF::FR_OK && res != FF::FR_EXIST))
             {
-                const wchar_t* whatHappened = nullptr;
+                const wchar_t* whatHappened = L"unknown?";
                 if (replacePrompts && res == FF::FR_EXIST)
                 {
                     whatHappened = L"already exists";
@@ -756,13 +757,26 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
                 else if (failPrompts && res != FF::FR_OK)
                 {
                     whatHappened = L"failed to import";
-				}
+                }
 
-                ReplaceDecision decision = PromptForReplacement(m_hWnd, selectedFileName, whatHappened);
+                ReplaceDecision decision = PromptForReplacement(m_hWnd, selectedFileName, whatHappened, res == FF::FR_EXIST);
                 if (ReplaceDecision::SkipAll == decision)
-					failPrompts = false;
-				if (ReplaceDecision::ReplaceAll == decision)
-					replacePrompts = false;
+                {
+                    if (res == FF::FR_EXIST)
+                    {
+                        canReplace = false;
+                        replacePrompts = false;
+                    }
+                    else
+                    {
+                        failPrompts = false;
+                    }
+                }
+                if (ReplaceDecision::ReplaceAll == decision)
+                {
+                    canReplace = true;
+                    replacePrompts = false;
+                }
                 if (ReplaceDecision::Cancel == decision)
                     break;
 
@@ -787,7 +801,7 @@ void CSdcardFsUI::UploadSelected(const std::vector<std::wstring>& selectedHostPa
 
 void CSdcardFsUI::OnDownloadSelected()
 {
-    std::vector<ListItemData *> selectedItems = GetSelectedItemData();
+    std::vector<ListItemData*> selectedItems = GetSelectedItemData();
     if (selectedItems.empty())
     {
         MessageBox(L"Select one or more file items to export.", L"Export", MB_OK | MB_ICONINFORMATION);
@@ -796,7 +810,7 @@ void CSdcardFsUI::OnDownloadSelected()
 
     if (selectedItems.size() == 1)
     {
-        ListItemData * selected = selectedItems[0];
+        ListItemData* selected = selectedItems[0];
 
         FF::FILINFO fi;
         FF::f_stat(selected->Path.c_str(), &fi);
@@ -811,15 +825,15 @@ void CSdcardFsUI::OnDownloadSelected()
             auto res = FsDownloadFile(selected->Path, destinationHostPath, false);
             if (res == FF::FR_EXIST)
             {
-				bool replace = IDYES == MessageBoxA(NULL, ("A file named '" + ToUtf8(destinationHostPath) + "' already exists.").c_str(), "Export", MB_YESNO | MB_ICONWARNING);
+                bool replace = IDYES == MessageBoxA(NULL, ("A file named '" + ToUtf8(destinationHostPath) + "' already exists.").c_str(), "Export", MB_YESNO | MB_ICONWARNING);
                 if (replace)
                     res = FsDownloadFile(selected->Path, destinationHostPath, true);
-			}
+            }
 
             if (res != FF::FR_OK)
             {
                 MessageBoxA(NULL, ("Failed to export the file '" + selected->Path + "'").c_str(), "Export", MB_OK | MB_ICONERROR);
-			}
+            }
 
             MessageBox((L"File '" + FileNameFromFsPath(selected->Path) + L"' was exported").c_str(), L"Export", MB_OK | MB_ICONINFORMATION);
             return;
@@ -842,25 +856,26 @@ void CSdcardFsUI::OnDownloadSelected()
     for (const auto& item : selectedItems)
     {
         actions.push_back({ item->Path, destinationFolder });
-	}
+    }
 
     bool failPrompts = true;
     bool replacePrompts = true;
+    bool canReplace = false;
 
     while (!actions.empty())
     {
-		Action action = std::move(actions.back());
+        Action action = std::move(actions.back());
         actions.pop_back();
 
-		const std::string& filePath = action.from;
+        const std::string& filePath = action.from;
         std::wstring fileName = FileNameFromFsPath(filePath);
         std::wstring destinationFile = action.to + L"\\" + fileName;
 
         FF::FILINFO fi;
-		FF::FRESULT res = FF::f_stat(filePath.c_str(), &fi);
+        FF::FRESULT res = FF::f_stat(filePath.c_str(), &fi);
         if (res == FF::FRESULT::FR_OK && (fi.fattrib & AM_DIR))
         {
-			BOOL ok = CreateDirectoryW(destinationFile.c_str(), NULL);
+            BOOL ok = CreateDirectoryW(destinationFile.c_str(), NULL);
             if (!ok && GetLastError() != ERROR_ALREADY_EXISTS)
             {
                 if (failPrompts)
@@ -885,7 +900,7 @@ void CSdcardFsUI::OnDownloadSelected()
                             break;
                         if (decision == ReplaceDecision::SkipAll)
                             failPrompts = false;
-					}
+                    }
                 }
 
                 while (FF::FR_OK == FF::f_readdir(&dir, &fi) && fi.fname[0] != '\0')
@@ -899,13 +914,13 @@ void CSdcardFsUI::OnDownloadSelected()
                     std::wstring childDestinationPath = destinationFile;
                     actions.push_back(Action{ std::move(childCardPath), std::move(childDestinationPath) });
                 }
-				FF::f_closedir(&dir);
+                FF::f_closedir(&dir);
             }
         }
         else
         {
-            FF::FRESULT resx = FsDownloadFile(filePath, destinationFile, !replacePrompts /*canReplace*/);
-            if ((replacePrompts && resx == FF::FR_EXIST) || (failPrompts && resx != FF::FR_OK && res != FF::FR_EXIST))
+            FF::FRESULT resx = FsDownloadFile(filePath, destinationFile, canReplace);
+            if ((replacePrompts && resx == FF::FR_EXIST) || (failPrompts && resx != FF::FR_OK && resx != FF::FR_EXIST))
             {
                 const wchar_t* whatHappened = L"broken?";
                 if (replacePrompts && resx == FF::FR_EXIST)
@@ -917,11 +932,24 @@ void CSdcardFsUI::OnDownloadSelected()
                     whatHappened = L"failed to upload";
                 }
 
-                ReplaceDecision decision = PromptForReplacement(m_hWnd, destinationFile, whatHappened);
+                ReplaceDecision decision = PromptForReplacement(m_hWnd, destinationFile, whatHappened, resx == FF::FR_EXIST);
                 if (ReplaceDecision::SkipAll == decision)
-                    failPrompts = false;
+                {
+                    if (resx == FF::FR_EXIST)
+                    {
+                        replacePrompts = false;
+                        canReplace = false;
+                    }
+                    else
+                    {
+                        failPrompts = false;
+                    }
+                }
                 if (ReplaceDecision::ReplaceAll == decision)
+                {
                     replacePrompts = false;
+                    canReplace = true;
+                }
                 if (ReplaceDecision::Cancel == decision)
                     break;
 
@@ -964,7 +992,7 @@ void CSdcardFsUI::OnCreateDirectorySelected()
 
 void CSdcardFsUI::OnDeleteSelected()
 {
-    std::vector<ListItemData *> selectedItems = GetSelectedItemData();
+    std::vector<ListItemData*> selectedItems = GetSelectedItemData();
     if (selectedItems.empty())
     {
         MessageBox(L"Select one or more entries to delete.", L"Delete", MB_OK | MB_ICONINFORMATION);
@@ -988,18 +1016,18 @@ void CSdcardFsUI::OnDeleteSelected()
 
     struct Action
     {
-		std::string Path;
-		bool Retried;
+        std::string Path;
+        bool Retried;
     };
 
     std::vector<Action> actions;
 
-    for (ListItemData * selected : selectedItems)
+    for (ListItemData* selected : selectedItems)
     {
-		actions.push_back(Action{ selected->Path, false });
+        actions.push_back(Action{ selected->Path, false });
     }
 
-	bool skipPrompts = false;
+    bool skipPrompts = false;
     while (!actions.empty())
     {
         Action action = actions.back();
@@ -1013,17 +1041,17 @@ void CSdcardFsUI::OnDeleteSelected()
 
         if ((result == FF::FRESULT::FR_DENIED && action.Retried) || (result != FF::FRESULT::FR_DENIED))
         {
-			auto decision = PromptForReplacement(m_hWnd, ToWide(action.Path), L"could not be deleted", false);
+            auto decision = PromptForReplacement(m_hWnd, ToWide(action.Path), L"could not be deleted", false);
             if (decision != ReplaceDecision::Cancel)
             {
                 break;
-			}
+            }
             if (decision == ReplaceDecision::SkipAll)
             {
                 skipPrompts = true;
             }
         }
-		else // FR_DENIED on first try - dir?
+        else // FR_DENIED on first try - dir?
         {
             actions.push_back(action);
 
@@ -1063,25 +1091,25 @@ static FF::FRESULT errnoToError()
     }
 }
 
-FF::FRESULT CSdcardFsUI::FsUploadFile(const std::wstring & hostFilePath, const std::string & fsDestinationPath, bool canReplace)
+FF::FRESULT CSdcardFsUI::FsUploadFile(const std::wstring& hostFilePath, const std::string& fsDestinationPath, bool canReplace)
 {
     FF::FIL fil{};
     FF::FRESULT result = FF::f_open(&fil, fsDestinationPath.c_str(), canReplace ? (FA_WRITE | FA_CREATE_ALWAYS) : (FA_WRITE | FA_CREATE_NEW));
     if (result != FF::FR_OK)
     {
         return result;
-	}
+    }
 
-	FILE* inputFile = _wfopen(hostFilePath.c_str(), L"rb");
+    FILE* inputFile = _wfopen(hostFilePath.c_str(), L"rb");
     if (!inputFile)
     {
         FF::f_close(&fil);
         return errnoToError();
-	}
+    }
 
-	std::vector<char> buffer(65536);
+    std::vector<char> buffer(65536);
 
-	size_t bytesRead = 0;
+    size_t bytesRead = 0;
     while ((bytesRead = fread(buffer.data(), 1, buffer.size(), inputFile)) > 0)
     {
         UINT bytesWritten = 0;
@@ -1091,36 +1119,36 @@ FF::FRESULT CSdcardFsUI::FsUploadFile(const std::wstring & hostFilePath, const s
             if (result == FF::FR_OK)
             {
                 result = FF::FRESULT::FR_DISK_ERR;
-			}
+            }
             break;
         }
     }
 
-	fclose(inputFile);
-	FF::f_close(&fil);
+    fclose(inputFile);
+    FF::f_close(&fil);
 
     return result;
 }
 
-FF::FRESULT CSdcardFsUI::FsDownloadFile(const std::string & fsSourcePath, const std::wstring & hostDestinationPath, bool canReplace)
+FF::FRESULT CSdcardFsUI::FsDownloadFile(const std::string& fsSourcePath, const std::wstring& hostDestinationPath, bool canReplace)
 {
     FF::FIL fil{};
-	FF::FRESULT result = FF::f_open(&fil, fsSourcePath.c_str(), FA_READ);
+    FF::FRESULT result = FF::f_open(&fil, fsSourcePath.c_str(), FA_READ);
     if (FF::FRESULT::FR_OK != result)
     {
         return result;
     }
 
-	FILE* outFile = _wfopen(hostDestinationPath.c_str(), canReplace ? L"wb" : L"wbx");
+    FILE* outFile = _wfopen(hostDestinationPath.c_str(), canReplace ? L"wb" : L"wbx");
     if (!outFile)
     {
         FF::f_close(&fil);
-		return errnoToError();
+        return errnoToError();
     }
 
     std::vector<char> buffer(65536);
 
-	UINT bytesRead = 0;
+    UINT bytesRead = 0;
     while (FF::FR_OK == FF::f_read(&fil, buffer.data(), buffer.size(), &bytesRead))
     {
         if (bytesRead == 0)
@@ -1132,7 +1160,7 @@ FF::FRESULT CSdcardFsUI::FsDownloadFile(const std::string & fsSourcePath, const 
         {
             result = FF::FRESULT::FR_DISK_ERR;
             break;
-		}
+        }
     }
 
     fclose(outFile);
@@ -1141,7 +1169,7 @@ FF::FRESULT CSdcardFsUI::FsDownloadFile(const std::string & fsSourcePath, const 
     return result;
 }
 
-std::string CSdcardFsUI::JoinFsPath(const std::string & parent, const std::string & name)
+std::string CSdcardFsUI::JoinFsPath(const std::string& parent, const std::string& name)
 {
     if (parent.empty() || parent == "/")
     {
