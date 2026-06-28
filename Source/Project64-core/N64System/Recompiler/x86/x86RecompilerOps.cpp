@@ -3229,6 +3229,30 @@ static bool isSuperBanjoTooie(void)
 	return g_Rom->GetRomName() == "SUPER BANJO TOOIE";
 }
 
+void CX86RecompilerOps::LW_NonMemory(x86Reg Reg, uint32_t PAddr, bool UpdateCycles)
+{
+    if (UpdateCycles)
+    {
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    PushImm32("TempValue", (uint32_t)&m_TempValue);
+    PushImm32(PAddr);
+#ifdef _MSC_VER
+    MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+    Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+#else
+    PushImm32((uint32_t)(g_MMU));
+    Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+    AddConstToX86Reg(x86_ESP, 12);
+#endif
+    m_RegWorkingSet.AfterCallDirect();
+    MoveVariableToX86reg(&m_TempValue, "TempValue", Reg);
+}
+
 void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
 {
     char VarName[100];
@@ -3302,22 +3326,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             }
             break;
         case 0x04100000:
-             {
-                 static uint32_t TempValue = 0;
-                 m_RegWorkingSet.BeforeCallDirect();
-                 PushImm32("TempValue", (uint32_t)&TempValue);
-                 PushImm32(PAddr);
-#ifdef _MSC_VER
-                 MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                 Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
-#else
-                 PushImm32((uint32_t)(g_MMU));
-                 Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
-                 AddConstToX86Reg(x86_ESP, 12);
-#endif
-                 m_RegWorkingSet.AfterCallDirect();
-                 MoveVariableToX86reg(&TempValue, "TempValue", Reg);
-            }
+            LW_NonMemory(Reg, PAddr, false);
             break;
         case 0x04300000:
             switch (PAddr)
@@ -3518,8 +3527,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             }
             break;
         case 0x1FC00000:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveVariableToX86reg(PAddr + g_MMU->Rdram(), VarName, Reg);
+            LW_NonMemory(Reg, PAddr, false);
             break;
         default:
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < g_Rom->GetRomSize())
@@ -3536,13 +3544,9 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                MoveConstToX86reg(((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF), Reg);
-                if (ShowUnhandledMemory())
-                {
-                    CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
-                }
+                LW_NonMemory(Reg, PAddr, false);
             }
+            break;
         }
     }
 }
@@ -10791,6 +10795,29 @@ void CX86RecompilerOps::SH_Register(x86Reg Reg, uint32_t VAddr)
     }
 }
 
+void CX86RecompilerOps::SW_NonMemory_Const(uint32_t Value, uint32_t PAddr, bool UpdateCycles)
+{
+    if (UpdateCycles)
+    {
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    PushImm32(Value);
+    PushImm32(PAddr);
+#ifdef _MSC_VER
+    MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+    Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+#else
+    PushImm32((uint32_t)(g_MMU));
+    Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+    AddConstToX86Reg(x86_ESP, 12);
+#endif
+    m_RegWorkingSet.AfterCallDirect();
+}
+
 void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
 {
     char VarName[100];
@@ -10889,24 +10916,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
-            {
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                UpdateCounters(m_RegWorkingSet, false, true);
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-
-                m_RegWorkingSet.BeforeCallDirect();
-                PushImm32(Value);
-                PushImm32(PAddr);
-#ifdef _MSC_VER
-                MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-#else
-                PushImm32((uint32_t)(g_MMU));
-                Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-                AddConstToX86Reg(x86_ESP, 12);
-#endif
-                m_RegWorkingSet.AfterCallDirect();
-            }
+            SW_NonMemory_Const(Value, PAddr, true);
             break;
         case 0x0404001C:
             if (g_Plugins->RSP()->m_RspYieldedOnSemaphore)
@@ -11175,13 +11185,11 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500010:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
+            SW_NonMemory_Const(Value, PAddr, false);
             break;
         case 0x04500014: MoveConstToVariable(Value, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
         default:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
+            SW_NonMemory_Const(Value, PAddr, false);
             if (ShowUnhandledMemory())
             {
                 g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
@@ -11344,47 +11352,35 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         }
     case 0x1fc00000:
-		{
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-            UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-
-            m_RegWorkingSet.BeforeCallDirect();
-            PushImm32(Value);
-            PushImm32(PAddr);
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-            Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-#else
-            PushImm32((uint32_t)g_MMU);
-            Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-            AddConstToX86Reg(x86_ESP, 4);
-#endif
-            m_RegWorkingSet.AfterCallDirect();
-        }
+        SW_NonMemory_Const(Value, PAddr, true);
         break;
     default:
-        if (ShowUnhandledMemory())
-        {
-            g_Notify->DisplayError(stdstr_f("%s\nTrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
-        }
+        SW_NonMemory_Const(Value, PAddr, false);
+        break;
+    }
+}
+
+void CX86RecompilerOps::SW_NonMemory_Register(x86Reg Reg, uint32_t PAddr, bool UpdateCycles)
+{
+    if (UpdateCycles)
+    {
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-
-        m_RegWorkingSet.BeforeCallDirect();
-        PushImm32(Value);
-        PushImm32(PAddr);
-#ifdef _MSC_VER
-        MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-#else
-        PushImm32((uint32_t)(g_MMU));
-        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-        AddConstToX86Reg(x86_ESP, 12);
-#endif
-        m_RegWorkingSet.AfterCallDirect();
     }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    Push(Reg);
+    PushImm32(PAddr);
+#ifdef _MSC_VER
+    MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+    Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+#else
+    PushImm32((uint32_t)(g_MMU));
+    Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+    AddConstToX86Reg(x86_ESP, 12);
+#endif
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
@@ -11505,24 +11501,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         }
         break;
     case 0x04100000:
-        if (PAddr == 0x0410000C)
-        {
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-            UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-        }
-        m_RegWorkingSet.BeforeCallDirect();
-        Push(Reg);
-        PushImm32(PAddr);
-#ifdef _MSC_VER
-        MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-#else
-        PushImm32((uint32_t)(g_MMU));
-        Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-        AddConstToX86Reg(x86_ESP, 12);
-#endif
-        m_RegWorkingSet.AfterCallDirect();
+        SW_NonMemory_Register(Reg, PAddr, PAddr == 0x0410000C);
         break;
     case 0x04300000:
         switch (PAddr)
@@ -11662,13 +11641,11 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500010:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
+            SW_NonMemory_Register(Reg, PAddr, false);
             break;
         case 0x04500014: MoveX86regToVariable(Reg, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
         default:
-            sprintf(VarName, "RDRAM + %X", PAddr);
-            MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
+            SW_NonMemory_Register(Reg, PAddr, false);
             if (ShowUnhandledMemory())
             {
                 g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
@@ -11878,15 +11855,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             break;
         }
     case 0x1FC00000:
-        sprintf(VarName, "RDRAM + %X", PAddr);
-        MoveX86regToVariable(Reg, PAddr + g_MMU->Rdram(), VarName);
+        SW_NonMemory_Register(Reg, PAddr, false);
         break;
     default:
-        CPU_Message("    should be moving %s in to %08X ?", x86_Name(Reg), VAddr);
-        if (ShowUnhandledMemory())
-        {
-            g_Notify->DisplayError(stdstr_f("%s\nTrying to store in %08X?", __FUNCTION__, VAddr).c_str());
-        }
+        SW_NonMemory_Register(Reg, PAddr, false);
     }
 }
 
