@@ -267,6 +267,10 @@ public:
     {
         m_RegWorkingSet.FixRoundModel(RoundMethod);
     }
+    static void FixSseRoundModelDefault()
+    {
+        m_RegWorkingSet.FixSseRoundModelDefault();
+    }
     static void ChangeFPURegFormat(int32_t Reg, CRegInfo::FPU_STATE OldFormat, CRegInfo::FPU_STATE NewFormat, CRegInfo::FPU_ROUND RoundingModel)
     {
         m_RegWorkingSet.ChangeFPURegFormat(Reg, OldFormat, NewFormat, RoundingModel);
@@ -278,6 +282,18 @@ public:
     static bool RegInStack(int32_t Reg, CRegInfo::FPU_STATE Format)
     {
         return m_RegWorkingSet.RegInStack(Reg, Format);
+    }
+    static x86XmmReg Map_FPR_ToXmm(int32_t Reg, CRegInfo::FPU_STATE Format)
+    {
+        return m_RegWorkingSet.Map_FPR_ToXmm(Reg, Format);
+    }
+    static x86XmmReg Map_FPR_ToXmmWrite(int32_t Reg, CRegInfo::FPU_STATE Format)
+    {
+        return m_RegWorkingSet.Map_FPR_ToXmmWrite(Reg, Format);
+    }
+    static void FlushXmmCache()
+    {
+        m_RegWorkingSet.FlushXmmCache();
     }
     static x86FpuValues StackPosition(int32_t Reg)
     {

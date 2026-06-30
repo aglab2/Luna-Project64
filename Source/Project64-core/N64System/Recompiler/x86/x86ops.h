@@ -40,6 +40,19 @@ public:
         x86_ST7 = 7
     };
 
+    enum x86XmmReg
+    {
+        x86_XMM0 = 0,
+        x86_XMM1 = 1,
+        x86_XMM2 = 2,
+        x86_XMM3 = 3,
+        x86_XMM4 = 4,
+        x86_XMM5 = 5,
+        x86_XMM6 = 6,
+        x86_XMM7 = 7,
+        x86_XMM_Unknown = -1
+    };
+
     enum Multipler
     {
         Multip_x1 = 1,
@@ -195,6 +208,7 @@ protected:
     static void SetgVariable(void * Variable, const char * VariableName);
     static void Setl(x86Reg reg);
     static void SetlVariable(void * Variable, const char * VariableName);
+    static void Setp(x86Reg reg);
     static void Setz(x86Reg reg);
     static void Setnz(x86Reg reg);
     static void ShiftLeftDouble(x86Reg Destination, x86Reg Source);
@@ -244,6 +258,7 @@ protected:
     static void fpuDecStack(int32_t * StackPos);
     static void fpuIncStack(int32_t * StackPos);
     static void fpuLoadControl(void * Variable, const char * VariableName);
+    static void sseLoadControl(void * Variable, const char * VariableName);
     static void fpuLoadDword(int32_t * StackPos, void * Variable, const char * VariableName);
     static void fpuLoadDwordFromX86Reg(int32_t * StackPos, x86Reg reg);
     static void fpuLoadDwordFromN64Mem(int32_t * StackPos, x86Reg reg);
@@ -266,6 +281,7 @@ protected:
     static void fpuRound();
     static void fpuSqrt();
     static void fpuStoreControl(void * Variable, const char * VariableName);
+    static void sseStoreControl(void * Variable, const char * VariableName);
     static void fpuStoreDword(int32_t * StackPos, void * Variable, const char * VariableName, bool pop);
     static void fpuStoreDwordFromX86Reg(int32_t * StackPos, x86Reg Reg, bool pop);
     static void fpuStoreDwordToN64Mem(int32_t * StackPos, x86Reg reg, bool Pop);
@@ -284,6 +300,48 @@ protected:
     static void fpuSubReg(x86FpuValues reg);
     static void fpuSubRegPop(x86FpuValues reg);
 
+    static void SseMoveFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseMoveDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseAddFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseSubFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseMulFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseDivFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseSqrtFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseAbsFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseNegFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseAddDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseSubDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseMulDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseDivDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseSqrtDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseAbsDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseNegDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName);
+    static void SseCompareFloat(void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+    static void SseCompareDouble(void * Source1, const char * Source1Name, void * Source2, const char * Source2Name);
+
+    static void SseLoadFloatToXmm(x86XmmReg Reg, void * Source, const char * SourceName);
+    static void SseLoadDoubleToXmm(x86XmmReg Reg, void * Source, const char * SourceName);
+    static void SseStoreFloatFromXmm(void * Destination, const char * DestinationName, x86XmmReg Reg);
+    static void SseStoreDoubleFromXmm(void * Destination, const char * DestinationName, x86XmmReg Reg);
+    static void SseMoveFloatXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseMoveDoubleXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseAddFloatXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseSubFloatXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseMulFloatXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseDivFloatXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseSqrtFloatXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseAbsFloatXmm(x86XmmReg Destination);
+    static void SseNegFloatXmm(x86XmmReg Destination);
+    static void SseAddDoubleXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseSubDoubleXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseMulDoubleXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseDivDoubleXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseSqrtDoubleXmm(x86XmmReg Destination, x86XmmReg Source);
+    static void SseAbsDoubleXmm(x86XmmReg Destination);
+    static void SseNegDoubleXmm(x86XmmReg Destination);
+    static void SseCompareFloatXmm(x86XmmReg Source1, x86XmmReg Source2);
+    static void SseCompareDoubleXmm(x86XmmReg Source1, x86XmmReg Source2);
+
     static bool Is8BitReg(x86Reg Reg);
     static uint8_t CalcMultiplyCode(Multipler Multiply);
 
@@ -293,6 +351,11 @@ protected:
 
 private:
     static void BreakPointNotification(const char * FileName, int32_t LineNumber);
+    static void EmitPrefix(uint8_t prefix);
+    static void EmitMemToXmm(uint8_t prefix, uint8_t opcode, x86XmmReg xmmReg, void * ptr);
+    static void EmitXmmToMem(uint8_t prefix, uint8_t opcode, x86XmmReg xmmReg, void * ptr);
+    static void EmitXmmBinaryMem(uint8_t prefix, uint8_t opcode, x86XmmReg xmmReg, void * ptr);
+    static void EmitXmmBinaryXmm(uint8_t prefix, uint8_t opcode, x86XmmReg destination, x86XmmReg source);
     static char m_fpupop[2][2];
     static void AddCode8(uint8_t value);
     static void AddCode16(uint16_t value);

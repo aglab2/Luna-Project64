@@ -2628,6 +2628,21 @@ void CX86Ops::SetlVariable(void * Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
+void CX86Ops::Setp(x86Reg reg)
+{
+    CPU_Message("      setp %s", x86_ByteName(reg));
+    AddCode16(0x9A0F);
+    switch (reg)
+    {
+    case x86_EAX: AddCode8(0xC0); break;
+    case x86_EBX: AddCode8(0xC3); break;
+    case x86_ECX: AddCode8(0xC1); break;
+    case x86_EDX: AddCode8(0xC2); break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
 void CX86Ops::Setz(x86Reg reg)
 {
     CPU_Message("      setz %s", x86_ByteName(reg));
@@ -3594,6 +3609,15 @@ void CX86Ops::fpuLoadControl(void *Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
+void CX86Ops::sseLoadControl(void *Variable, const char * VariableName)
+{
+    CPU_Message("      ldmxcsr [%s]", VariableName);
+    AddCode8(0x0F);
+    AddCode8(0xAE);
+    AddCode8(0x15);
+    AddCode32((uint32_t)Variable);
+}
+
 void CX86Ops::fpuLoadDword(int * StackPos, void *Variable, const char * VariableName)
 {
     CPU_Message("      fld dword ptr [%s]", VariableName);
@@ -3886,6 +3910,15 @@ void CX86Ops::fpuStoreControl(void *Variable, const char * VariableName)
     AddCode32((uint32_t)Variable);
 }
 
+void CX86Ops::sseStoreControl(void *Variable, const char * VariableName)
+{
+    CPU_Message("      stmxcsr [%s]", VariableName);
+    AddCode8(0x0F);
+    AddCode8(0xAE);
+    AddCode8(0x1D);
+    AddCode32((uint32_t)Variable);
+}
+
 void CX86Ops::fpuStoreDword(int * StackPos, void *Variable, const char * VariableName, bool pop)
 {
     CPU_Message("      fst%s dword ptr [%s]", m_fpupop[pop], VariableName);
@@ -4132,6 +4165,416 @@ void CX86Ops::fpuSubQwordReverse(void *Variable, const char * VariableName)
     CPU_Message("      fsubr ST(0), qword ptr [%s]", VariableName);
     AddCode16(0x2DDC);
     AddCode32((uint32_t)Variable);
+}
+
+namespace
+{
+    uint32_t g_SseAbsFloatMask = 0x7FFFFFFF;
+    uint32_t g_SseNegFloatMask = 0x80000000;
+    uint32_t g_SseAbsDoubleMask[2] = { 0xFFFFFFFF, 0x7FFFFFFF };
+    uint32_t g_SseNegDoubleMask[2] = { 0x00000000, 0x80000000 };
+
+    class CXmmRegAllocator
+    {
+    public:
+        CXmmRegAllocator()
+        {
+            for (int i = 0; i < 8; i++) { m_Used[i] = false; }
+        }
+
+        CX86Ops::x86XmmReg Alloc()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (!m_Used[i])
+                {
+                    m_Used[i] = true;
+                    return (CX86Ops::x86XmmReg)i;
+                }
+            }
+            return CX86Ops::x86_XMM0;
+        }
+
+        void Free(CX86Ops::x86XmmReg reg)
+        {
+            if (reg >= CX86Ops::x86_XMM0 && reg <= CX86Ops::x86_XMM7)
+            {
+                m_Used[(int)reg] = false;
+            }
+        }
+
+    private:
+        bool m_Used[8];
+    };
+}
+
+void CX86Ops::EmitPrefix(uint8_t prefix)
+{
+    if (prefix != 0)
+    {
+        AddCode8(prefix);
+    }
+}
+
+void CX86Ops::EmitMemToXmm(uint8_t prefix, uint8_t opcode, x86XmmReg xmmReg, void * ptr)
+{
+    EmitPrefix(prefix);
+    AddCode8(0x0F);
+    AddCode8(opcode);
+    AddCode8((uint8_t)((((uint8_t)xmmReg) << 3) | 0x05));
+    AddCode32((uint32_t)ptr);
+}
+
+void CX86Ops::EmitXmmToMem(uint8_t prefix, uint8_t opcode, x86XmmReg xmmReg, void * ptr)
+{
+    EmitPrefix(prefix);
+    AddCode8(0x0F);
+    AddCode8(opcode);
+    AddCode8((uint8_t)((((uint8_t)xmmReg) << 3) | 0x05));
+    AddCode32((uint32_t)ptr);
+}
+
+void CX86Ops::EmitXmmBinaryMem(uint8_t prefix, uint8_t opcode, x86XmmReg xmmReg, void * ptr)
+{
+    EmitPrefix(prefix);
+    AddCode8(0x0F);
+    AddCode8(opcode);
+    AddCode8((uint8_t)((((uint8_t)xmmReg) << 3) | 0x05));
+    AddCode32((uint32_t)ptr);
+}
+
+void CX86Ops::EmitXmmBinaryXmm(uint8_t prefix, uint8_t opcode, x86XmmReg destination, x86XmmReg source)
+{
+    EmitPrefix(prefix);
+    AddCode8(0x0F);
+    AddCode8(opcode);
+    AddCode8((uint8_t)(0xC0 | (((uint8_t)destination) << 3) | (uint8_t)source));
+}
+
+void CX86Ops::SseLoadFloatToXmm(x86XmmReg Reg, void * Source, const char * SourceName)
+{
+    CPU_Message("      movss xmm%d, dword ptr [%s]", (int)Reg, SourceName);
+    EmitMemToXmm(0xF3, 0x10, Reg, Source);
+}
+
+void CX86Ops::SseLoadDoubleToXmm(x86XmmReg Reg, void * Source, const char * SourceName)
+{
+    CPU_Message("      movsd xmm%d, qword ptr [%s]", (int)Reg, SourceName);
+    EmitMemToXmm(0xF2, 0x10, Reg, Source);
+}
+
+void CX86Ops::SseStoreFloatFromXmm(void * Destination, const char * DestinationName, x86XmmReg Reg)
+{
+    CPU_Message("      movss dword ptr [%s], xmm%d", DestinationName, (int)Reg);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+}
+
+void CX86Ops::SseStoreDoubleFromXmm(void * Destination, const char * DestinationName, x86XmmReg Reg)
+{
+    CPU_Message("      movsd qword ptr [%s], xmm%d", DestinationName, (int)Reg);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+}
+
+void CX86Ops::SseMoveFloatXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      movss xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF3, 0x10, Destination, Source);
+}
+
+void CX86Ops::SseMoveDoubleXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      movsd xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF2, 0x10, Destination, Source);
+}
+
+void CX86Ops::SseAddFloatXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      addss xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF3, 0x58, Destination, Source);
+}
+
+void CX86Ops::SseSubFloatXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      subss xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF3, 0x5C, Destination, Source);
+}
+
+void CX86Ops::SseMulFloatXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      mulss xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF3, 0x59, Destination, Source);
+}
+
+void CX86Ops::SseDivFloatXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      divss xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF3, 0x5E, Destination, Source);
+}
+
+void CX86Ops::SseSqrtFloatXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      sqrtss xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF3, 0x51, Destination, Source);
+}
+
+void CX86Ops::SseAbsFloatXmm(x86XmmReg Destination)
+{
+    CPU_Message("      andps xmm%d, dword ptr [g_SseAbsFloatMask]", (int)Destination);
+    EmitXmmBinaryMem(0x00, 0x54, Destination, &g_SseAbsFloatMask);
+}
+
+void CX86Ops::SseNegFloatXmm(x86XmmReg Destination)
+{
+    CPU_Message("      xorps xmm%d, dword ptr [g_SseNegFloatMask]", (int)Destination);
+    EmitXmmBinaryMem(0x00, 0x57, Destination, &g_SseNegFloatMask);
+}
+
+void CX86Ops::SseAddDoubleXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      addsd xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF2, 0x58, Destination, Source);
+}
+
+void CX86Ops::SseSubDoubleXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      subsd xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF2, 0x5C, Destination, Source);
+}
+
+void CX86Ops::SseMulDoubleXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      mulsd xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF2, 0x59, Destination, Source);
+}
+
+void CX86Ops::SseDivDoubleXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      divsd xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF2, 0x5E, Destination, Source);
+}
+
+void CX86Ops::SseSqrtDoubleXmm(x86XmmReg Destination, x86XmmReg Source)
+{
+    CPU_Message("      sqrtsd xmm%d, xmm%d", (int)Destination, (int)Source);
+    EmitXmmBinaryXmm(0xF2, 0x51, Destination, Source);
+}
+
+void CX86Ops::SseAbsDoubleXmm(x86XmmReg Destination)
+{
+    CPU_Message("      andpd xmm%d, qword ptr [g_SseAbsDoubleMask]", (int)Destination);
+    EmitXmmBinaryMem(0x66, 0x54, Destination, &g_SseAbsDoubleMask[0]);
+}
+
+void CX86Ops::SseNegDoubleXmm(x86XmmReg Destination)
+{
+    CPU_Message("      xorpd xmm%d, qword ptr [g_SseNegDoubleMask]", (int)Destination);
+    EmitXmmBinaryMem(0x66, 0x57, Destination, &g_SseNegDoubleMask[0]);
+}
+
+void CX86Ops::SseCompareFloatXmm(x86XmmReg Source1, x86XmmReg Source2)
+{
+    CPU_Message("      ucomiss xmm%d, xmm%d", (int)Source1, (int)Source2);
+    EmitXmmBinaryXmm(0x00, 0x2E, Source1, Source2);
+}
+
+void CX86Ops::SseCompareDoubleXmm(x86XmmReg Source1, x86XmmReg Source2)
+{
+    CPU_Message("      ucomisd xmm%d, xmm%d", (int)Source1, (int)Source2);
+    EmitXmmBinaryXmm(0x66, 0x2E, Source1, Source2);
+}
+
+void CX86Ops::SseMoveFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse: %s = %s", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseMoveDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse2: %s = %s", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseAddFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse: %s = %s + %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF3, 0x58, Reg, Source2);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseSubFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse: %s = %s - %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF3, 0x5C, Reg, Source2);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseMulFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse: %s = %s * %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF3, 0x59, Reg, Source2);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseDivFloat(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse: %s = %s / %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF3, 0x5E, Reg, Source2);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseSqrtFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse: %s = sqrt(%s)", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source);
+    EmitXmmBinaryMem(0xF3, 0x51, Reg, Source);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseAbsFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse: %s = abs(%s)", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source);
+    EmitXmmBinaryMem(0x00, 0x54, Reg, &g_SseAbsFloatMask);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseNegFloat(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse: %s = -%s", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source);
+    EmitXmmBinaryMem(0x00, 0x57, Reg, &g_SseNegFloatMask);
+    EmitXmmToMem(0xF3, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseAddDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse2: %s = %s + %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF2, 0x58, Reg, Source2);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseSubDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse2: %s = %s - %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF2, 0x5C, Reg, Source2);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseMulDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse2: %s = %s * %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF2, 0x59, Reg, Source2);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseDivDouble(void * Destination, const char * DestinationName, void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse2: %s = %s / %s", DestinationName, Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0xF2, 0x5E, Reg, Source2);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseSqrtDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse2: %s = sqrt(%s)", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source);
+    EmitXmmBinaryMem(0xF2, 0x51, Reg, Source);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseAbsDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse2: %s = abs(%s)", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source);
+    EmitXmmBinaryMem(0x66, 0x54, Reg, &g_SseAbsDoubleMask[0]);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseNegDouble(void * Destination, const char * DestinationName, void * Source, const char * SourceName)
+{
+    CPU_Message("      // sse2: %s = -%s", DestinationName, SourceName);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source);
+    EmitXmmBinaryMem(0x66, 0x57, Reg, &g_SseNegDoubleMask[0]);
+    EmitXmmToMem(0xF2, 0x11, Reg, Destination);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseCompareFloat(void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse: compare %s, %s", Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF3, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0x00, 0x2E, Reg, Source2);
+    Alloc.Free(Reg);
+}
+
+void CX86Ops::SseCompareDouble(void * Source1, const char * Source1Name, void * Source2, const char * Source2Name)
+{
+    CPU_Message("      // sse2: compare %s, %s", Source1Name, Source2Name);
+    CXmmRegAllocator Alloc;
+    x86XmmReg Reg = Alloc.Alloc();
+    EmitMemToXmm(0xF2, 0x10, Reg, Source1);
+    EmitXmmBinaryMem(0x66, 0x2E, Reg, Source2);
+    Alloc.Free(Reg);
 }
 
 void CX86Ops::fpuSubReg(x86FpuValues x86reg)

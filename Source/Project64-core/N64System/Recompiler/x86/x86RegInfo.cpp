@@ -12,6 +12,7 @@
 #include <float.h>
 
 uint32_t CX86RegInfo::m_fpuControl = 0;
+uint32_t CX86RegInfo::m_mxcsrControl = 0;
 
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
@@ -35,6 +36,18 @@ CX86RegInfo::CX86RegInfo() :
         m_x86fpu_State[i] = FPU_Unknown;
         m_x86fpu_StateChanged[i] = false;
         m_x86fpu_RoundingModel[i] = RoundDefault;
+    }
+    for (int32_t i = 0; i < 8; i++)
+    {
+        m_xmm_MappedToFpr[i] = -1;
+        m_xmm_Format[i] = XMM_FMT_UNKNOWN;
+        m_xmm_Age[i] = 0;
+    }
+    m_xmm_AgeCounter = 0;
+    for (int32_t i = 0; i < 32; i++)
+    {
+        m_fpr_MappedToXmm[i] = -1;
+        m_fpr_XmmFormat[i] = XMM_FMT_UNKNOWN;
     }
 }
 
@@ -62,6 +75,13 @@ CX86RegInfo& CX86RegInfo::operator=(const CX86RegInfo& right)
     memcpy(&m_x86fpu_State, &right.m_x86fpu_State, sizeof(m_x86fpu_State));
     memcpy(&m_x86fpu_StateChanged, &right.m_x86fpu_StateChanged, sizeof(m_x86fpu_StateChanged));
     memcpy(&m_x86fpu_RoundingModel, &right.m_x86fpu_RoundingModel, sizeof(m_x86fpu_RoundingModel));
+
+    memcpy(&m_xmm_MappedToFpr, &right.m_xmm_MappedToFpr, sizeof(m_xmm_MappedToFpr));
+    memcpy(&m_xmm_Format, &right.m_xmm_Format, sizeof(m_xmm_Format));
+    memcpy(&m_xmm_Age, &right.m_xmm_Age, sizeof(m_xmm_Age));
+    m_xmm_AgeCounter = right.m_xmm_AgeCounter;
+    memcpy(&m_fpr_MappedToXmm, &right.m_fpr_MappedToXmm, sizeof(m_fpr_MappedToXmm));
+    memcpy(&m_fpr_XmmFormat, &right.m_fpr_XmmFormat, sizeof(m_fpr_XmmFormat));
 
 #ifdef _DEBUG
     if (*this != right)
@@ -94,6 +114,18 @@ bool CX86RegInfo::operator==(const CX86RegInfo& right) const
         if (m_x86fpu_MappedTo[count] != right.m_x86fpu_MappedTo[count]) { return false; }
         if (m_x86fpu_State[count] != right.m_x86fpu_State[count]) { return false; }
         if (m_x86fpu_RoundingModel[count] != right.m_x86fpu_RoundingModel[count]) { return false; }
+        if (m_xmm_MappedToFpr[count] != right.m_xmm_MappedToFpr[count]) { return false; }
+        if (m_xmm_Format[count] != right.m_xmm_Format[count]) { return false; }
+        if (m_xmm_Age[count] != right.m_xmm_Age[count]) { return false; }
+    }
+    if (m_xmm_AgeCounter != right.m_xmm_AgeCounter)
+    {
+        return false;
+    }
+    for (count = 0; count < 32; count++)
+    {
+        if (m_fpr_MappedToXmm[count] != right.m_fpr_MappedToXmm[count]) { return false; }
+        if (m_fpr_XmmFormat[count] != right.m_fpr_XmmFormat[count]) { return false; }
     }
     return true;
 }
@@ -119,7 +151,175 @@ void CX86RegInfo::BeforeCallDirect(void)
 void CX86RegInfo::AfterCallDirect(void)
 {
     Popad();
+    FlushXmmCache();
     SetRoundingModel(CRegInfo::RoundUnknown);
+}
+
+void CX86RegInfo::FixSseRoundModelDefault()
+{
+    if (GetRoundingModel() == RoundDefault)
+    {
+        return;
+    }
+
+    static const uint32_t sseRoundMap[4] =
+    {
+        0x0000, // nearest
+        0x6000, // toward zero
+        0x4000, // upward
+        0x2000, // downward
+    };
+
+    sseStoreControl(&m_mxcsrControl, "m_mxcsrControl");
+
+    x86Reg MxcsrReg = Map_TempReg(x86_Any, -1, false);
+    MoveVariableToX86reg(&m_mxcsrControl, "m_mxcsrControl", MxcsrReg);
+    AndConstToX86Reg(MxcsrReg, 0xFFFF9FFF);
+
+    x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
+    MoveVariableToX86reg(&_FPCR[31], "_FPCR[31]", RoundReg);
+    AndConstToX86Reg(RoundReg, 0x3);
+    MoveVariableDispToX86Reg((void *)&sseRoundMap[0], "sseRoundMap", RoundReg, RoundReg, Multip_x4);
+    OrX86RegToX86Reg(MxcsrReg, RoundReg);
+
+    MoveX86regToVariable(MxcsrReg, &m_mxcsrControl, "m_mxcsrControl");
+    SetX86Protected(RoundReg, false);
+    SetX86Protected(MxcsrReg, false);
+
+    sseLoadControl(&m_mxcsrControl, "m_mxcsrControl");
+    SetRoundingModel(RoundDefault);
+}
+
+CX86RegInfo::XMM_FPR_FORMAT CX86RegInfo::ToXmmFormat(FPU_STATE Format) const
+{
+    switch (Format)
+    {
+    case FPU_Float: return XMM_FMT_FLOAT;
+    case FPU_Double: return XMM_FMT_DOUBLE;
+    default: return XMM_FMT_UNKNOWN;
+    }
+}
+
+void CX86RegInfo::TouchXmmSlot(int32_t Slot)
+{
+    m_xmm_AgeCounter += 1;
+    m_xmm_Age[Slot] = m_xmm_AgeCounter;
+}
+
+void CX86RegInfo::ClearXmmSlot(int32_t Slot)
+{
+    int32_t fpr = m_xmm_MappedToFpr[Slot];
+    if (fpr >= 0 && fpr < 32 && m_fpr_MappedToXmm[fpr] == Slot)
+    {
+        m_fpr_MappedToXmm[fpr] = -1;
+        m_fpr_XmmFormat[fpr] = XMM_FMT_UNKNOWN;
+    }
+    m_xmm_MappedToFpr[Slot] = -1;
+    m_xmm_Format[Slot] = XMM_FMT_UNKNOWN;
+    m_xmm_Age[Slot] = 0;
+}
+
+int32_t CX86RegInfo::AllocXmmSlot()
+{
+    for (int32_t i = 0; i < 8; i++)
+    {
+        if (m_xmm_MappedToFpr[i] == -1)
+        {
+            return i;
+        }
+    }
+
+    int32_t best = 0;
+    uint32_t bestAge = m_xmm_Age[0];
+    for (int32_t i = 1; i < 8; i++)
+    {
+        if (m_xmm_Age[i] < bestAge)
+        {
+            best = i;
+            bestAge = m_xmm_Age[i];
+        }
+    }
+    ClearXmmSlot(best);
+    return best;
+}
+
+CX86RegInfo::x86XmmReg CX86RegInfo::Map_FPR_ToXmm(int32_t Reg, FPU_STATE Format)
+{
+    XMM_FPR_FORMAT xmmFormat = ToXmmFormat(Format);
+    if (Reg < 0 || Reg >= 32 || xmmFormat == XMM_FMT_UNKNOWN)
+    {
+        return x86_XMM_Unknown;
+    }
+
+    int32_t mapped = m_fpr_MappedToXmm[Reg];
+    if (mapped >= 0 && mapped < 8 && m_fpr_XmmFormat[Reg] == xmmFormat)
+    {
+        TouchXmmSlot(mapped);
+        return (x86XmmReg)mapped;
+    }
+
+    if (mapped >= 0 && mapped < 8)
+    {
+        ClearXmmSlot(mapped);
+    }
+
+    int32_t slot = AllocXmmSlot();
+    m_xmm_MappedToFpr[slot] = Reg;
+    m_xmm_Format[slot] = xmmFormat;
+    m_fpr_MappedToXmm[Reg] = slot;
+    m_fpr_XmmFormat[Reg] = xmmFormat;
+    TouchXmmSlot(slot);
+
+    char Name[50];
+    if (xmmFormat == XMM_FMT_FLOAT)
+    {
+        sprintf(Name, "_FPR_S[%d]", Reg);
+        SseLoadFloatToXmm((x86XmmReg)slot, &_FPR_S[Reg], Name);
+    }
+    else
+    {
+        sprintf(Name, "_FPR_D[%d]", Reg);
+        SseLoadDoubleToXmm((x86XmmReg)slot, &_FPR_D[Reg], Name);
+    }
+    return (x86XmmReg)slot;
+}
+
+CX86RegInfo::x86XmmReg CX86RegInfo::Map_FPR_ToXmmWrite(int32_t Reg, FPU_STATE Format)
+{
+    XMM_FPR_FORMAT xmmFormat = ToXmmFormat(Format);
+    if (Reg < 0 || Reg >= 32 || xmmFormat == XMM_FMT_UNKNOWN)
+    {
+        return x86_XMM_Unknown;
+    }
+
+    int32_t mapped = m_fpr_MappedToXmm[Reg];
+    if (mapped >= 0 && mapped < 8 && m_fpr_XmmFormat[Reg] == xmmFormat)
+    {
+        TouchXmmSlot(mapped);
+        return (x86XmmReg)mapped;
+    }
+
+    if (mapped >= 0 && mapped < 8)
+    {
+        ClearXmmSlot(mapped);
+    }
+
+    int32_t slot = AllocXmmSlot();
+    m_xmm_MappedToFpr[slot] = Reg;
+    m_xmm_Format[slot] = xmmFormat;
+    m_fpr_MappedToXmm[Reg] = slot;
+    m_fpr_XmmFormat[Reg] = xmmFormat;
+    TouchXmmSlot(slot);
+    return (x86XmmReg)slot;
+}
+
+void CX86RegInfo::FlushXmmCache()
+{
+    for (int32_t i = 0; i < 8; i++)
+    {
+        ClearXmmSlot(i);
+    }
+    m_xmm_AgeCounter = 0;
 }
 
 void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
@@ -1298,6 +1498,7 @@ bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
 
 void CX86RegInfo::WriteBackRegisters()
 {
+    FlushXmmCache();
     UnMap_AllFPRs();
 
     int32_t count;

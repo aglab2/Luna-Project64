@@ -33,6 +33,13 @@ public:
     };
 
 public:
+    enum XMM_FPR_FORMAT
+    {
+        XMM_FMT_UNKNOWN = 0,
+        XMM_FMT_FLOAT = 1,
+        XMM_FMT_DOUBLE = 2,
+    };
+
     CX86RegInfo();
     CX86RegInfo(const CX86RegInfo&);
     ~CX86RegInfo();
@@ -47,10 +54,14 @@ public:
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
 
+    void   FixSseRoundModelDefault();
     void   FixRoundModel(FPU_ROUND RoundMethod);
     void   ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel);
     void   Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format);
     bool   RegInStack(int32_t Reg, FPU_STATE Format);
+    x86XmmReg Map_FPR_ToXmm(int32_t Reg, FPU_STATE Format);
+    x86XmmReg Map_FPR_ToXmmWrite(int32_t Reg, FPU_STATE Format);
+    void   FlushXmmCache();
     void   UnMap_AllFPRs();
     void   UnMap_FPR(int32_t Reg, bool WriteBackValue);
     x86FpuValues StackPosition(int32_t Reg);
@@ -91,6 +102,10 @@ public:
 
 private:
     x86Reg UnMap_8BitTempReg();
+    XMM_FPR_FORMAT ToXmmFormat(FPU_STATE Format) const;
+    int32_t AllocXmmSlot();
+    void TouchXmmSlot(int32_t Slot);
+    void ClearXmmSlot(int32_t Slot);
 
     // r4k
     x86Reg      m_RegMapHi[32];
@@ -107,6 +122,14 @@ private:
     bool        m_x86fpu_StateChanged[8];
     FPU_ROUND   m_x86fpu_RoundingModel[8];
 
+    int32_t     m_xmm_MappedToFpr[8];
+    XMM_FPR_FORMAT m_xmm_Format[8];
+    uint32_t    m_xmm_Age[8];
+    uint32_t    m_xmm_AgeCounter;
+    int32_t     m_fpr_MappedToXmm[32];
+    XMM_FPR_FORMAT m_fpr_XmmFormat[32];
+
     static uint32_t m_fpuControl;
+    static uint32_t m_mxcsrControl;
 };
 #endif

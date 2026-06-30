@@ -28,6 +28,35 @@ OPCODE         CX86RecompilerOps::m_Opcode;
 uint32_t       CX86RecompilerOps::m_BranchCompare = 0;
 uint32_t       CX86RecompilerOps::m_TempValue = 0;
 
+static bool IsXmmCacheableCop1Op(const OPCODE & Op)
+{
+    if (Op.op != R4300i_CP1)
+    {
+        return false;
+    }
+    if (Op.fmt != R4300i_COP1_S && Op.fmt != R4300i_COP1_D)
+    {
+        return false;
+    }
+
+    switch (Op.funct)
+    {
+    case R4300i_COP1_FUNCT_ADD:
+    case R4300i_COP1_FUNCT_SUB:
+    case R4300i_COP1_FUNCT_MUL:
+    case R4300i_COP1_FUNCT_DIV:
+    case R4300i_COP1_FUNCT_SQRT:
+    case R4300i_COP1_FUNCT_ABS:
+    case R4300i_COP1_FUNCT_MOV:
+    case R4300i_COP1_FUNCT_NEG:
+        return true;
+    default:
+        break;
+    }
+
+    return (Op.funct & 0x30) == 0x30;
+}
+
 /*int TestValue = 0;
 void TestFunc()
 {
@@ -183,6 +212,12 @@ static void x86TestWriteBreakpoint64()
 
 void CX86RecompilerOps::PreCompileOpcode(void)
 {
+    if (g_System->bRegCaching() && !IsXmmCacheableCop1Op(m_Opcode))
+    {
+        m_RegWorkingSet.FlushXmmCache();
+        m_RegWorkingSet.UnMap_AllFPRs();
+    }
+
     if (m_NextInstruction != DELAY_SLOT_DONE)
     {
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
@@ -336,8 +371,10 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 
 void CX86RecompilerOps::PostCompileOpcode(void)
 {
-    if (!g_System->bRegCaching()) { m_RegWorkingSet.WriteBackRegisters(); }
-    m_RegWorkingSet.UnMap_AllFPRs();
+    if (!g_System->bRegCaching())
+    {
+        m_RegWorkingSet.WriteBackRegisters();
+    }
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg)
@@ -8391,173 +8428,134 @@ void CX86RecompilerOps::COP1_CT()
 // COP1: S functions
 void CX86RecompilerOps::COP1_S_ADD()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-
-    Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-    if (RegInStack(Reg2, CRegInfo::FPU_Float))
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
     {
-        fpuAddReg(StackPosition(Reg2));
+        SseMoveFloatXmm(Fd, Fs);
     }
-    else
-    {
-        x86Reg TempReg;
+    SseAddFloatXmm(Fd, Ft);
 
-        UnMap_FPR(Reg2, true);
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        char Name[50];
-        sprintf(Name, "_FPR_S[%d]", Reg2);
-        MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], Name, TempReg);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
-        fpuAddDwordRegPointer(TempReg);
-    }
-    UnMap_FPR(m_Opcode.fd, true);
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_SUB()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    x86Reg TempReg;
-    char Name[50];
-
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-
-    if (m_Opcode.fd == m_Opcode.ft)
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
     {
-        UnMap_FPR(m_Opcode.fd, true);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_S[m_Opcode.ft], Name, TempReg);
-        fpuSubDwordRegPointer(TempReg);
+        SseMoveFloatXmm(Fd, Fs);
     }
-    else
-    {
-        Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-        if (RegInStack(Reg2, CRegInfo::FPU_Float))
-        {
-            fpuSubReg(StackPosition(Reg2));
-        }
-        else
-        {
-            UnMap_FPR(Reg2, true);
-            Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
+    SseSubFloatXmm(Fd, Ft);
 
-            TempReg = Map_TempReg(x86_Any, -1, false);
-            sprintf(Name, "_FPR_S[%d]", Reg2);
-            MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], Name, TempReg);
-            fpuSubDwordRegPointer(TempReg);
-        }
-    }
-    UnMap_FPR(m_Opcode.fd, true);
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_MUL()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-
-    Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-    if (RegInStack(Reg2, CRegInfo::FPU_Float))
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
     {
-        fpuMulReg(StackPosition(Reg2));
+        SseMoveFloatXmm(Fd, Fs);
     }
-    else
-    {
-        UnMap_FPR(Reg2, true);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
+    SseMulFloatXmm(Fd, Ft);
 
-        x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
-        char Name[50];
-        sprintf(Name, "_FPR_S[%d]", Reg2);
-        MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], Name, TempReg);
-        fpuMulDwordRegPointer(TempReg);
-    }
-    UnMap_FPR(m_Opcode.fd, true);
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_DIV()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    char Name[50];
-
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-
-    if (m_Opcode.fd == m_Opcode.ft)
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
     {
-        UnMap_FPR(m_Opcode.fd, true);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-
-        x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_S[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_S[m_Opcode.ft], Name, TempReg);
-        fpuDivDwordRegPointer(TempReg);
+        SseMoveFloatXmm(Fd, Fs);
     }
-    else
-    {
-        Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Float);
-        if (RegInStack(Reg2, CRegInfo::FPU_Float))
-        {
-            fpuDivReg(StackPosition(Reg2));
-        }
-        else
-        {
-            UnMap_FPR(Reg2, true);
-            Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Float);
+    SseDivFloatXmm(Fd, Ft);
 
-            x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
-            sprintf(Name, "_FPR_S[%d]", Reg2);
-            MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], Name, TempReg);
-            fpuDivDwordRegPointer(TempReg);
-        }
-    }
-
-    UnMap_FPR(m_Opcode.fd, true);
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_ABS()
 {
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-    fpuAbs();
-    UnMap_FPR(m_Opcode.fd, true);
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
+    {
+        SseMoveFloatXmm(Fd, Fs);
+    }
+    SseAbsFloatXmm(Fd);
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_NEG()
 {
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-    fpuNeg();
-    UnMap_FPR(m_Opcode.fd, true);
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
+    {
+        SseMoveFloatXmm(Fd, Fs);
+    }
+    SseNegFloatXmm(Fd);
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_SQRT()
 {
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
-    fpuSqrt();
-    UnMap_FPR(m_Opcode.fd, true);
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    SseSqrtFloatXmm(Fd, Fs);
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_MOV()
 {
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Float);
+    if (Fd != Fs)
+    {
+        SseMoveFloatXmm(Fd, Fs);
+    }
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_S[%d]", m_Opcode.fd);
+    SseStoreFloatFromXmm(&_FPR_S[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_S_ROUND_L()
@@ -8672,65 +8670,36 @@ void CX86RecompilerOps::COP1_S_CVT_L()
 
 void CX86RecompilerOps::COP1_S_CMP()
 {
-    uint32_t Reg1 = m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft;
-    uint32_t cmp = 0;
-
-    if ((m_Opcode.funct & 4) == 0)
-    {
-        Reg1 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Float) ? m_Opcode.ft : m_Opcode.fs;
-        Reg2 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Float) ? m_Opcode.fs : m_Opcode.ft;
-    }
-
     CompileCop1Test();
     if ((m_Opcode.funct & 7) == 0) { CX86RecompilerOps::UnknownOpcode(); }
-    if ((m_Opcode.funct & 2) != 0) { cmp |= 0x4000; }
-    if ((m_Opcode.funct & 4) != 0) { cmp |= 0x0100; }
 
-    Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Float);
-    Map_TempReg(x86_EAX, 0, false);
-    if (RegInStack(Reg2, CRegInfo::FPU_Float))
-    {
-        fpuComReg(StackPosition(Reg2), false);
-    }
-    else
-    {
-        UnMap_FPR(Reg2, true);
-        Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Float);
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Float);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Float);
+    SseCompareFloatXmm(Fs, Ft);
 
-        x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
-        char Name[50];
-        sprintf(Name, "_FPR_S[%d]", Reg2);
-        MoveVariableToX86reg((uint8_t *)&_FPR_S[Reg2], Name, TempReg);
-        fpuComDwordRegPointer(TempReg, false);
-    }
-    AndConstToVariable((uint32_t)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
-    fpuStoreStatus();
     x86Reg Reg = Map_TempReg(x86_Any8Bit, 0, false);
-    TestConstToX86Reg(cmp, x86_EAX);
-    Setnz(Reg);
+    XorX86RegToX86Reg(Reg, Reg);
 
-    if (cmp != 0)
+    if ((m_Opcode.funct & 4) != 0)
     {
-        TestConstToX86Reg(cmp, x86_EAX);
-        Setnz(Reg);
-
-        if ((m_Opcode.funct & 1) != 0)
-        {
-            x86Reg _86RegReg2 = Map_TempReg(x86_Any8Bit, 0, false);
-            AndConstToX86Reg(x86_EAX, 0x4300);
-            CompConstToX86reg(x86_EAX, 0x4300);
-            Setz(_86RegReg2);
-
-            OrX86RegToX86Reg(Reg, _86RegReg2);
-        }
+        x86Reg Less = Map_TempReg(x86_Any8Bit, 0, false);
+        Setb(Less);
+        OrX86RegToX86Reg(Reg, Less);
     }
-    else if ((m_Opcode.funct & 1) != 0)
+    if ((m_Opcode.funct & 2) != 0)
     {
-        AndConstToX86Reg(x86_EAX, 0x4300);
-        CompConstToX86reg(x86_EAX, 0x4300);
-        Setz(Reg);
+        x86Reg Equal = Map_TempReg(x86_Any8Bit, 0, false);
+        Setz(Equal);
+        OrX86RegToX86Reg(Reg, Equal);
     }
+    if ((m_Opcode.funct & 1) != 0)
+    {
+        x86Reg Unordered = Map_TempReg(x86_Any8Bit, 0, false);
+        Setp(Unordered);
+        OrX86RegToX86Reg(Reg, Unordered);
+    }
+
+    AndConstToVariable((uint32_t)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
     ShiftLeftSignImmed(Reg, 23);
     OrX86RegToVariable(&_FPCR[31], "_FPCR[31]", Reg);
 }
@@ -8738,156 +8707,134 @@ void CX86RecompilerOps::COP1_S_CMP()
 // COP1: D functions
 void CX86RecompilerOps::COP1_D_ADD()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    char Name[50];
-
     CompileCop1Test();
-
-    Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Double);
-    if (RegInStack(Reg2, CRegInfo::FPU_Double))
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
     {
-        fpuAddReg(StackPosition(Reg2));
+        SseMoveDoubleXmm(Fd, Fs);
     }
-    else
-    {
-        x86Reg TempReg;
+    SseAddDoubleXmm(Fd, Ft);
 
-        UnMap_FPR(Reg2, true);
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", Reg2);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], Name, TempReg);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
-        fpuAddQwordRegPointer(TempReg);
-    }
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_SUB()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    x86Reg TempReg;
-    char Name[50];
-
     CompileCop1Test();
-
-    if (m_Opcode.fd == m_Opcode.ft)
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
     {
-        UnMap_FPR(m_Opcode.fd, true);
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-        fpuSubQwordRegPointer(TempReg);
+        SseMoveDoubleXmm(Fd, Fs);
     }
-    else
-    {
-        Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Double);
-        if (RegInStack(Reg2, CRegInfo::FPU_Double))
-        {
-            fpuSubReg(StackPosition(Reg2));
-        }
-        else
-        {
-            UnMap_FPR(Reg2, true);
+    SseSubDoubleXmm(Fd, Ft);
 
-            TempReg = Map_TempReg(x86_Any, -1, false);
-            sprintf(Name, "_FPR_D[%d]", Reg2);
-            MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], Name, TempReg);
-            Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
-            fpuSubQwordRegPointer(TempReg);
-        }
-    }
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_MUL()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    x86Reg TempReg;
-    char Name[50];
-
     CompileCop1Test();
-    FixRoundModel(CRegInfo::RoundDefault);
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
+    {
+        SseMoveDoubleXmm(Fd, Fs);
+    }
+    SseMulDoubleXmm(Fd, Ft);
 
-    Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Double);
-    if (RegInStack(Reg2, CRegInfo::FPU_Double))
-    {
-        fpuMulReg(StackPosition(Reg2));
-    }
-    else
-    {
-        UnMap_FPR(Reg2, true);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", Reg2);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], Name, TempReg);
-        fpuMulQwordRegPointer(TempReg);
-    }
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_DIV()
 {
-    uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
-    x86Reg TempReg;
-    char Name[50];
-
     CompileCop1Test();
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
+    {
+        SseMoveDoubleXmm(Fd, Fs);
+    }
+    SseDivDoubleXmm(Fd, Ft);
 
-    if (m_Opcode.fd == m_Opcode.ft)
-    {
-        UnMap_FPR(m_Opcode.fd, true);
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", m_Opcode.ft);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[m_Opcode.ft], Name, TempReg);
-        Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-        fpuDivQwordRegPointer(TempReg);
-    }
-    else
-    {
-        Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Double);
-        if (RegInStack(Reg2, CRegInfo::FPU_Double))
-        {
-            fpuDivReg(StackPosition(Reg2));
-        }
-        else
-        {
-            UnMap_FPR(Reg2, true);
-            TempReg = Map_TempReg(x86_Any, -1, false);
-            sprintf(Name, "_FPR_D[%d]", Reg2);
-            MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], Name, TempReg);
-            Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fd, CRegInfo::FPU_Double);
-            fpuDivQwordRegPointer(TempReg);
-        }
-    }
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_ABS()
 {
     CompileCop1Test();
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-    fpuAbs();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
+    {
+        SseMoveDoubleXmm(Fd, Fs);
+    }
+    SseAbsDoubleXmm(Fd);
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_NEG()
 {
     CompileCop1Test();
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-    fpuNeg();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
+    {
+        SseMoveDoubleXmm(Fd, Fs);
+    }
+    SseNegDoubleXmm(Fd);
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_SQRT()
 {
     CompileCop1Test();
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
-    fpuSqrt();
+    FixSseRoundModelDefault();
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    SseSqrtDoubleXmm(Fd, Fs);
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_MOV()
 {
     CompileCop1Test();
-    Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Fd = Map_FPR_ToXmmWrite(m_Opcode.fd, CRegInfo::FPU_Double);
+    if (Fd != Fs)
+    {
+        SseMoveDoubleXmm(Fd, Fs);
+    }
+
+    char DstName[50];
+    sprintf(DstName, "_FPR_D[%d]", m_Opcode.fd);
+    SseStoreDoubleFromXmm(&_FPR_D[m_Opcode.fd], DstName, Fd);
 }
 
 void CX86RecompilerOps::COP1_D_ROUND_L()
@@ -9046,64 +8993,36 @@ void CX86RecompilerOps::COP1_D_CVT_L()
 
 void CX86RecompilerOps::COP1_D_CMP()
 {
-    uint32_t Reg1 = m_Opcode.fs;
-    uint32_t Reg2 = m_Opcode.ft;
-    uint32_t cmp = 0;
-
-    if ((m_Opcode.funct & 4) == 0)
-    {
-        Reg1 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Double) ? m_Opcode.ft : m_Opcode.fs;
-        Reg2 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Double) ? m_Opcode.fs : m_Opcode.ft;
-    }
-
     CompileCop1Test();
     if ((m_Opcode.funct & 7) == 0) { CX86RecompilerOps::UnknownOpcode(); }
-    if ((m_Opcode.funct & 2) != 0) { cmp |= 0x4000; }
-    if ((m_Opcode.funct & 4) != 0) { cmp |= 0x0100; }
 
-    Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Double);
-    Map_TempReg(x86_EAX, 0, false);
-    if (RegInStack(Reg2, CRegInfo::FPU_Double))
-    {
-        fpuComReg(StackPosition(Reg2), false);
-    }
-    else
-    {
-        char Name[50];
+    x86XmmReg Fs = Map_FPR_ToXmm(m_Opcode.fs, CRegInfo::FPU_Double);
+    x86XmmReg Ft = Map_FPR_ToXmm(m_Opcode.ft, CRegInfo::FPU_Double);
+    SseCompareDoubleXmm(Fs, Ft);
 
-        UnMap_FPR(Reg2, true);
-        x86Reg TempReg = Map_TempReg(x86_Any, -1, false);
-        sprintf(Name, "_FPR_D[%d]", Reg2);
-        MoveVariableToX86reg((uint8_t *)&_FPR_D[Reg2], Name, TempReg);
-        Load_FPR_ToTop(Reg1, Reg1, CRegInfo::FPU_Double);
-        fpuComQwordRegPointer(TempReg, false);
-    }
-    AndConstToVariable((uint32_t)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
-    fpuStoreStatus();
     x86Reg Reg = Map_TempReg(x86_Any8Bit, 0, false);
-    TestConstToX86Reg(cmp, x86_EAX);
-    Setnz(Reg);
-    if (cmp != 0)
-    {
-        TestConstToX86Reg(cmp, x86_EAX);
-        Setnz(Reg);
+    XorX86RegToX86Reg(Reg, Reg);
 
-        if ((m_Opcode.funct & 1) != 0)
-        {
-            x86Reg _86RegReg2 = Map_TempReg(x86_Any8Bit, 0, false);
-            AndConstToX86Reg(x86_EAX, 0x4300);
-            CompConstToX86reg(x86_EAX, 0x4300);
-            Setz(_86RegReg2);
-
-            OrX86RegToX86Reg(Reg, _86RegReg2);
-        }
-    }
-    else if ((m_Opcode.funct & 1) != 0)
+    if ((m_Opcode.funct & 4) != 0)
     {
-        AndConstToX86Reg(x86_EAX, 0x4300);
-        CompConstToX86reg(x86_EAX, 0x4300);
-        Setz(Reg);
+        x86Reg Less = Map_TempReg(x86_Any8Bit, 0, false);
+        Setb(Less);
+        OrX86RegToX86Reg(Reg, Less);
     }
+    if ((m_Opcode.funct & 2) != 0)
+    {
+        x86Reg Equal = Map_TempReg(x86_Any8Bit, 0, false);
+        Setz(Equal);
+        OrX86RegToX86Reg(Reg, Equal);
+    }
+    if ((m_Opcode.funct & 1) != 0)
+    {
+        x86Reg Unordered = Map_TempReg(x86_Any8Bit, 0, false);
+        Setp(Unordered);
+        OrX86RegToX86Reg(Reg, Unordered);
+    }
+
+    AndConstToVariable((uint32_t)~FPCSR_C, &_FPCR[31], "_FPCR[31]");
     ShiftLeftSignImmed(Reg, 23);
     OrX86RegToVariable(&_FPCR[31], "_FPCR[31]", Reg);
 }
