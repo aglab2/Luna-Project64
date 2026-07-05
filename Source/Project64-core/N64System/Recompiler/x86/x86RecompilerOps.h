@@ -364,6 +364,10 @@ private:
     void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
     void ResetMemoryStack();
 
+    void SW_NonMemory_Const(uint32_t Value, uint32_t PAddr, bool UpdateCycles);
+    void SW_NonMemory_Register(x86Reg Reg, uint32_t PAddr, bool UpdateCycles);
+    void LW_NonMemory(x86Reg Reg, uint32_t PAddr, bool UpdateCycles);
+
     EXIT_LIST m_ExitInfo;
     static STEP_TYPE      m_NextInstruction;
     static uint32_t       m_CompilePC;
