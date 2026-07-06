@@ -13,6 +13,8 @@ namespace WinEscape
 {
     namespace
     {
+        typedef int (CDECL* InitFn)();
+
         typedef void (CDECL *WideOpenNativeForFn)(const wchar_t* path);
         typedef void (CDECL *FreeFn)(void* ptr);
         struct Files
@@ -304,6 +306,10 @@ namespace WinEscape
 
         HMODULE hWinEscape = LoadLibrary(L"wine_xdg_portal.dll");
         if (!hWinEscape)
+            return;
+
+        InitFn init = (InitFn)GetProcAddress(hWinEscape, "wine_portal_init");
+        if (!init || init() != 0)
             return;
 
         gFree = (FreeFn)GetProcAddress(hWinEscape, "wine_portal_free");
