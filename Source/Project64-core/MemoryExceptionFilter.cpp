@@ -13,6 +13,85 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 
+static bool handleSSE(uint32_t memAddress, const uint8_t* typePos)
+{
+    size_t amount = 0;
+
+    uint8_t prefix = 0;
+    if (*typePos == 0x66 || *typePos == 0xF2 || *typePos == 0xF3)
+    {
+        prefix = *typePos++;
+    }
+
+    if (0xf != *typePos++)
+        return false;
+
+    if (0x11 == *typePos)
+    {
+        if (0xf3 == prefix)
+        {
+            // MOVSS
+            amount = 4;
+        }
+        else if (0xf2 == prefix)
+        {
+            // MOVSD
+            amount = 8;
+        }
+        else
+        {
+            // MOVUPS or MOVUPD
+            amount = 16;
+        }
+    }
+
+    if (0x13 == *typePos)
+    {
+        // MOVLPS
+        amount = 8;
+    }
+
+    if (0x17 == *(typePos + 1))
+    {
+        // MOVHPS
+        amount = 8;
+    }
+
+    if (0x29 == *(typePos + 1))
+    {
+        // MOVAPS
+        amount = 16;
+    }
+
+    if (0x2b == *(typePos + 1))
+    {
+        // MOVNTPS or MOVNTPD
+        amount = 16;
+    }
+
+    if (0x7f == *(typePos + 1))
+    {
+        // MOVDQA or MOVDQU
+        amount = 16;
+    }
+
+    if (0xe7 == *(typePos + 1))
+    {
+        // MOVNTDQ
+        amount = 16;
+    }
+
+    if (!amount)
+        return false;
+
+    for (uint32_t count = (memAddress & ~0xFFF); count < (memAddress + amount); count += 0x1000)
+    {
+        g_Recompiler->ClearRecompCode_Phys(count, 0x1000, CRecompiler::Remove_ProtectedMem);
+    }
+
+    return true;
+}
+
 bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & context)
 {
     WriteTrace(TraceExceptionHandler, TraceVerbose, "MemAddress: %X", MemAddress);
@@ -84,6 +163,11 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         return false;
+    }
+
+    if (handleSSE(MemAddress, TypePos))
+    {
+        return true;
     }
 
     uint8_t * ReadPos;
