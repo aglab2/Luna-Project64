@@ -13,29 +13,29 @@ namespace WinEscape
 {
     namespace
     {
-        typedef int (CDECL* InitFn)();
+        typedef int (__cdecl* InitFn)();
 
-        typedef void (CDECL *WideOpenNativeForFn)(const wchar_t* path);
-        typedef void (CDECL *FreeFn)(void* ptr);
+        typedef void (__cdecl*WideOpenNativeForFn)(const wchar_t* path);
+        typedef void (__cdecl*FreeFn)(void* ptr);
         struct Files
         {
             wchar_t** paths;
             int count;
         };
-        typedef void(CDECL* WideOpenFilesDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* initialDir, struct Files*);
-        typedef wchar_t* (CDECL* WideSaveFileDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* defaultName, const wchar_t* initialDir);
-        typedef wchar_t* (CDECL* WideChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const wchar_t* initialDir);
+        typedef void(__cdecl* WideOpenFilesDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* initialDir, struct Files*);
+        typedef wchar_t* (__cdecl* WideSaveFileDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* defaultName, const wchar_t* initialDir);
+        typedef wchar_t* (__cdecl* WideChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const wchar_t* initialDir);
 
-        typedef void (CDECL*Utf8OpenNativeForFn)(const char* path);
-        typedef char* (CDECL*Utf8OpenFileDialogFn)(void* hwndOwner, bool fileMustExist, Utf8::Filter* filters, int filtersCount, const char* initialDir);
+        typedef void (__cdecl*Utf8OpenNativeForFn)(const char* path);
+        typedef char* (__cdecl*Utf8OpenFileDialogFn)(void* hwndOwner, bool fileMustExist, Utf8::Filter* filters, int filtersCount, const char* initialDir);
         struct Utf8Files
         {
             char** paths;
             int count;
         };
-        typedef void(CDECL*Utf8OpenFilesDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* initialDir, struct Files*);
-        typedef char* (CDECL*Utf8SaveFileDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* defaultName, const char* initialDir);
-        typedef char* (CDECL*Utf8ChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const char* initialDir);
+        typedef void(__cdecl*Utf8OpenFilesDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* initialDir, struct Files*);
+        typedef char* (__cdecl*Utf8SaveFileDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* defaultName, const char* initialDir);
+        typedef char* (__cdecl*Utf8ChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const char* initialDir);
 
         static WideOpenNativeForFn gWideOpenNativeFor = nullptr;
         static FreeFn gFree = nullptr;
