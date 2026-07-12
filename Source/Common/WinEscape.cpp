@@ -15,27 +15,27 @@ namespace WinEscape
     {
         typedef int (__cdecl* InitFn)();
 
-        typedef void (__cdecl*WideOpenNativeForFn)(const wchar_t* path);
-        typedef void (__cdecl*FreeFn)(void* ptr);
-        struct Files
+        typedef int (__cdecl*WideOpenNativeForFn)(const wchar_t* path);
+        typedef int (__cdecl*FreeFn)(void* ptr);
+        struct WideFiles
         {
             wchar_t** paths;
             int count;
         };
-        typedef void(__cdecl* WideOpenFilesDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* initialDir, struct Files*);
-        typedef wchar_t* (__cdecl* WideSaveFileDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* defaultName, const wchar_t* initialDir);
-        typedef wchar_t* (__cdecl* WideChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const wchar_t* initialDir);
+        typedef int (__cdecl* WideOpenFilesDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* initialDir, struct WideFiles*);
+        typedef int (__cdecl* WideSaveFileDialogFn)(void* hwndOwner, Wide::Filter* filters, int filtersCount, const wchar_t* defaultName, const wchar_t* initialDir, wchar_t** out);
+        typedef int (__cdecl* WideChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const wchar_t* initialDir, wchar_t** out);
 
-        typedef void (__cdecl*Utf8OpenNativeForFn)(const char* path);
-        typedef char* (__cdecl*Utf8OpenFileDialogFn)(void* hwndOwner, bool fileMustExist, Utf8::Filter* filters, int filtersCount, const char* initialDir);
+        typedef int (__cdecl*Utf8OpenNativeForFn)(const char* path);
+        typedef int (__cdecl*Utf8OpenFileDialogFn)(void* hwndOwner, bool fileMustExist, Utf8::Filter* filters, int filtersCount, const char* initialDir, char** out);
         struct Utf8Files
         {
             char** paths;
             int count;
         };
-        typedef void(__cdecl*Utf8OpenFilesDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* initialDir, struct Files*);
-        typedef char* (__cdecl*Utf8SaveFileDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* defaultName, const char* initialDir);
-        typedef char* (__cdecl*Utf8ChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const char* initialDir);
+        typedef int (__cdecl*Utf8OpenFilesDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* initialDir, struct Utf8Files*);
+        typedef int (__cdecl*Utf8SaveFileDialogFn)(void* hwndOwner, Utf8::Filter* filters, int filtersCount, const char* defaultName, const char* initialDir, char** out);
+        typedef int (__cdecl*Utf8ChooseDirectoryFn)(void* hwndOwner, const wchar_t* title, const char* initialDir, char** out);
 
         static WideOpenNativeForFn gWideOpenNativeFor = nullptr;
         static FreeFn gFree = nullptr;
@@ -150,7 +150,7 @@ namespace WinEscape
         {
             if (gWideOpenNativeFor)
             {
-                return gWideOpenNativeFor(path);
+                if (0 == gWideOpenNativeFor(path)) return;
             }
 
             ShellExecuteW(nullptr, L"open", path, nullptr, nullptr, SW_SHOWNORMAL);
@@ -160,16 +160,22 @@ namespace WinEscape
         {
             if (gWideOpenFilesDialog)
             {
-                struct Files files = {};
-                gWideOpenFilesDialog(hwndOwner, filters.data(), (int)filters.size(), initialDir, &files);
-                std::vector<std::wstring> results;
-                for (int i = 0; i < files.count; ++i)
+                struct WideFiles files = {};
+                if (0 == gWideOpenFilesDialog(hwndOwner, filters.data(), (int)filters.size(), initialDir, &files))
                 {
-                    results.push_back(files.paths[i]);
-                }
+                    std::vector<std::wstring> results;
+                    for (int i = 0; i < files.count; ++i)
+                    {
+                        if (!files.paths[i])
+                            continue;
 
-                gFree(files.paths);
-                return results;
+                        results.push_back(files.paths[i]);
+                        gFree(files.paths[i]);
+                    }
+
+                    gFree(files.paths);
+                    return results;
+                }
             }
 
             CoInitializer co;
@@ -199,11 +205,15 @@ namespace WinEscape
         {
             if (gWideSaveFileDialog)
             {
-                wchar_t* result = gWideSaveFileDialog(hwndOwner, filters.data(), (int)filters.size(), defaultName, initialDir);
-                if (result)
+                wchar_t* result = NULL;
+                if (0 == gWideSaveFileDialog(hwndOwner, filters.data(), (int)filters.size(), defaultName, initialDir, &result))
                 {
-                    std::wstring path = result;
-                    gFree(result);
+                    std::wstring path;
+                    if (result)
+                    {
+                        path = result;
+                        gFree(result);
+                    }
                     return path;
                 }
                 return {};
@@ -251,11 +261,15 @@ namespace WinEscape
         {
             if (gWideChooseDirectory)
             {
-                wchar_t* result = gWideChooseDirectory(hwndOwner, title, initialDir);
-                if (result)
+                wchar_t* result = NULL;
+                if (0 == gWideChooseDirectory(hwndOwner, title, initialDir, &result))
                 {
-                    std::wstring path = result;
-                    gFree(result);
+                    std::wstring path;
+                    if (result)
+                    {
+                        path = result;
+                        gFree(result);
+                    }
                     return path;
                 }
                 return {};
@@ -329,7 +343,7 @@ namespace WinEscape
         {
             if (gUtf8OpenNativeFor)
             {
-                return gUtf8OpenNativeFor(path);
+                if (0 == gUtf8OpenNativeFor(path)) return;
             }
 
             ShellExecuteA(nullptr, "open", path, nullptr, nullptr, SW_SHOWNORMAL);
@@ -339,11 +353,15 @@ namespace WinEscape
         {
             if (gUtf8OpenFileDialog)
             {
-                char* result = gUtf8OpenFileDialog(hwndOwner, fileMustExist, filters.data(), (int)filters.size(), initialDir);
-                if (result)
+                char* result = NULL;
+                if (0 == gUtf8OpenFileDialog(hwndOwner, fileMustExist, filters.data(), (int)filters.size(), initialDir, &result))
                 {
-                    std::string path = result;
-                    gFree(result);
+                    std::string path;
+                    if (result)
+                    {
+                        path = result;
+                        gFree(result);
+                    }
                     return path;
                 }
                 return {};
@@ -381,11 +399,15 @@ namespace WinEscape
         {
             if (gUtf8SaveFileDialog)
             {
-                char* result = gUtf8SaveFileDialog(hwndOwner, filters.data(), (int)filters.size(), defaultName, initialDir);
-                if (result)
+                char* result = NULL;
+                if (0 == gUtf8SaveFileDialog(hwndOwner, filters.data(), (int)filters.size(), defaultName, initialDir, &result))
                 {
-                    std::string path = result;
-                    gFree(result);
+                    std::string path;
+                    if (result)
+                    {
+                        path = result;
+                        gFree(result);
+                    }
                     return path;
                 }
                 return {};
@@ -429,11 +451,15 @@ namespace WinEscape
         {
             if (gUtf8ChooseDirectory)
             {
-                char* result = gUtf8ChooseDirectory(hwndOwner, title, _initialDir);
-                if (result)
+                char* result = NULL;
+                if (0 == gUtf8ChooseDirectory(hwndOwner, title, _initialDir, &result))
                 {
-                    std::string path = result;
-                    gFree(result);
+                    std::string path;
+                    if (result)
+                    {
+                        path = result;
+                        gFree(result);
+                    }
                     return path;
                 }
                 return {};
