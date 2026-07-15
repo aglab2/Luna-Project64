@@ -11513,6 +11513,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04300000:
+        case 0x04300008:
             MoveX86regToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
             MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_RegWorkingSet.BeforeCallDirect();

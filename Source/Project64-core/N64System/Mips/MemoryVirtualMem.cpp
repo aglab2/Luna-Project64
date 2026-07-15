@@ -2035,6 +2035,8 @@ void CMipsMemoryVM::Write32MIPSInterface(void)
             g_Reg->MI_MODE_REG |= MI_MODE_RDRAM;
         }
         break;
+    case 0x04300008:
+        break;
     case 0x0430000C:
         if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_SP) != 0)
         {

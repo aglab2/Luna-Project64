@@ -548,43 +548,47 @@ void CDMA::PI_DMA_WRITE()
 
 void CDMA::SP_DMA_READ()
 {
-    g_Reg->SP_DRAM_ADDR_REG &= 0xFFFFF8;
+    uint32_t length = ((g_Reg->SP_RD_LEN_REG & 0xFFF) | 7) + 1;
+    uint32_t skip   = (g_Reg->SP_RD_LEN_REG >> 20) & 0xFF8;
+    unsigned count  = ((g_Reg->SP_RD_LEN_REG >> 12) & 0xFF) + 1;
 
-    if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
+    unsigned i = 0;
+    uint32_t rdram = g_Reg->SP_DRAM_ADDR_REG & 0xfffff8;
+    uint32_t spmem = g_Reg->SP_MEM_ADDR_REG & 0xff8;
+    bool imem = g_Reg->SP_MEM_ADDR_REG & 0x1000;
+    uint8_t* rsp_ptr = imem ? g_MMU->Imem() : g_MMU->Dmem();
+
+    if ((0 == skip || 1 == count) && (spmem + length) < 0x1000 && (rdram + length) < g_MMU->RdramSize())
     {
-        // Reading further than RdramSize just returns zeros
-        // TODO: Still wrong btw because of wrap arounding
-        memset(g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF), 0, g_Reg->SP_RD_LEN_REG + 1);
-        g_Reg->SP_DMA_BUSY_REG = 0;
-        g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
-        return;
+        // TODO: Sane case should probably also include the case where skip == 0 but i do not care enough
+        uint8_t* rdram_ptr = g_MMU->Rdram() + rdram;
+        memcpy(rsp_ptr + spmem, rdram_ptr, length);
+        rdram += length;
+        spmem += length;
     }
-
-    if (g_Reg->SP_RD_LEN_REG + 1 + (g_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
+    else
     {
-        if (HaveDebugger())
+        do
         {
-            g_Notify->DisplayError(stdstr_f("%s\nCould not fit copy in memory segment",__FUNCTION__).c_str());
-        }
-        return;
+            unsigned j = 0;
+            do
+            {
+                uint32_t source_addr = rdram + j;
+                uint32_t dest_addr = (spmem + j) & 0xfff;
+                uint64_t word = source_addr >= g_MMU->RdramSize() ? 0 : *(uint64_t*)(g_MMU->Rdram() + source_addr);
+                *(uint64_t*)(rsp_ptr + dest_addr) = word;
+
+                j += 8;
+            } while (j < length);
+
+            rdram += length + skip;
+            spmem += length;
+        } while (++i < count);
     }
 
-    if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if (((g_Reg->SP_RD_LEN_REG + 1) & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-    // TODO: This is wrong - need to wrap around the memory segment...
-    memcpy(g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF), g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG,
-        g_Reg->SP_RD_LEN_REG + 1);
+    g_Reg->SP_DRAM_ADDR_REG = rdram;
+    g_Reg->SP_MEM_ADDR_REG = spmem & 0xff8;
+    g_Reg->SP_RD_LEN_REG = 0xff8;
 
     g_Reg->SP_DMA_BUSY_REG = 0;
     g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
@@ -592,43 +596,48 @@ void CDMA::SP_DMA_READ()
 
 void CDMA::SP_DMA_WRITE()
 {
-    g_Reg->SP_DRAM_ADDR_REG &= 0xFFFFF8;
+    uint32_t length = ((g_Reg->SP_WR_LEN_REG & 0xFFF) | 7) + 1;
+    uint32_t skip = (g_Reg->SP_WR_LEN_REG >> 20) & 0xFF8;
+    unsigned count = ((g_Reg->SP_WR_LEN_REG >> 12) & 0xFF) + 1;
 
-    if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
+    unsigned i = 0;
+    uint32_t rdram = g_Reg->SP_DRAM_ADDR_REG & 0xfffff8;
+    uint32_t spmem = g_Reg->SP_MEM_ADDR_REG & 0xff8;
+    bool imem = g_Reg->SP_MEM_ADDR_REG & 0x1000;
+    uint8_t* rsp_ptr = imem ? g_MMU->Imem() : g_MMU->Dmem();
+
+    if ((0 == skip || 1 == count) && (spmem + length) <= 0x1000 && (rdram + length) <= g_MMU->RdramSize())
     {
-        if (HaveDebugger())
+        // TODO: Sane case should probably also include the case where skip == 0 but i do not care enough
+        uint8_t* rdram_ptr = g_MMU->Rdram() + rdram;
+        memcpy(rdram_ptr, rsp_ptr + spmem, length);
+        rdram += length;
+        spmem += length;
+    }
+    else
+    {
+        do
         {
-            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRAM space: %08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
-        }
-        return;
+            unsigned j = 0;
+            do
+            {
+                uint32_t dest_addr = rdram + j;
+                uint32_t source_addr = (spmem + j) & 0xfff;
+                uint64_t word = *(uint64_t*)(rsp_ptr + source_addr);
+                if (dest_addr < g_MMU->RdramSize())
+                    *(uint64_t*)(g_MMU->Rdram() + dest_addr) = word;
+
+                j += 8;
+            } while (j < length);
+
+            rdram += length + skip;
+            spmem += length;
+        } while (++i < count);
     }
 
-    if (g_Reg->SP_WR_LEN_REG + 1 + (g_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
-    {
-        if (HaveDebugger())
-        {
-            g_Notify->DisplayError("SP DMA WRITE\nCould not fit copy in memory segment");
-        }
-        return;
-    }
-
-    if ((g_Reg->SP_MEM_ADDR_REG & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-    if ((g_Reg->SP_DRAM_ADDR_REG & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    if (((g_Reg->SP_WR_LEN_REG + 1) & 3) != 0)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-    // TODO: This is wrong - need to wrap around the memory segment...
-    memcpy(g_MMU->Rdram() + g_Reg->SP_DRAM_ADDR_REG, g_MMU->Dmem() + (g_Reg->SP_MEM_ADDR_REG & 0x1FFF),
-        g_Reg->SP_WR_LEN_REG + 1);
+    g_Reg->SP_DRAM_ADDR_REG = rdram;
+    g_Reg->SP_MEM_ADDR_REG = spmem & 0xff8;
+    g_Reg->SP_WR_LEN_REG = 0xff8;
 
     g_Reg->SP_DMA_BUSY_REG = 0;
     g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
