@@ -21,6 +21,9 @@ MIPS_DWORD CMipsMemoryVM::m_MemLookupValue;
 bool CMipsMemoryVM::m_MemLookupValid = true;
 uint32_t CMipsMemoryVM::RegModValue;
 
+bool IsLibDragon = false;
+uint8_t RamProducingEntropyBits = 0;
+
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
@@ -453,6 +456,21 @@ bool CMipsMemoryVM::SH_VAddr(uint32_t VAddr, uint16_t Value)
     return true;
 }
 
+static void shuffle(uint8_t* array, size_t n)
+{
+    if (n > 1)
+    {
+        for (size_t i = n - 1; i > 0; i--)
+        {
+            size_t j = g_Random->next() % (i + 1);
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+}
+
+extern uint8_t RamProducingEntropyBits;
 bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
 {
     if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
@@ -468,6 +486,37 @@ bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
     if (m_TLB_WriteMap[VAddr >> 12] == -1)
     {
         return false;
+    }
+
+    if (RamProducingEntropyBits && Value == 0xffffffffu)
+    {
+        // LibDragon "fun". We are expected that at least for the first current provided, we will turn off some of the bits for the entropy.
+        // I do not want to depend on the randomness in terms of result produced by IPL3 being randomly non bootable.
+        // The easiest way to guarantee this is to ensure the exact amount of bits in byte is being disabled from the 'Value'.
+        // I will pick exactly 4 bits being disabled from Value.
+        Value = 0;
+
+        uint8_t bits[8] = { 1, 1, 1, 1, 1, 1, 1, 1 };
+        for (int i = 0; i < RamProducingEntropyBits; i++)
+        {
+            if (i == 8)
+                break;
+
+            bits[i] = 0;
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            shuffle(bits, sizeof(bits));
+
+            uint8_t byte = 0;
+            for (int j = 0; j < 8; j++)
+            {
+                byte |= bits[j] << j;
+            }
+
+            Value |= byte << (i * 8);
+        }
     }
 
     *(uint32_t*)(m_TLB_WriteMap[VAddr >> 12] + VAddr) = Value;
@@ -1196,25 +1245,42 @@ void CMipsMemoryVM::ChangeMiIntrMask()
 
 void CMipsMemoryVM::Load32RDRAMRegisters(void)
 {
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    int offset = (m_MemLookupAddress & 0xFFFFFFF) - 0x03F00000;
+
+    bool broadcast = m_MemLookupAddress & 0x80000;
+    int reg = offset & 1023;
+    int chip = offset / 1024;
+
+    if (broadcast)
     {
-    case 0x03F00000: m_MemLookupValue.UW[0] = g_Reg->RDRAM_CONFIG_REG; break;
-    case 0x03F00004: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_ID_REG; break;
-    case 0x03F00008: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DELAY_REG; break;
-    case 0x03F0000C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MODE_REG; break;
-    case 0x03F00010: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_INTERVAL_REG; break;
-    case 0x03F00014: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_ROW_REG; break;
-    case 0x03F00018: m_MemLookupValue.UW[0] = g_Reg->RDRAM_RAS_INTERVAL_REG; break;
-    case 0x03F0001C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MIN_INTERVAL_REG; break;
-    case 0x03F00020: m_MemLookupValue.UW[0] = g_Reg->RDRAM_ADDR_SELECT_REG; break;
-    case 0x03F00024: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_MANUF_REG; break;
-    default:
-        m_MemLookupValue.UW[0] = 0;
         if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
+    else
+    {
+        switch (reg)
+        {
+        case 0x000: m_MemLookupValue.UW[0] = g_Reg->RDRAM_CONFIG_REG; break;
+        case 0x004: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_ID_REG; break;
+        case 0x008: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DELAY_REG; break;
+        case 0x00C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MODE_REG; break;
+        case 0x010: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_INTERVAL_REG; break;
+        case 0x014: m_MemLookupValue.UW[0] = g_Reg->RDRAM_REF_ROW_REG; break;
+        case 0x018: m_MemLookupValue.UW[0] = g_Reg->RDRAM_RAS_INTERVAL_REG; break;
+        case 0x01C: m_MemLookupValue.UW[0] = g_Reg->RDRAM_MIN_INTERVAL_REG; break;
+        case 0x020: m_MemLookupValue.UW[0] = g_Reg->RDRAM_ADDR_SELECT_REG; break;
+        case 0x024: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_MANUF_REG; break;
+        default:
+            m_MemLookupValue.UW[0] = 0;
+            if (HaveDebugger())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+    }
+
     m_MemLookupValid = true;
 }
 
@@ -1558,28 +1624,127 @@ void CMipsMemoryVM::Load32Rom(void)
 
 void CMipsMemoryVM::Write32RDRAMRegisters(void)
 {
-    switch ((m_MemLookupAddress & 0xFFFFFFF))
+    int offset = (m_MemLookupAddress & 0xFFFFFFF) - 0x03F00000;
+
+    bool broadcast = m_MemLookupAddress & 0x80000;
+    int reg = offset & 1023;
+    int chip = offset / 1024;
+
+    if (broadcast)
     {
-    case 0x03F00000: g_Reg->RDRAM_CONFIG_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00004: g_Reg->RDRAM_DEVICE_ID_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00008: g_Reg->RDRAM_DELAY_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F0000C: g_Reg->RDRAM_MODE_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00010: g_Reg->RDRAM_REF_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00014: g_Reg->RDRAM_REF_ROW_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00018: g_Reg->RDRAM_RAS_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F0001C: g_Reg->RDRAM_MIN_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00020: g_Reg->RDRAM_ADDR_SELECT_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F00024: g_Reg->RDRAM_DEVICE_MANUF_REG = m_MemLookupValue.UW[0]; break;
-    case 0x03F04004: break;
-    case 0x03F08004: break;
-    case 0x03F80004: break;
-    case 0x03F80008: break;
-    case 0x03F8000C: break;
-    case 0x03F80014: break;
-    default:
-        if (HaveDebugger())
+        switch (offset)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+        case 0x80004: break;
+        case 0x80008: break;
+        case 0x8000C: break;
+        case 0x80014: break;
+
+        default:
+            if (HaveDebugger())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+    }
+    else
+    {
+        if (chip > 32)
+        {
+            IsLibDragon = true;
+            /*
+            return (rdram_reg_devicetype_t){
+                .version = BITS(value, 28, 31),
+                .type = BITS(value, 24, 27),
+                .row_bits = BITS(value, 8, 11),
+                .bank_bits = BITS(value, 12, 15),
+                .col_bits = BITS(value, 4, 7),
+                .ninth_bit = BIT(value, 2),
+                .low_latency = BIT(value, 0),
+            };
+            (t.bank_bits != 1 || t.row_bits != 9 || t.col_bits != 0xB || t.ninth_bit != 1)
+            */
+            g_Reg->RDRAM_CONFIG_REG = _byteswap_ulong((1 << 12) | (9 << 8) | (0xb << 4) | (1 << 2));
+        }
+
+        switch (reg)
+        {
+        case 0x000: g_Reg->RDRAM_CONFIG_REG = m_MemLookupValue.UW[0]; break;
+        case 0x004: g_Reg->RDRAM_DEVICE_ID_REG = m_MemLookupValue.UW[0]; break;
+        case 0x008: g_Reg->RDRAM_DELAY_REG = m_MemLookupValue.UW[0]; break;
+        case 0x00C:
+        {
+            if (IsLibDragon)
+            {
+                RamProducingEntropyBits = 0;
+                if (0x46000000 == m_MemLookupValue.UW[0])
+                {
+                    if (chip < 4)
+                    {
+                        // turn on every even chip
+                        g_Reg->RDRAM_MODE_REG = m_MemLookupValue.UW[0];
+                    }
+                    else
+                    {
+                        g_Reg->RDRAM_MODE_REG = 0;
+                    }
+                }
+                else
+                {
+                    uint32_t value = _byteswap_ulong(m_MemLookupValue.UW[0]);
+                    uint32_t currentConfig = (1 << 1) | (1 << 2) | (1 << 6); // rdram_reg_w_mode checks for current
+                    if ((currentConfig & value) == currentConfig)
+                    {
+                        uint32_t current = (((value >> 30) & 1) ? (1 << 0) : 0)
+                                         | (((value >> 22) & 1) ? (1 << 1) : 0)
+                                         | (((value >> 14) & 1) ? (1 << 2) : 0)
+                                         | (((value >> 31) & 1) ? (1 << 3) : 0)
+                                         | (((value >> 23) & 1) ? (1 << 4) : 0)
+                                         | (((value >> 15) & 1) ? (1 << 5) : 0);
+                        current ^= 0x3F;
+
+                        if (!(value & (1 << 7))) // checks for CURRENT_CONTROL_AUTO - we just inverse the value
+                        {
+                            // not auto control - set the current to simulate entropy production
+                            int bits = 8 - current;
+                            if (bits > 0)
+                            {
+                                RamProducingEntropyBits = bits;
+                            }
+                        }
+                        else
+                        {
+                            // otherwise autocurrent binsearch - expected is inverse bits
+#define BIT(x, n)           (((x) >> (n)) & 1)
+#define CCVALUE(cc) ((BIT(cc,0)<<30) | (BIT(cc,1)<<22) | (BIT(cc,2)<<14) | (BIT(cc,3)<<31) | (BIT(cc,4)<<23) | (BIT(cc,5)<<15))
+                            value &= ~(CCVALUE(63));
+                            value |= CCVALUE(current);
+                            m_MemLookupValue.UW[0] = _byteswap_ulong(value);
+#undef CCVALUE
+#undef BIT
+                        }
+                    }
+
+                    g_Reg->RDRAM_MODE_REG = m_MemLookupValue.UW[0];
+                }
+            }
+            else
+            {
+                g_Reg->RDRAM_MODE_REG = m_MemLookupValue.UW[0]; break;
+            }
+            break;
+        }
+        case 0x010: g_Reg->RDRAM_REF_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
+        case 0x014: g_Reg->RDRAM_REF_ROW_REG = m_MemLookupValue.UW[0]; break;
+        case 0x018: g_Reg->RDRAM_RAS_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
+        case 0x01C: g_Reg->RDRAM_MIN_INTERVAL_REG = m_MemLookupValue.UW[0]; break;
+        case 0x020: g_Reg->RDRAM_ADDR_SELECT_REG = m_MemLookupValue.UW[0]; break;
+        case 0x024: g_Reg->RDRAM_DEVICE_MANUF_REG = m_MemLookupValue.UW[0]; break;
+
+        default:
+            if (HaveDebugger())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
         }
     }
 }

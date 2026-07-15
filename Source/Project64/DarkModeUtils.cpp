@@ -1208,9 +1208,7 @@ bool isParentTitleStartingWith(HWND hwnd, const TCHAR* prefix) {
 
 void dbgMsg(HWND hWnd, UINT_PTR subclass, UINT message, WPARAM wParam, LPARAM lParam)
 {
-#ifdef NDEBUG
 	return;
-#endif
 
 	switch (message) { // https://wiki.winehq.org/List_Of_Windows_Messages
 	case WM_GETTEXT:

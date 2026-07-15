@@ -10869,6 +10869,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         sprintf(VarName, "RDRAM + %X", PAddr);
         MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
         break;
+#if 0
     case 0x03F00000:
         switch (PAddr)
         {
@@ -10895,6 +10896,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
         }
         break;
+#endif
     case 0x04000000:
         if (PAddr < 0x04002000)
         {

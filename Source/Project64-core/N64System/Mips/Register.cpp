@@ -4,6 +4,9 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Logging.h>
 
+extern bool IsLibDragon;
+extern uint8_t RamProducingEntropyBits;
+
 const char * CRegName::GPR[32] = { "R0", "AT", "V0", "V1", "A0", "A1", "A2", "A3",
 "T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7",
 "S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7",
@@ -262,6 +265,8 @@ void CRegisters::Reset()
     m_LLBit = 0;
 
     // Reset system registers
+    IsLibDragon = false;
+    RamProducingEntropyBits = 0;
     memset(m_RDRAM_Interface, 0, sizeof(m_RDRAM_Interface));
     memset(m_RDRAM_Registers, 0, sizeof(m_RDRAM_Registers));
     memset(m_Mips_Interface, 0, sizeof(m_Mips_Interface));
