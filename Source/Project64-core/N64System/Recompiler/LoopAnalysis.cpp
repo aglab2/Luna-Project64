@@ -527,10 +527,12 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             switch (m_Command.rs)
             {
             case R4300i_COP0_MF:
+            case R4300i_COP0_DMF:
                 if (m_Command.rt == 0) { break; }
                 m_Reg.SetMipsRegState(m_Command.rt, CRegInfo::STATE_MODIFIED);
                 break;
-            case R4300i_COP0_MT: break;
+            case R4300i_COP0_MT:
+            case R4300i_COP0_DMT: break;
             default:
                 if ((m_Command.rs & 0x10) != 0)
                 {

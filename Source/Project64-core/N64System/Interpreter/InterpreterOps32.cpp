@@ -196,11 +196,11 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_Regimm[31] = R4300iOp::UnknownOpcode;
 
     Jump_CoP0[0] = COP0_MF;
-    Jump_CoP0[1] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[1] = COP0_DMF;
     Jump_CoP0[2] = R4300iOp::UnknownOpcode;
     Jump_CoP0[3] = R4300iOp::UnknownOpcode;
     Jump_CoP0[4] = COP0_MT;
-    Jump_CoP0[5] = R4300iOp::UnknownOpcode;
+    Jump_CoP0[5] = COP0_DMT;
     Jump_CoP0[6] = R4300iOp::UnknownOpcode;
     Jump_CoP0[7] = R4300iOp::UnknownOpcode;
     Jump_CoP0[8] = R4300iOp::UnknownOpcode;
@@ -1371,6 +1371,20 @@ void R4300iOp32::COP0_MF()
     _GPR[m_Opcode.rt].W[0] = (int32_t)_CP0[m_Opcode.rd];
 }
 
+void R4300iOp32::COP0_DMF()
+{
+    if (LogCP0reads())
+    {
+        LogMessage("%08X: R4300i read from %s (0x%08X)", (*_PROGRAM_COUNTER), CRegName::Cop0[m_Opcode.rd], _CP0[m_Opcode.rd]);
+    }
+
+    if (m_Opcode.rd == 9)
+    {
+        g_SystemTimer->UpdateTimers();
+    }
+    _GPR[m_Opcode.rt].DW = (int32_t)_CP0[m_Opcode.rd];
+}
+
 void R4300iOp32::COP0_MT()
 {
     if (LogCP0changes())
@@ -1442,6 +1456,11 @@ void R4300iOp32::COP0_MT()
     default:
         UnknownOpcode();
     }
+}
+
+void R4300iOp32::COP0_DMT()
+{
+    COP0_MT();
 }
 
 // COP1 functions

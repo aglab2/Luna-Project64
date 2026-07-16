@@ -297,11 +297,11 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Regimm[31] = UnknownOpcode;
 
     Jump_CoP0[0] = COP0_MF;
-    Jump_CoP0[1] = UnknownOpcode;
+    Jump_CoP0[1] = COP0_DMF;
     Jump_CoP0[2] = UnknownOpcode;
     Jump_CoP0[3] = UnknownOpcode;
     Jump_CoP0[4] = COP0_MT;
-    Jump_CoP0[5] = UnknownOpcode;
+    Jump_CoP0[5] = COP0_DMT;
     Jump_CoP0[6] = UnknownOpcode;
     Jump_CoP0[7] = UnknownOpcode;
     Jump_CoP0[8] = UnknownOpcode;
@@ -2276,6 +2276,11 @@ void R4300iOp::COP0_MF()
     _GPR[m_Opcode.rt].DW = (int32_t)_CP0[m_Opcode.rd];
 }
 
+void R4300iOp::COP0_DMF()
+{
+    COP0_MF();
+}
+
 void R4300iOp::COP0_MT()
 {
     if (LogCP0changes())
@@ -2347,6 +2352,11 @@ void R4300iOp::COP0_MT()
     default:
         UnknownOpcode();
     }
+}
+
+void R4300iOp::COP0_DMT()
+{
+    return COP0_MT();
 }
 
 // COP0 CO functions

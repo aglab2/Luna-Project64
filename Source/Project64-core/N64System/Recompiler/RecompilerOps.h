@@ -135,7 +135,9 @@ public:
 
     // COP0 functions
     virtual void COP0_MF() = 0;
+    virtual void COP0_DMF() = 0;
     virtual void COP0_MT() = 0;
+    virtual void COP0_DMT() = 0;
 
     // COP0 CO functions
     virtual void COP0_CO_TLBR() = 0;

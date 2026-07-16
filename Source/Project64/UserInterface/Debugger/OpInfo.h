@@ -234,7 +234,8 @@ public:
             return;
         }
 
-        if (op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_MT)
+        if ((op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_MT) ||
+            (op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_DMT))
         {
             *nReg1 = m_OpCode.rt;
             *nReg2 = 0;
@@ -284,6 +285,7 @@ public:
             op >= R4300i_ADDI && op <= R4300i_LUI ||
             op == R4300i_LL || op == R4300i_LD ||
             (op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_MF) ||
+            (op == R4300i_CP0 && m_OpCode.fmt == R4300i_COP0_DMF) ||
             (op == R4300i_CP1 && m_OpCode.fmt == R4300i_COP1_MF) ||
             (op == R4300i_CP1 && m_OpCode.fmt == R4300i_COP1_CF))
         {
