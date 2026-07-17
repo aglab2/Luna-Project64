@@ -372,112 +372,121 @@ void CDMA::PI_DMA_WRITE()
 
     if (PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG < 0x1FFE0000)
     {
-        uint32_t i;
+        uint8_t* Rdram = g_MMU->Rdram();
+        uint32_t RdramSize = g_MMU->RdramSize();
+        uint8_t* ROM = g_Rom->GetRomAddress();
+        uint32_t RomSize = g_Rom->GetRomSize();
 
-#ifdef legacycode
-#ifdef ROM_IN_MAPSPACE
-        if (WrittenToRom)
-        {
-            uint32_t OldProtect;
-            VirtualProtect(ROM,m_RomFileSize,PAGE_READONLY, &OldProtect);
-        }
-#endif
-#endif
+        int32_t Length = (g_Reg->PI_WR_LEN_REG & 0x00FFFFFF) + 1;
+        g_Reg->PI_WR_LEN_REG = Length <= 8 ? 0x7F - (PI_DRAM_ADDR_REG & 7) : 0x7F;
 
-        uint8_t * ROM = g_Rom->GetRomAddress();
-        uint8_t * RDRAM = g_MMU->Rdram();
-        PI_CART_ADDR_REG -= 0x10000000;
-        if (PI_CART_ADDR_REG + PI_WR_LEN_REG < g_Rom->GetRomSize())
+        uint32_t ReadPos = PI_CART_ADDR_REG - 0x10000000;
+        bool canUseMemcpy = (PI_DRAM_ADDR_REG & 7) == 0 &&
+                            (ReadPos & 3) == 0 &&
+                            ReadPos <= RomSize;
+
+        uint32_t TransferLen = 0;
+        if (canUseMemcpy)
         {
-            size_t alignment;
-            RDRAM += PI_DRAM_ADDR_REG;
-            ROM += PI_CART_ADDR_REG;
-            alignment = PI_WR_LEN_REG | (size_t)RDRAM | (size_t)ROM;
-            if ((alignment & 0x3) == 0)
+            if (Length > 0 && (Length & 7) == 0)
             {
-#ifdef _WIN32
-				__movsb((unsigned char*)RDRAM, (unsigned char*)ROM, PI_WR_LEN_REG);
-#else
-                for (i = 0; i < PI_WR_LEN_REG; i += 4)
-                {
-                    *(uint32_t *)(RDRAM + i) = *(uint32_t *)(ROM + i);
-                }
-#endif
+                memcpy(Rdram + PI_DRAM_ADDR_REG, ROM + ReadPos, Length);
+                PI_CART_ADDR_REG += Length;
+                PI_DRAM_ADDR_REG += Length;
+                TransferLen = Length;
+                Length = 0;
             }
-            else if ((alignment & 1) == 0)
+#if 0
+            else
             {
-                if ((PI_WR_LEN_REG & 2) == 0)
+                int32_t bulkLen = Length & ~127u;
+                if (bulkLen)
                 {
-                    if (((size_t)RDRAM & 2) == 0)
+                    memcpy(Rdram + PI_DRAM_ADDR_REG, ROM + ReadPos, bulkLen);
+                    PI_CART_ADDR_REG += bulkLen;
+                    PI_DRAM_ADDR_REG += bulkLen;
+                    Length -= bulkLen;
+                    TransferLen += bulkLen;
+                }
+            }
+#endif
+        }
+
+        if (Length > 0)
+        {
+            uint8_t Block[128];
+            bool FirstBlock = TransferLen == 0;
+            int32_t MaxBlockSize = 128;
+            while (Length > 0)
+            {
+                int32_t BlockAlign = PI_DRAM_ADDR_REG & 7;
+                int32_t BlockSize = MaxBlockSize - BlockAlign;
+                int32_t BlockLen = BlockSize;
+                if (Length < BlockLen)
+                {
+                    BlockLen = Length;
+                }
+                int32_t EndOfRow = 0x800 - (PI_DRAM_ADDR_REG & 0x7ff);
+                if (EndOfRow < BlockLen)
+                {
+                    BlockLen = EndOfRow;
+                }
+                Length -= BlockLen;
+                if (Length < 0)
+                {
+                    Length = 0;
+                }
+
+                int32_t ReadLen = (BlockLen + 1) & ~1;
+
+                {
+                    uint32_t ReadPos = PI_CART_ADDR_REG - 0x10000000;
+                    for (uint32_t i = 0, n = (BlockLen + 1) & ~1; i < n; i++)
                     {
-                        for (i = 0; i < PI_WR_LEN_REG; i += 4)
-                        {
-                            *(uint16_t *)(((size_t)RDRAM + i) + 2) = *(uint16_t *)(((size_t)ROM + i) - 2);
-                            *(uint16_t *)(((size_t)RDRAM + i) + 0) = *(uint16_t *)(((size_t)ROM + i) + 4);
-                        }
+                        uint32_t Pos = ((ReadPos + i) ^ 3);
+                        Block[i] = Pos < RomSize ? ROM[Pos] : 0;
                     }
-                    else
+                }
+
+                PI_CART_ADDR_REG += ReadLen;
+
+                if (FirstBlock)
+                {
+                    if (BlockLen == BlockSize - 1)
                     {
-                        if (((size_t)ROM & 2) == 0)
-                        {
-                            for (i = 0; i < PI_WR_LEN_REG; i += 4)
-                            {
-                                *(uint16_t *)(((size_t)RDRAM + i) - 2) = *(uint16_t *)(((size_t)ROM + i) + 2);
-                                *(uint16_t *)(((size_t)RDRAM + i) + 4) = *(uint16_t *)(((size_t)ROM + i) + 0);
-                            }
-                        }
-                        else
-                        {
-                            for (i = 0; i < PI_WR_LEN_REG; i += 4)
-                            {
-                                *(uint16_t *)(((size_t)RDRAM + i) - 2) = *(uint16_t *)(((size_t)ROM + i) - 2);
-                                *(uint16_t *)(((size_t)RDRAM + i) + 4) = *(uint16_t *)(((size_t)ROM + i) + 4);
-                            }
-                        }
+                        BlockLen += 1;
+                    }
+                    BlockLen = BlockLen - BlockAlign;
+                    if (BlockLen < 0)
+                    {
+                        BlockLen = 0;
                     }
                 }
                 else
                 {
-                    for (i = 0; i < PI_WR_LEN_REG; i += 2)
+                    BlockLen = ReadLen;
+                }
+
+                if ((PI_DRAM_ADDR_REG + BlockLen) >= RdramSize)
+                {
+                    BlockLen = RdramSize - PI_DRAM_ADDR_REG;
+                    if (BlockLen < 0)
                     {
-                        *(uint16_t *)(((size_t)RDRAM + i) ^ 2) = *(uint16_t *)(((size_t)ROM + i) ^ 2);
+                        BlockLen = 0;
                     }
                 }
-            }
-            else
-            {
-                for (i = 0; i < PI_WR_LEN_REG; i++)
+                for (int32_t i = 0; i < BlockLen; i++)
                 {
-                    *(uint8_t *)(((size_t)RDRAM + i) ^ 3) = *(uint8_t *)(((size_t)ROM + i) ^ 3);
+                    Rdram[(PI_DRAM_ADDR_REG + i) ^ 3] = Block[i];
                 }
+                PI_DRAM_ADDR_REG = (PI_DRAM_ADDR_REG + BlockLen + 7) & ~7;
+                TransferLen += (BlockLen + 7) & ~7;
+                MaxBlockSize = EndOfRow < 8 ? 128 - BlockAlign : 128;
+                FirstBlock = false;
             }
         }
-        else if (PI_CART_ADDR_REG >= g_Rom->GetRomSize())
-        {
-            uint32_t cart = PI_CART_ADDR_REG - g_Rom->GetRomSize();
-            while (cart >= g_Rom->GetRomSize())
-            {
-                cart -= g_Rom->GetRomSize();
-            }
-            for (i = 0; i < PI_WR_LEN_REG; i++)
-            {
-                *(RDRAM + ((PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((cart + i) ^ 3));
-            }
-        }
-        else
-        {
-            uint32_t Len;
-            Len = g_Rom->GetRomSize() - PI_CART_ADDR_REG;
-            for (i = 0; i < Len; i++)
-            {
-                *(RDRAM + ((PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((PI_CART_ADDR_REG + i) ^ 3));
-            }
-            for (i = Len; i < PI_WR_LEN_REG - Len; i++)
-            {
-                *(RDRAM + ((PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
-            }
-        }
-        PI_CART_ADDR_REG += 0x10000000;
+        g_Reg->PI_CART_ADDR_REG = PI_CART_ADDR_REG;
+        g_Reg->PI_DRAM_ADDR_REG = PI_DRAM_ADDR_REG;
 
         if (!g_System->DmaUsed())
         {
@@ -486,12 +495,12 @@ void CDMA::PI_DMA_WRITE()
         }
         if (g_Recompiler && g_System->bSMM_PIDMA())
         {
-            g_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
+            g_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, TransferLen, CRecompiler::Remove_DMA);
         }
 
         if(g_System->bRandomizeSIPIInterrupts())
         {
-            g_SystemTimer->SetTimer(g_SystemTimer->PiTimer, PI_WR_LEN_REG / 8 + (g_Random->next() % 0x40), false);
+            g_SystemTimer->SetTimer(g_SystemTimer->PiTimer, TransferLen / 8 + (g_Random->next() % 0x40), false);
         }
         else
         {
