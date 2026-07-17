@@ -286,7 +286,7 @@ void CPifRam::SI_DMA_READ()
     }
 
     PifRamRead();
-    SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+    SI_DRAM_ADDR_REG &= 0xFFFFFF;
     if ((int32_t)SI_DRAM_ADDR_REG < 0)
     {
         int32_t count, RdramPos;
@@ -385,7 +385,7 @@ void CPifRam::SI_DMA_WRITE()
         return;
     }
 
-    SI_DRAM_ADDR_REG &= 0xFFFFFFF8;
+    SI_DRAM_ADDR_REG &= 0xFFFFFF;
     uint8_t * RDRAM = g_MMU->Rdram();
 
     if ((int32_t)SI_DRAM_ADDR_REG < 0)

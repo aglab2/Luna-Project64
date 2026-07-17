@@ -383,7 +383,10 @@ void CDMA::PI_DMA_WRITE()
         uint32_t ReadPos = PI_CART_ADDR_REG - 0x10000000;
         bool canUseMemcpy = (PI_DRAM_ADDR_REG & 7) == 0 &&
                             (ReadPos & 3) == 0 &&
-                            ReadPos <= RomSize;
+                            ReadPos + Length <= RomSize &&
+                            PI_DRAM_ADDR_REG + Length <= RdramSize;
+
+        uint32_t invalidationStart = PI_DRAM_ADDR_REG;
 
         uint32_t TransferLen = 0;
         if (canUseMemcpy)
@@ -495,7 +498,7 @@ void CDMA::PI_DMA_WRITE()
         }
         if (g_Recompiler && g_System->bSMM_PIDMA())
         {
-            g_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, TransferLen, CRecompiler::Remove_DMA);
+            g_Recompiler->ClearRecompCode_Phys(invalidationStart, TransferLen, CRecompiler::Remove_DMA);
         }
 
         if(g_System->bRandomizeSIPIInterrupts())
