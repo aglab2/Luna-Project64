@@ -96,8 +96,9 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
     case R4300i_CP0:
         switch (Command.rs)
         {
-        case R4300i_COP0_MT: break;
+        case R4300i_COP0_MT: case R4300i_COP0_DMT: break;
         case R4300i_COP0_MF:
+        case R4300i_COP0_DMF:
             if (Command.rt == 0)
             {
                 return false;

@@ -161,8 +161,10 @@ const ASM_INSTRUCTION CAssembler::m_Instructions[] =
     { "bltzall", R4300i_REGIMM_BLTZALL, base_regimm, syn_branch_z },
     { "bgezall", R4300i_REGIMM_BGEZALL, base_regimm, syn_branch_z },
 
-    { "mfc0", R4300i_COP0_MF , base_cop0_mv, syn_cop_mv },
-    { "mtc0", R4300i_COP0_MT , base_cop0_mv, syn_cop_mv },
+    { "mfc0" , R4300i_COP0_MF , base_cop0_mv, syn_cop_mv },
+    { "mtc0" , R4300i_COP0_MT , base_cop0_mv, syn_cop_mv },
+    { "dmfc0", R4300i_COP0_DMF, base_cop0_mv, syn_cop_mv },
+    { "dmtc0", R4300i_COP0_DMT, base_cop0_mv, syn_cop_mv },
 
     { "tlbr",  R4300i_COP0_CO_TLBR,  base_cop0_co, nullptr },
     { "tlbwi", R4300i_COP0_CO_TLBWI, base_cop0_co, nullptr },

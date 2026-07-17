@@ -7902,6 +7902,31 @@ void CX86RecompilerOps::COP0_MF()
     MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], GetMipsRegMapLo(m_Opcode.rt));
 }
 
+void CX86RecompilerOps::COP0_DMF()
+{
+    switch (m_Opcode.rd)
+    {
+    case 9: // Count
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_RegWorkingSet.BeforeCallDirect();
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
+        Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+#else
+        PushImm32((uint32_t)g_SystemTimer);
+        Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+        AddConstToX86Reg(x86_ESP, 4);
+#endif
+        m_RegWorkingSet.AfterCallDirect();
+    }
+    Map_GPR_64bit(m_Opcode.rt, -1);
+    MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], GetMipsRegMapLo(m_Opcode.rt));
+    MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
+    ShiftRightSignImmed(GetMipsRegMapHi(m_Opcode.rt), 31);
+}
+
 void CX86RecompilerOps::COP0_MT()
 {
     uint8_t *Jump;
@@ -8106,6 +8131,11 @@ void CX86RecompilerOps::COP0_MT()
     default:
         UnknownOpcode();
     }
+}
+
+void CX86RecompilerOps::COP0_DMT()
+{
+    COP0_MT();
 }
 
 // COP0 CO functions
@@ -10869,6 +10899,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         sprintf(VarName, "RDRAM + %X", PAddr);
         MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), VarName);
         break;
+#if 0
     case 0x03F00000:
         switch (PAddr)
         {
@@ -10895,6 +10926,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
         }
         break;
+#endif
     case 0x04000000:
         if (PAddr < 0x04002000)
         {
@@ -11511,6 +11543,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04300000:
+        case 0x04300008:
             MoveX86regToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
             MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_RegWorkingSet.BeforeCallDirect();

@@ -109,7 +109,7 @@ enum R4300iRegImmOpCodes
 
 enum R4300iCOP0OpCodes
 {
-    R4300i_COP0_MF = 0, R4300i_COP0_MT = 4
+    R4300i_COP0_MF = 0, R4300i_COP0_DMF = 1, R4300i_COP0_MT = 4, R4300i_COP0_DMT = 5,
 };
 
 enum R4300iCOP0C0OpCodes

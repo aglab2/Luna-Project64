@@ -595,6 +595,12 @@ const char * R4300iOpcodeName(uint32_t OpCode, uint32_t PC)
         case R4300i_COP0_MT:
             sprintf(CommandName, "MTC0\t%s, %s", CRegName::GPR[command.rt], CRegName::Cop0[command.rd]);
             break;
+        case R4300i_COP0_DMF:
+            sprintf(CommandName, "DMFC0\t%s, %s", CRegName::GPR[command.rt], CRegName::Cop0[command.rd]);
+            break;
+        case R4300i_COP0_DMT:
+            sprintf(CommandName, "DMTC0\t%s, %s", CRegName::GPR[command.rt], CRegName::Cop0[command.rd]);
+            break;
         default:
             if ((command.rs & 0x10) != 0)
             {
