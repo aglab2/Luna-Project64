@@ -94,19 +94,20 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     CPath LunaConfigAppdataPath(AppdataPath);
     LunaConfigAppdataPath.AppendDirectory("Luna-Project64");
 
+    CPath localConfigDir(BaseDirectory);
+    localConfigDir.AppendDirectory("Config_User");
+
     bool appdataDisabled;
     {
-        CPath CfgAppdataPath(static_cast<const char*>(LunaConfigAppdataPath), "disabled.cfg");
+        CPath CfgAppdataPath(static_cast<const char*>(localConfigDir), "enabled.cfg");
         appdataDisabled = CfgAppdataPath.Exists();
     }
 
     // Command settings
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
-    AddHandler(Cmd_AppdataDirectoryReal, new CSettingTypeTempString(LunaConfigAppdataPath));
+    AddHandler(Cmd_ConfigNearExeDirectory, new CSettingTypeTempString(localConfigDir));
     if (appdataDisabled)
     {
-		CPath localConfigDir(BaseDirectory);
-		localConfigDir.AppendDirectory("Config_User");
 		localConfigDir.DirectoryCreate();
         AddHandler(Cmd_AppdataDirectory, new CSettingTypeTempString(localConfigDir));
         AddHandler(Cmd_PluginBaseDirectory, new CSettingTypePluginConfigDir(localConfigDir));
