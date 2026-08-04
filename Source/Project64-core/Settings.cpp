@@ -24,6 +24,7 @@
 #include <Project64-core/Settings.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Common/Trace.h>
+#include "Project64/GitHubUpdater.h"
 
 #include <shlwapi.h>
 
@@ -101,6 +102,14 @@ void CSettings::AddHowToHandleSetting(const char* BaseDirectory)
     {
         CPath CfgAppdataPath(static_cast<const char*>(localConfigDir), "enabled.cfg");
         appdataDisabled = CfgAppdataPath.Exists();
+    }
+
+    {
+        CPath fu(static_cast<const char*>(LunaConfigAppdataPath), "I_choose_not_to_receive_future_fixes.txt");
+        if (!fu.Exists())
+        {
+            CheckUpdatesGitHub();
+        }
     }
 
     // Command settings
