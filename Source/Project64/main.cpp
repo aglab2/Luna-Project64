@@ -48,9 +48,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             try {
                 DarkModeEnter(DLL_PROCESS_ATTACH);
             }
-            catch (...) {
-                MessageBox(NULL, L"Dark mode isn't supported.", L"Dark theme error", MB_OK);
-            }
+            catch (...) { }
         }
 
         // Create the main window with menu
